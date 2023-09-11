@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		4608E89128B961C900B548C9 /* drum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4608E89028B961C900B548C9 /* drum.wav */; };
 		4618DD4C29F1AD5B0090A338 /* playstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4929F1AD5B0090A338 /* playstore.png */; };
 		4618DD4D29F1AD5B0090A338 /* appstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4A29F1AD5B0090A338 /* appstore.png */; };
-		4618DD4E29F1AD5B0090A338 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4B29F1AD5B0090A338 /* Assets.xcassets */; };
 		461F262428B82571002015EB /* 9bird.wav in Resources */ = {isa = PBXBuildFile; fileRef = 461F261028B8256F002015EB /* 9bird.wav */; };
 		461F262528B82571002015EB /* 17bird.wav in Resources */ = {isa = PBXBuildFile; fileRef = 461F261128B8256F002015EB /* 17bird.wav */; };
 		461F262628B82571002015EB /* 19bird.wav in Resources */ = {isa = PBXBuildFile; fileRef = 461F261228B8256F002015EB /* 19bird.wav */; };
@@ -242,10 +242,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4608E89028B961C900B548C9 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = drum.wav; path = "../../../Increasing Volume/drum.wav"; sourceTree = "<group>"; };
 		4618DD4929F1AD5B0090A338 /* playstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playstore.png; path = "../../AppIcons (1)/playstore.png"; sourceTree = "<group>"; };
 		4618DD4A29F1AD5B0090A338 /* appstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appstore.png; path = "../../AppIcons (1)/appstore.png"; sourceTree = "<group>"; };
-		4618DD4B29F1AD5B0090A338 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../AppIcons (1)/Assets.xcassets"; sourceTree = "<group>"; };
 		461F261028B8256F002015EB /* 9bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = 9bird.wav; path = "../../../Increasing Volume/bird/9bird.wav"; sourceTree = "<group>"; };
 		461F261128B8256F002015EB /* 17bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = 17bird.wav; path = "../../../Increasing Volume/bird/17bird.wav"; sourceTree = "<group>"; };
 		461F261228B8256F002015EB /* 19bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = 19bird.wav; path = "../../../Increasing Volume/bird/19bird.wav"; sourceTree = "<group>"; };
@@ -732,7 +732,7 @@
 				C4BB0D90256192F100354C08 /* MetalCamera */,
 				71BBE05D22E33CEA00E74F11 /* mlmodel */,
 				4618DD4A29F1AD5B0090A338 /* appstore.png */,
-				4618DD4B29F1AD5B0090A338 /* Assets.xcassets */,
+				41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */,
 				71BBE04C22E33B2600E74F11 /* LaunchScreen.storyboard */,
 				71BBE04F22E33B2600E74F11 /* Info.plist */,
 				4618DD4929F1AD5B0090A338 /* playstore.png */,
@@ -855,7 +855,6 @@
 				46E5B64328AC1865004BD0AE /* 18.wav in Resources */,
 				461F263428B82571002015EB /* 5bird.wav in Resources */,
 				46E5B67828AC1865004BD0AE /* 17breath.wav in Resources */,
-				4618DD4E29F1AD5B0090A338 /* Assets.xcassets in Resources */,
 				46E5B67228AC1865004BD0AE /* 14bottle.wav in Resources */,
 				46E5B62028AC1865004BD0AE /* 15piano.wav in Resources */,
 				46E5B62C28AC1865004BD0AE /* 19breath.wav in Resources */,
@@ -922,6 +921,7 @@
 				4698D93F28AAEE1D00618E27 /* 1breath.wav in Resources */,
 				46E5B66A28AC1865004BD0AE /* 17bottle.wav in Resources */,
 				46E5B5A028AC1823004BD0AE /* 7cat.wav in Resources */,
+				41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */,
 				461F263028B82571002015EB /* 13bird.wav in Resources */,
 				46E5B63728AC1865004BD0AE /* 13breath.wav in Resources */,
 				46E5B62428AC1865004BD0AE /* 20bottle.wav in Resources */,
