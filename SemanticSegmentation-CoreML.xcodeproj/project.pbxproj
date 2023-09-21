@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		4608E89128B961C900B548C9 /* drum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4608E89028B961C900B548C9 /* drum.wav */; };
 		4618DD4C29F1AD5B0090A338 /* playstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4929F1AD5B0090A338 /* playstore.png */; };
@@ -242,6 +243,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4608E89028B961C900B548C9 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = drum.wav; path = "../../../Increasing Volume/drum.wav"; sourceTree = "<group>"; };
 		4618DD4929F1AD5B0090A338 /* playstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playstore.png; path = "../../AppIcons (1)/playstore.png"; sourceTree = "<group>"; };
@@ -718,6 +720,7 @@
 		71BBE04222E33B2500E74F11 /* SemanticSegmentation-CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */,
 				46EBF9862899D21E0030C0E7 /* AudioFiles */,
 				71BBE04722E33B2500E74F11 /* Main.storyboard */,
 				71BBE04322E33B2500E74F11 /* AppDelegate.swift */,
@@ -1082,6 +1085,7 @@
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,
 				71BBE05F22E33F8D00E74F11 /* DrawingSegmentationView.swift in Sources */,
+				419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */,
 				71BBE04422E33B2500E74F11 /* AppDelegate.swift in Sources */,
 				C4BB0DA02561983C00354C08 /* SegmentationTextureGenerater.swift in Sources */,
 				C4CA64502603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift in Sources */,
