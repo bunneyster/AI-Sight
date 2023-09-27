@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "418E5A2B2AC3F19E00D0813E"
+               BuildableName = "SemanticSegmentation-CoreMLTests.xctest"
+               BlueprintName = "SemanticSegmentation-CoreMLTests"
+               ReferencedContainer = "container:SemanticSegmentation-CoreML.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

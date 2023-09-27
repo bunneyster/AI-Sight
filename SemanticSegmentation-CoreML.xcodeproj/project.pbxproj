@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */; };
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		4608E89128B961C900B548C9 /* drum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4608E89028B961C900B548C9 /* drum.wav */; };
@@ -242,7 +243,19 @@
 		C4DDEF7525FBCBC8000CF6A5 /* FaceParsing.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = C4DDEF7425FBCBC8000CF6A5 /* FaceParsing.mlmodel */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		418E5A302AC3F19E00D0813E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 71BBE03822E33B2500E74F11 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71BBE03F22E33B2500E74F11;
+			remoteInfo = "SemanticSegmentation-CoreML";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillImageViewControllerTest.swift; sourceTree = "<group>"; };
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4608E89028B961C900B548C9 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = drum.wav; path = "../../../Increasing Volume/drum.wav"; sourceTree = "<group>"; };
@@ -481,6 +494,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		418E5A292AC3F19E00D0813E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71BBE03D22E33B2500E74F11 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -491,6 +511,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		418E5A2D2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */ = {
+			isa = PBXGroup;
+			children = (
+				418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */,
+			);
+			path = "SemanticSegmentation-CoreMLTests";
+			sourceTree = "<group>";
+		};
 		46EBF9862899D21E0030C0E7 /* AudioFiles */ = {
 			isa = PBXGroup;
 			children = (
@@ -705,6 +733,7 @@
 			isa = PBXGroup;
 			children = (
 				71BBE04222E33B2500E74F11 /* SemanticSegmentation-CoreML */,
+				418E5A2D2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */,
 				71BBE04122E33B2500E74F11 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -713,6 +742,7 @@
 			isa = PBXGroup;
 			children = (
 				71BBE04022E33B2500E74F11 /* SemanticSegmentation-CoreML.app */,
+				418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -791,6 +821,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		418E5A2B2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 418E5A342AC3F19E00D0813E /* Build configuration list for PBXNativeTarget "SemanticSegmentation-CoreMLTests" */;
+			buildPhases = (
+				418E5A282AC3F19E00D0813E /* Sources */,
+				418E5A292AC3F19E00D0813E /* Frameworks */,
+				418E5A2A2AC3F19E00D0813E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				418E5A312AC3F19E00D0813E /* PBXTargetDependency */,
+			);
+			name = "SemanticSegmentation-CoreMLTests";
+			productName = "SemanticSegmentation-CoreMLTests";
+			productReference = 418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		71BBE03F22E33B2500E74F11 /* SemanticSegmentation-CoreML */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 71BBE05222E33B2600E74F11 /* Build configuration list for PBXNativeTarget "SemanticSegmentation-CoreML" */;
@@ -814,10 +862,14 @@
 		71BBE03822E33B2500E74F11 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Doyoung Gwak";
 				TargetAttributes = {
+					418E5A2B2AC3F19E00D0813E = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = 71BBE03F22E33B2500E74F11;
+					};
 					71BBE03F22E33B2500E74F11 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -837,11 +889,19 @@
 			projectRoot = "";
 			targets = (
 				71BBE03F22E33B2500E74F11 /* SemanticSegmentation-CoreML */,
+				418E5A2B2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		418E5A2A2AC3F19E00D0813E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71BBE03E22E33B2500E74F11 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1060,6 +1120,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		418E5A282AC3F19E00D0813E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71BBE03C22E33B2500E74F11 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1094,6 +1162,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		418E5A312AC3F19E00D0813E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71BBE03F22E33B2500E74F11 /* SemanticSegmentation-CoreML */;
+			targetProxy = 418E5A302AC3F19E00D0813E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		71BBE04722E33B2500E74F11 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -1114,6 +1190,57 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		418E5A322AC3F19E00D0813E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QB9T9UD5TR;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chanlab.SemanticSegmentation-CoreMLTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SemanticSegmentation-CoreML.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SemanticSegmentation-CoreML";
+			};
+			name = Debug;
+		};
+		418E5A332AC3F19E00D0813E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QB9T9UD5TR;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chanlab.SemanticSegmentation-CoreMLTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SemanticSegmentation-CoreML.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SemanticSegmentation-CoreML";
+			};
+			name = Release;
+		};
 		71BBE05022E33B2600E74F11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1277,6 +1404,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		418E5A342AC3F19E00D0813E /* Build configuration list for PBXNativeTarget "SemanticSegmentation-CoreMLTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				418E5A322AC3F19E00D0813E /* Debug */,
+				418E5A332AC3F19E00D0813E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		71BBE03B22E33B2500E74F11 /* Build configuration list for PBXProject "SemanticSegmentation-CoreML" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
