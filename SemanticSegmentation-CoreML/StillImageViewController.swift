@@ -57,93 +57,96 @@ class StillImageViewController: UIViewController,
     var request: VNCoreMLRequest?
     var visionModel: VNCoreMLModel?
 
-    /*
-     *
-     * It takes as inputs the segmentationmap, the number of rows, and the number of columns of the camera image and returns the depth, x, and y coordinates of the image frame.
-     */
-    public static func getImageFrameCoordinates(segmentationmap: MLMultiArray, row: Int, col: Int) -> (d: Dictionary<Int, Int>, x: Dictionary<Int, Int>, y: Dictionary<Int, Int>) {
-        
-        // Deep exhibit 5
-        //Giles5 depthdata commented out
-        //var depthMap = AVCaptureDepthDataOutput()
-        
-        // Deep exhibit 6
-        var d=[Int: Int](),x=[Int:Int](),y=[Int:Int]()
-        for i in 0...row-1 {
-            for j in 0...col-1 {
-                let key=[i,j] as [NSNumber]
-                let k=segmentationmap[key].intValue
+    /// Groups the segmentation data per object ID.
+    ///
+    /// - Parameters:
+    ///   - segmentationMap: The 2D map containing the object-level image.
+    ///   - row: The number of rows in the segmentation map.
+    ///   - col: The number of columns in the segmentation map.
+    /// - Returns: A tuple containing 3 maps: `d`, a map of object ID to the number of corresponding
+    /// segmentation map elements, `x`, a map of object ID to the sum of the x-coordinates of its
+    /// corresponding segmentation map elements, and `y`, a map of object ID to the sum of the
+    /// y-coordinates of its corresponding segmentation map elements.
+    public static func getImageFrameCoordinates(
+        segmentationmap: MLMultiArray, row: Int, col: Int
+    ) -> (d: [Int: Int], x: [Int: Int], y: [Int: Int]) {
+        var d = [Int: Int](), x = [Int: Int](), y = [Int: Int]()
+        for i in 0 ... row - 1 {
+            for j in 0 ... col - 1 {
+                let key = [i, j] as [NSNumber]
+                let k = segmentationmap[key].intValue
                 if d.keys.contains(k) {
-                    let a : Int = d[k] ?? 0
-                    let b : Int = x[k] ?? 0
-                    let c : Int = y[k] ?? 0
-                    d[k]=a+1
-                    x[k]=b+j
-                    y[k]=c+i
-                    // StillImageViewController.speak(text: String(x[k] * y[k]), multiplier:1)
-                }
-                else {
-                    d[k]=0
-                    x[k]=j
-                    y[k]=i
+                    let a: Int = d[k] ?? 0
+                    let b: Int = x[k] ?? 0
+                    let c: Int = y[k] ?? 0
+                    d[k] = a + 1
+                    x[k] = b + j
+                    y[k] = c + i
+                } else {
+                    d[k] = 0
+                    x[k] = j
+                    y[k] = i
                 }
             }
         }
-        // StillImageViewController.speak(text: String(x*y), multiplier:1)
         return (d, x, y)
     }
-    
-    /*
-     *
-     * Returns the recognized object name and the pitch multiplier to use when speaking it out
-     *
-     */
-    public static func getObjectAndPitchMultiplier(k: Int, v: Int, x: Dictionary<Int, Int>, y: Dictionary<Int, Int>, row: Int, col: Int) -> (obj: String, mult_val: Float, xValue: Double, sizes: Double) {
-        let objects=["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "table", "dog", "horse", "motorbike", "person", "plant", "sheep", "sofa", "train", "tv"]
-        
-        let b : Int = x[k] ?? 0
-        let c : Int = y[k] ?? 0
-        let size=Double(v)/(Double(row)*Double(col))
-//        print(objects[k], Double(b)/Double(v)/Double(col),1-Double(c)/Double(v)/Double(row))
-//        print("The multiplier y is ")
-//        print(1-Double(c)/Double(v)/Double(row))
-        // Deep exhibit 6
-//        if size>=0.05 {
-//            print("The size is ")
-//            print(Double(v))
-//            print(size)
-//        }
-//        // Giles added below
-//        else {
-//            print("The size is \(size), which is too small")
-//        }
-        // old: multiplier: Float((y[k]!))+0.7
-        let multiplier = 0.7 + Float(1-Double(c)/Double(v)/Double(row))
-        let xValue = Double(b)/Double(v)/Double(col)
-        
-//        if objects[k].contains("Person")
-//        if objects[k] == "Person" {
-//            print("YOYO a person is HERE YO")
-//
-////                    rtPersonDetectorPan = (Float(truncating: XXX_put_person.Xpos_in_here_XXX))
-////            let wherePerson:Int = objs.firstIndex(of: "Person")!
-////            let panningPerson = x_vals[wherePerson]
-////            let panningPersonFloat = (Float(panningPerson))
-//
-//            let urlPerson = Bundle.main.url(forResource: "5piano", withExtension: "wav")
-//            rtPersonDetector = try! AVAudioPlayer(contentsOf: urlPerson!)
-//            rtPersonDetector.pan = 0.0
-////            rtPersonDetector.pan = panningPersonFloat
-//            rtPersonDetector.volume = 1.0
-//            rtPersonDetector.play()
-//            usleep(1000000)
-//        }
-        
-        // Giles added size return value
+
+    /// Computes the object attributes that will be vocalized.
+    ///
+    /// - Parameters:
+    ///   - k: The object ID.
+    ///   - v: The number of segmentation map elements corresponding to the given object ID.
+    ///   - x: A map of object ID to the sum of the x-coordinates of the corresponding segmentation
+    /// map elements.
+    ///   - y: A map of object ID to the sum of the y-coordinates of the corresponding segmentation
+    /// map elements.
+    ///   - row: The number of rows in the segmentation map.
+    ///   - col: The number of columns in the segmentation map.
+    /// - Returns: A tuple containing 4 elements: `obj`, the object name, `mult_val`, the pitch
+    /// multiplier, `xValue`, the representative x-coordinate, and `sizes`, the size of the object
+    /// relative to its containing image.
+    public static func getObjectAndPitchMultiplier(
+        k: Int,
+        v: Int,
+        x: [Int: Int],
+        y: [Int: Int],
+        row: Int,
+        col: Int
+    ) -> (obj: String, mult_val: Float, xValue: Double, sizes: Double) {
+        let objects = [
+            "background",
+            "aeroplane",
+            "bicycle",
+            "bird",
+            "boat",
+            "bottle",
+            "bus",
+            "car",
+            "cat",
+            "chair",
+            "cow",
+            "table",
+            "dog",
+            "horse",
+            "motorbike",
+            "person",
+            "plant",
+            "sheep",
+            "sofa",
+            "train",
+            "tv",
+        ]
+
+        let b: Int = x[k] ?? 0
+        let c: Int = y[k] ?? 0
+        let size = Double(v) / (Double(row) * Double(col))
+        let multiplier = 0.7 + Float(1 - Double(c) / Double(v) / Double(row))
+        let xValue = Double(b) / Double(v) / Double(col)
+
         return (objects[k], multiplier, xValue, size)
-        
     }
-    
+
     /*
      * Speaks the given String using a particular tone and pitch
      *
