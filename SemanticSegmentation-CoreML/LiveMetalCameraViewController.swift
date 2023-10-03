@@ -21,79 +21,45 @@ import UIKit
 import Vision
 import AVFoundation
 
-//import Foundation
-//import CoreHaptics
+let numColumns = 10
+let columnWidth = 56
 
-//var continousAudioPlayer1: AVAudioPlayer?
-//var continousAudioPlayer2: AVAudioPlayer?
-//var continousAudioPlayer3: AVAudioPlayer?
-//var continousAudioPlayer4: AVAudioPlayer?
-//var continousAudioPlayer5: AVAudioPlayer?
-//var continousAudioPlayer6: AVAudioPlayer?
-//var continousAudioPlayer7: AVAudioPlayer?
-//var continousAudioPlayer8: AVAudioPlayer?
-//var continousAudioPlayer9: AVAudioPlayer?
-//var continousAudioPlayer10: AVAudioPlayer?
+let objectIdToSound = [
+    0: "", // Background
+    1: "trumpet", // Aeroplane
+    2: "trumpet", // Bicycle
+    3: "bird", // Bird
+    4: "", // Boat
+    5: "bottle", // Bottle
+    6: "trumpet", // Bus
+    7: "trumpet", // Car
+    8: "cat", // Cat
+    9: "chair", // Chair
+    10: "", // Cow
+    11: "chair", // Dining table
+    12: "cat", // Dog
+    13: "", // Horse
+    14: "trumpet", // Motorbike
+    15: "piano", // Person
+    16: "", // Potted plant
+    17: "", // Sheep
+    18: "chair", // Sofa
+    19: "trumpet", // Train
+    20: "breath", // TV
+]
 
-
-
-var soundShutter1str:String! = "Shutter"
-//var soundShutter1pan:Float! = 0.0
-//var soundShutter1vol:Float! = 1.0
-
-var sound1str:String! = "1"
-var sound1pan:Float! = -1.0
-var sound1vol:Float! = 0.0
-var sound1obj:Int! = 1
-
-var sound2str:String! = "2"
-var sound2pan:Float! = -1.0
-var sound2vol:Float! = 0.0
-var sound2obj:Int! = 1
-
-var sound3str:String! = "3"
-var sound3pan:Float! = -1.0
-var sound3vol:Float! = 0.0
-var sound3obj:Int! = 1
-
-var sound4str:String! = "4"
-var sound4pan:Float! = -1.0
-var sound4vol:Float! = 0.0
-var sound4obj:Int! = 1
-
-var sound5str:String! = "5"
-var sound5pan:Float! = -1.0
-var sound5vol:Float! = 0.0
-var sound5obj:Int! = 1
-
-var sound6str:String! = "6"
-var sound6pan:Float! = -1.0
-var sound6vol:Float! = 0.0
-var sound6obj:Int! = 1
-
-var sound7str:String! = "7"
-var sound7pan:Float! = -1.0
-var sound7vol:Float! = 0.0
-var sound7obj:Int! = 1
-
-var sound8str:String! = "8"
-var sound8pan:Float! = -1.0
-var sound8vol:Float! = 0.0
-var sound8obj:Int! = 1
-
-var sound9str:String! = "9"
-var sound9pan:Float! = -1.0
-var sound9vol:Float! = 0.0
-var sound9obj:Int! = 1
-
-var sound10str:String! = "10"
-var sound10pan:Float! = -1.0
-var sound10vol:Float! = 0.0
-var sound10obj:Int! = 1
-
-var drumStr = "drum"
-var drumPan:Float! = 0.0
-var drumVol:Float! = 1.0
+let pixelOffsets = [
+    2056,
+    30784,
+    59512,
+    88240,
+    116_968,
+    145_696,
+    174_424,
+    203_152,
+    231_880,
+    260_608,
+]
 
 var mode1: Double = 0.0
 var mode2: Double = 0.0
@@ -329,641 +295,86 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
             
     }
     
-    @IBAction func musicModeV2ButtonTapped(_ sender: Any) {
-        
-        if let observations = request?.results as? [VNCoreMLFeatureValueObservation],
-           let segmentationmap = observations.first?.featureValue.multiArrayValue {
-            guard let row = segmentationmap.shape[0] as? Int,
-                  let col = segmentationmap.shape[1] as? Int else {
-                return
-            }
-            
-            //Gileszzz enter new code in here
-            let engine = AVAudioEngine()
-            
-            let v2shutterSound = AVAudioPlayerNode()
-            let v2sound1 = AVAudioPlayerNode()
-            let v2sound2 = AVAudioPlayerNode()
-            let v2sound3 = AVAudioPlayerNode()
-            let v2sound4 = AVAudioPlayerNode()
-            let v2sound5 = AVAudioPlayerNode()
-            let v2sound6 = AVAudioPlayerNode()
-            let v2sound7 = AVAudioPlayerNode()
-            let v2sound8 = AVAudioPlayerNode()
-            let v2sound9 = AVAudioPlayerNode()
-            let v2sound10 = AVAudioPlayerNode()
-            let v2drums = AVAudioPlayerNode()
-            
-            for counterLR in 0...10 {
+    struct Note {
+        var node: AVAudioPlayerNode = .init()
+        var file: AVAudioFile
 
-                let counterLRfloat = Float(counterLR)
-                //-09. -0.7 -0.5 -0.3 -0.1 0.1 0.3 0.5 0.7 0.9
-                
-                let counterLRpan:Float! = (-0.9+((counterLRfloat-1.0)*0.2))
-                //                let counterLR2pan:Float! = (-0.7+((counterLRfloat-1.0)*0.4))
-                
-                let pixelNumber1:Float! = 2056+((counterLRfloat-1)*56)
-                let pixelNumber1Int = Int(pixelNumber1)
-                //            sound1 = 1
-                //            sound1str = String(sound1)
-                sound1pan = counterLRpan
-                sound1obj = (Int(truncating: segmentationmap[pixelNumber1Int]))
-                
-                if (sound1obj == 6 || sound1obj == 7 || sound1obj == 14 || sound1obj == 19 || sound1obj == 2 || sound1obj == 1) {
-                    sound1str = "1trumpet"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 20) {
-                    sound1str = "1breath"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 15) {
-                    sound1str = "1piano"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 8 || sound1obj == 12) {
-                    sound1str = "1cat"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 9 || sound1obj == 11 || sound1obj == 18) {
-                    sound1str = "1chair"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 5) {
-                    sound1str = "1bottle"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj == 3) {
-                    sound1str = "1bird"
-                    sound1vol = 1.0
-                }
-                else if (sound1obj >= 1) {
-                    sound1str = "1"
-                    sound1vol = 1.0
-                }
-                else
-                {
-                    sound1str = "1"
-                    sound1vol = 0.0
-                }
-                
-                let pixelNumber2:Float = 30784+((counterLRfloat-1)*56)
-                let pixelNumber2Int = Int(pixelNumber2)
-
-                sound2pan = counterLRpan
-                sound2obj = (Int(truncating: segmentationmap[pixelNumber2Int]))
-                
-                if (sound2obj == 6 || sound2obj == 7 || sound2obj == 14 || sound2obj == 19 || sound2obj == 2 || sound2obj == 1) {
-                    sound2str = "2trumpet"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 20) {
-                    sound2str = "2breath"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 15) {
-                    sound2str = "2piano"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 8 || sound2obj == 12) {
-                    sound2str = "2cat"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 9 || sound2obj == 11 || sound2obj == 18) {
-                    sound2str = "2chair"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 5) {
-                    sound2str = "2bottle"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj == 3) {
-                    sound2str = "2bird"
-                    sound2vol = 1.0
-                }
-                else if (sound2obj >= 1) {
-                    sound2str = "2"
-                    sound2vol = 1.0
-                }
-                else
-                {
-                    sound2str = "2"
-                    sound2vol = 0.0
-                }
-                
-                let pixelNumber3:Float = 59512+((counterLRfloat-1)*56)
-                let pixelNumber3Int = Int(pixelNumber3)
-                sound3pan = counterLRpan
-                sound3obj = (Int(truncating: segmentationmap[pixelNumber3Int]))
-                
-                if (sound3obj == 6 || sound3obj == 7 || sound3obj == 14 || sound3obj == 19 || sound3obj == 2 || sound3obj == 1) {
-                    sound3str = "3trumpet"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 20) {
-                    sound3str = "3breath"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 15) {
-                    sound3str = "3piano"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 8 || sound3obj == 12) {
-                    sound3str = "3cat"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 9 || sound3obj == 11 || sound3obj == 18) {
-                    sound3str = "3chair"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 5) {
-                    sound3str = "3bottle"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj == 3) {
-                    sound3str = "3bird"
-                    sound3vol = 1.0
-                }
-                else if (sound3obj >= 1) {
-                    sound3str = "3"
-                    sound3vol = 1.0
-                }
-                else
-                {
-                    sound3str = "3"
-                    sound3vol = 0.0
-                }
-                
-                let pixelNumber4:Float = 88240+((counterLRfloat-1)*56)
-                let pixelNumber4Int = Int(pixelNumber4)
-                sound4pan = counterLRpan
-                sound4obj = (Int(truncating: segmentationmap[pixelNumber4Int]))
-                
-                if (sound4obj == 6 || sound4obj == 7 || sound4obj == 14 || sound4obj == 19 || sound4obj == 2 || sound4obj == 1) {
-                    sound4str = "4trumpet"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 20) {
-                    sound4str = "4breath"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 15) {
-                    sound4str = "4piano"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 8 || sound4obj == 12) {
-                    sound4str = "4cat"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 9 || sound4obj == 11 || sound4obj == 18) {
-                    sound4str = "4chair"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 5) {
-                    sound4str = "4bottle"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj == 3) {
-                    sound4str = "4bird"
-                    sound4vol = 1.0
-                }
-                else if (sound4obj >= 1) {
-                    sound4str = "4"
-                    sound4vol = 1.0
-                }
-                else
-                {
-                    sound4str = "4"
-                    sound4vol = 0.0
-                }
-                
-                
-                let pixelNumber5:Float = 116968+((counterLRfloat-1)*56)
-                let pixelNumber5Int = Int(pixelNumber5)
-                sound5pan = counterLRpan
-                sound5obj = (Int(truncating: segmentationmap[pixelNumber5Int]))
-                
-                if (sound5obj == 6 || sound5obj == 7 || sound5obj == 14 || sound5obj == 19 || sound5obj == 2 || sound5obj == 1) {
-                    sound5str = "5trumpet"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 20) {
-                    sound5str = "5breath"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 15) {
-                    sound5str = "5piano"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 8 || sound5obj == 12) {
-                    sound5str = "5cat"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 9 || sound5obj == 11 || sound5obj == 18) {
-                    sound5str = "5chair"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 5) {
-                    sound5str = "5bottle"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj == 3) {
-                    sound5str = "5bird"
-                    sound5vol = 1.0
-                }
-                else if (sound5obj >= 1) {
-                    sound5str = "5"
-                    sound5vol = 1.0
-                }
-                else
-                {
-                    sound5str = "5"
-                    sound5vol = 0.0
-                }
-                
-                
-                let pixelNumber6:Float = 145696+((counterLRfloat-1)*56)
-                let pixelNumber6Int = Int(pixelNumber6)
-                sound6pan = counterLRpan
-                sound6obj = (Int(truncating: segmentationmap[pixelNumber6Int]))
-                
-                if (sound6obj == 6 || sound6obj == 7 || sound6obj == 14 || sound6obj == 19 || sound6obj == 2 || sound6obj == 1) {
-                    sound6str = "6trumpet"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 20) {
-                    sound6str = "6breath"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 15) {
-                    sound6str = "6piano"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 8 || sound6obj == 12) {
-                    sound6str = "6cat"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 9 || sound6obj == 11 || sound6obj == 18) {
-                    sound6str = "6chair"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 5) {
-                    sound6str = "6bottle"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj == 3) {
-                    sound6str = "6bird"
-                    sound6vol = 1.0
-                }
-                else if (sound6obj >= 1) {
-                    sound6str = "6"
-                    sound6vol = 1.0
-                }
-                else
-                {
-                    sound6str = "6"
-                    sound6vol = 0.0
-                }
-                
-                let pixelNumber7:Float = 174424+((counterLRfloat-1)*56)
-                let pixelNumber7Int = Int(pixelNumber7)
-                sound7pan = counterLRpan
-                sound7obj = (Int(truncating: segmentationmap[pixelNumber7Int]))
-                
-                if (sound7obj == 6 || sound7obj == 7 || sound7obj == 14 || sound7obj == 19 || sound7obj == 2 || sound7obj == 1) {
-                    sound7str = "7trumpet"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 20) {
-                    sound7str = "7breath"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 15) {
-                    sound7str = "7piano"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 8 || sound7obj == 12) {
-                    sound7str = "7cat"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 9 || sound7obj == 11 || sound7obj == 18) {
-                    sound7str = "7chair"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 5) {
-                    sound7str = "7bottle"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj == 3) {
-                    sound7str = "7bird"
-                    sound7vol = 1.0
-                }
-                else if (sound7obj >= 1) {
-                    sound7str = "7"
-                    sound7vol = 1.0
-                }
-                else
-                {
-                    sound7str = "7"
-                    sound7vol = 0.0
-                }
-                
-                let pixelNumber8:Float = 203152+((counterLRfloat-1)*56)
-                let pixelNumber8Int = Int(pixelNumber8)
-                sound8pan = counterLRpan
-                sound8obj = (Int(truncating: segmentationmap[pixelNumber8Int]))
-                
-                if (sound8obj == 6 || sound8obj == 7 || sound8obj == 14 || sound8obj == 19 || sound8obj == 2 || sound8obj == 1) {
-                    sound8str = "8trumpet"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 20) {
-                    sound8str = "8breath"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 15) {
-                    sound8str = "8piano"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 8 || sound8obj == 12) {
-                    sound8str = "8cat"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 9 || sound8obj == 11 || sound8obj == 18) {
-                    sound8str = "8chair"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 5) {
-                    sound8str = "8bottle"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj == 3) {
-                    sound8str = "8bird"
-                    sound8vol = 1.0
-                }
-                else if (sound8obj >= 1) {
-                    sound8str = "8"
-                    sound8vol = 1.0
-                }
-                else
-                {
-                    sound8str = "8"
-                    sound8vol = 0.0
-                }
-                
-                let pixelNumber9:Float = 231880+((counterLRfloat-1)*56)
-                let pixelNumber9Int = Int(pixelNumber9)
-                sound9pan = counterLRpan
-                sound9obj = (Int(truncating: segmentationmap[pixelNumber9Int]))
-                
-                if (sound9obj == 6 || sound9obj == 7 || sound9obj == 14 || sound9obj == 19 || sound9obj == 2 || sound9obj == 1) {
-                    sound9str = "9trumpet"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 20) {
-                    sound9str = "9breath"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 15) {
-                    sound9str = "9piano"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 8 || sound9obj == 12) {
-                    sound9str = "9cat"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 9 || sound9obj == 11 || sound9obj == 18) {
-                    sound9str = "9chair"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 5) {
-                    sound9str = "9bottle"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj == 3) {
-                    sound9str = "9bird"
-                    sound9vol = 1.0
-                }
-                else if (sound9obj >= 1) {
-                    sound9str = "9"
-                    sound9vol = 1.0
-                }
-                else
-                {
-                    sound9str = "9"
-                    sound9vol = 0.0
-                }
-                
-                let pixelNumber10:Float = 260608+((counterLRfloat-1)*56)
-                let pixelNumber10Int = Int(pixelNumber10)
-                sound10pan = counterLRpan
-                sound10obj = (Int(truncating: segmentationmap[pixelNumber10Int]))
-                
-                if (sound10obj == 6 || sound10obj == 7 || sound10obj == 14 || sound10obj == 19 || sound10obj == 2 || sound10obj == 1) {
-                    sound10str = "10trumpet"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 20) {
-                    sound10str = "10breath"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 15) {
-                    sound10str = "10piano"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 8 || sound10obj == 12) {
-                    sound10str = "10cat"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 9 || sound10obj == 11 || sound10obj == 18) {
-                    sound10str = "10chair"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 5) {
-                    sound10str = "10bottle"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj == 3) {
-                    sound10str = "10bird"
-                    sound10vol = 1.0
-                }
-                else if (sound10obj >= 1) {
-                    sound10str = "10"
-                    sound10vol = 1.0
-                }
-                else
-                {
-                    sound10str = "10"
-                    sound10vol = 0.0
-                }
-                
-//                var soundShutter1str:String! = "Shutter"
-//                var soundShutter1pan:Float! = 0.0
-//                var soundShutter1vol:Float! = 1.0
-                let fileShutter = try! AVAudioFile(forReading: Bundle.main.url(forResource: soundShutter1str, withExtension: "mp3")!)
-                v2shutterSound.pan = 0.0
-                v2shutterSound.volume = 1.0
-                
-                let file1 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound1str, withExtension: "wav")!)
-                v2sound1.pan = counterLRpan
-                v2sound1.volume = sound1vol
-                
-                let file2 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound2str, withExtension: "wav")!)
-                v2sound2.pan = counterLRpan
-                v2sound2.volume = sound2vol
-                
-                let file3 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound3str, withExtension: "wav")!)
-                v2sound3.pan = counterLRpan
-                v2sound3.volume = sound3vol
-                
-                let file4 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound4str, withExtension: "wav")!)
-                v2sound4.pan = counterLRpan
-                v2sound4.volume = sound4vol
-                
-                let file5 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound5str, withExtension: "wav")!)
-                v2sound5.pan = counterLRpan
-                v2sound5.volume = sound5vol
-                
-                let file6 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound6str, withExtension: "wav")!)
-                v2sound6.pan = counterLRpan
-                v2sound6.volume = sound6vol
-                
-                let file7 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound7str, withExtension: "wav")!)
-                v2sound7.pan = counterLRpan
-                v2sound7.volume = sound7vol
-                
-                let file8 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound8str, withExtension: "wav")!)
-                v2sound8.pan = counterLRpan
-                v2sound8.volume = sound8vol
-                
-                let file9 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound9str, withExtension: "wav")!)
-                v2sound9.pan = counterLRpan
-                v2sound9.volume = sound9vol
-                
-                let file10 = try! AVAudioFile(forReading: Bundle.main.url(forResource: sound10str, withExtension: "wav")!)
-                v2sound10.pan = counterLRpan
-                v2sound10.volume = sound10vol
-                
-                let fileDrums = try! AVAudioFile(forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!)
-                v2drums.pan = counterLRpan
-                v2drums.volume = 0.5
-                
-                engine.attach(v2shutterSound)
-                engine.attach(v2sound1)
-                engine.attach(v2sound2)
-                engine.attach(v2sound3)
-                engine.attach(v2sound4)
-                engine.attach(v2sound5)
-                engine.attach(v2sound6)
-                engine.attach(v2sound7)
-                engine.attach(v2sound8)
-                engine.attach(v2sound9)
-                engine.attach(v2sound10)
-                engine.attach(v2drums)
-                
-                engine.connect(v2shutterSound, to: engine.mainMixerNode, format: fileShutter.processingFormat)
-                engine.connect(v2sound1, to: engine.mainMixerNode, format: file1.processingFormat)
-                engine.connect(v2sound2, to: engine.mainMixerNode, format: file2.processingFormat)
-                engine.connect(v2sound3, to: engine.mainMixerNode, format: file3.processingFormat)
-                engine.connect(v2sound4, to: engine.mainMixerNode, format: file4.processingFormat)
-                engine.connect(v2sound5, to: engine.mainMixerNode, format: file5.processingFormat)
-                engine.connect(v2sound6, to: engine.mainMixerNode, format: file6.processingFormat)
-                engine.connect(v2sound7, to: engine.mainMixerNode, format: file7.processingFormat)
-                engine.connect(v2sound8, to: engine.mainMixerNode, format: file8.processingFormat)
-                engine.connect(v2sound9, to: engine.mainMixerNode, format: file9.processingFormat)
-                engine.connect(v2sound10, to: engine.mainMixerNode, format: file10.processingFormat)
-                engine.connect(v2drums, to: engine.mainMixerNode, format: fileDrums.processingFormat)
-                
-                engine.prepare()
-                
-                v2sound1.pan = counterLRpan
-                v2sound2.pan = counterLRpan
-                v2sound3.pan = counterLRpan
-                v2sound4.pan = counterLRpan
-                v2sound5.pan = counterLRpan
-                v2sound6.pan = counterLRpan
-                v2sound7.pan = counterLRpan
-                v2sound8.pan = counterLRpan
-                v2sound9.pan = counterLRpan
-                v2sound10.pan = counterLRpan
-                v2drums.pan = counterLRpan
-                
-                v2shutterSound.scheduleFile(fileShutter, at: nil, completionHandler: nil)
-                v2sound1.scheduleFile(file1, at: nil, completionHandler: nil)
-                v2sound2.scheduleFile(file2, at: nil, completionHandler: nil)
-                v2sound3.scheduleFile(file3, at: nil, completionHandler: nil)
-                v2sound4.scheduleFile(file4, at: nil, completionHandler: nil)
-                v2sound5.scheduleFile(file5, at: nil, completionHandler: nil)
-                v2sound6.scheduleFile(file6, at: nil, completionHandler: nil)
-                v2sound7.scheduleFile(file7, at: nil, completionHandler: nil)
-                v2sound8.scheduleFile(file8, at: nil, completionHandler: nil)
-                v2sound9.scheduleFile(file9, at: nil, completionHandler: nil)
-                v2sound10.scheduleFile(file10, at: nil, completionHandler: nil)
-                v2drums.scheduleFile(fileDrums, at: nil, completionHandler: nil)
-                
-                try! engine.start()
-                
-                print(counterLRpan ?? -1)
-                
-                v2shutterSound.pan = 0.0
-                v2sound1.pan = counterLRpan
-                v2sound2.pan = counterLRpan
-                v2sound3.pan = counterLRpan
-                v2sound4.pan = counterLRpan
-                v2sound5.pan = counterLRpan
-                v2sound6.pan = counterLRpan
-                v2sound7.pan = counterLRpan
-                v2sound8.pan = counterLRpan
-                v2sound9.pan = counterLRpan
-                v2sound10.pan = counterLRpan
-                v2drums.pan = counterLRpan
-                
-                if counterLR == 0 {
-                    v2sound1.volume = 0
-                    v2sound2.volume = 0
-                    v2sound3.volume = 0
-                    v2sound4.volume = 0
-                    v2sound5.volume = 0
-                    v2sound6.volume = 0
-                    v2sound7.volume = 0
-                    v2sound8.volume = 0
-                    v2sound9.volume = 0
-                    v2sound10.volume = 0
-                    v2drums.volume = 0
-                    v2shutterSound.play()
-                    usleep(400000)
-                }
-
-                v2drums.play()
-                usleep(1000)
-                v2sound1.play()
-                usleep(1000)
-                v2sound2.play()
-                usleep(1000)
-                v2sound3.play()
-                usleep(1000)
-                v2sound4.play()
-                usleep(1000)
-                v2sound5.play()
-                usleep(1000)
-                v2sound6.play()
-                usleep(1000)
-                v2sound7.play()
-                usleep(1000)
-                v2sound8.play()
-                usleep(1000)
-                v2sound9.play()
-                usleep(1000)
-                v2sound10.play()
-                
-                usleep(500000)
-                
-                
-            }
-            //            usleep(100000)
-            //            engine.stop()
+        init(file: AVAudioFile, pan: Float = 0.0, volume: Float = 0.0) {
+            self.file = file
+            self.node.pan = pan
+            self.node.volume = volume
         }
     }
+
+    @IBAction
+    func musicModeV2ButtonTapped(_: Any) {
+        let engine = AVAudioEngine()
+
+        let shutterNode = AVAudioPlayerNode()
+        let shutterFile = try! AVAudioFile(
+            forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
+        )
+        engine.attach(shutterNode)
+        engine.connect(
+            shutterNode,
+            to: engine.mainMixerNode,
+            format: shutterFile.processingFormat
+        )
+        engine.prepare()
+
+        shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
+        try! engine.start()
+        shutterNode.play()
+        usleep(1_000_000)
+
+        if let observations = request?.results as? [VNCoreMLFeatureValueObservation],
+           let segmentationmap = observations.first?.featureValue.multiArrayValue
+        {
+            var melody: [Note] = []
+
+            for column in 0..<10 {
+                let pan = -0.9 + Float(column) * 0.2 // [-0.9, 0.9] in increments of 0.2
+                let fileDrums = try! AVAudioFile(
+                    forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!
+                )
+                melody.append(Note(file: fileDrums, pan: pan, volume: 0.5))
+
+                for row in 0..<10 {
+                    let pixelIndex = pixelOffsets[row] + column * columnWidth
+                    let objectId = Int(truncating: segmentationmap[pixelIndex])
+                    let fileName = [String(row + 1), objectIdToSound[objectId]].compactMap { $0 }
+                        .joined()
+                    let file = try! AVAudioFile(
+                        forReading: Bundle.main.url(forResource: fileName, withExtension: "wav")!
+                    )
+                    melody.append(Note(
+                        file: file,
+                        pan: pan,
+                        volume: Float(objectId >= 1 ? 1.0 : 0.0)
+                    ))
+                }
+
+                for note in melody {
+                    engine.attach(note.node)
+                    engine.connect(
+                        note.node,
+                        to: engine.mainMixerNode,
+                        format: note.file.processingFormat
+                    )
+                    note.node.scheduleFile(note.file, at: nil, completionHandler: nil)
+                }
+
+                for note in melody {
+                    note.node.play()
+                    usleep(1000)
+                }
+
+                melody = []
+                usleep(500_000)
+            }
+        }
+    }
+
     //Giles added button tap functionality
     @IBAction func speechModeButtonTapped(_ sender: Any) {
 //        usleep(1000000)
