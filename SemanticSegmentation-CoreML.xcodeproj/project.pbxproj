@@ -213,8 +213,6 @@
 		41DD1BE12AD477D5004572F8 /* 18trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5C928AC1860004BD0AE /* 18trumpet.wav */; };
 		41DD1BE22AD477D5004572F8 /* 19trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B61C28AC1865004BD0AE /* 19trumpet.wav */; };
 		41DD1BE32AD477D5004572F8 /* 20trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5D728AC1861004BD0AE /* 20trumpet.wav */; };
-		4618DD4C29F1AD5B0090A338 /* playstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4929F1AD5B0090A338 /* playstore.png */; };
-		4618DD4D29F1AD5B0090A338 /* appstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4618DD4A29F1AD5B0090A338 /* appstore.png */; };
 		71BBE04422E33B2500E74F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BBE04322E33B2500E74F11 /* AppDelegate.swift */; };
 		71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BBE04522E33B2500E74F11 /* LiveImageViewController.swift */; };
 		71BBE04922E33B2500E74F11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71BBE04722E33B2500E74F11 /* Main.storyboard */; };
@@ -319,8 +317,6 @@
 		41DD1B022AD47743004572F8 /* 11flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 11flute.wav; sourceTree = "<group>"; };
 		41DD1B032AD47743004572F8 /* 15flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 15flute.wav; sourceTree = "<group>"; };
 		41DD1B042AD47743004572F8 /* 8flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 8flute.wav; sourceTree = "<group>"; };
-		4618DD4929F1AD5B0090A338 /* playstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playstore.png; path = "../../AppIcons (1)/playstore.png"; sourceTree = "<group>"; };
-		4618DD4A29F1AD5B0090A338 /* appstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appstore.png; path = "../../AppIcons (1)/appstore.png"; sourceTree = "<group>"; };
 		4698D93528AAEE1C00618E27 /* 1breath.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1breath.wav; sourceTree = "<group>"; };
 		4698D93828AAEE1D00618E27 /* 1trumpet.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1trumpet.wav; sourceTree = "<group>"; };
 		4698D93928AAEE1D00618E27 /* 1cat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1cat.wav; sourceTree = "<group>"; };
@@ -764,11 +760,9 @@
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
 				C4BB0D90256192F100354C08 /* MetalCamera */,
 				71BBE05D22E33CEA00E74F11 /* mlmodel */,
-				4618DD4A29F1AD5B0090A338 /* appstore.png */,
 				41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */,
 				71BBE04C22E33B2600E74F11 /* LaunchScreen.storyboard */,
 				71BBE04F22E33B2600E74F11 /* Info.plist */,
-				4618DD4929F1AD5B0090A338 /* playstore.png */,
 			);
 			path = "SemanticSegmentation-CoreML";
 			sourceTree = "<group>";
@@ -1109,8 +1103,6 @@
 				41DD1BE12AD477D5004572F8 /* 18trumpet.wav in Resources */,
 				41DD1BE22AD477D5004572F8 /* 19trumpet.wav in Resources */,
 				41DD1BE32AD477D5004572F8 /* 20trumpet.wav in Resources */,
-				4618DD4C29F1AD5B0090A338 /* playstore.png in Resources */,
-				4618DD4D29F1AD5B0090A338 /* appstore.png in Resources */,
 				71BBE04E22E33B2600E74F11 /* LaunchScreen.storyboard in Resources */,
 				71BBE04922E33B2500E74F11 /* Main.storyboard in Resources */,
 				41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */,
