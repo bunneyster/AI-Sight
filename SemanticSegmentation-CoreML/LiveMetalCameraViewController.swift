@@ -488,15 +488,162 @@ extension LiveMetalCameraViewController {
             
             var localSharedDistanceAtXYPoint:Float = DataManager.shared.sharedDistanceAtXYPoint
             var intensity:Float = 1
+            var intensity1:Float = 1
+            var intensity2:Float = 1
+            var intensity3:Float = 1
+            var intensity4:Float = 1
+            var intensity5:Float = 1
+            var intensity6:Float = 1
+            var intensity7:Float = 1
+            var intensity8:Float = 1
+            var intensity9:Float = 1
+            var intensity10:Float = 1
             
             if localSharedDistanceAtXYPoint >= 3 {
                 intensity = 0
             }
            else {
                intensity = 1 - (localSharedDistanceAtXYPoint / 3)
+               intensity = intensity * intensity
            }
             print ("Intensity value is \(intensity)")
             
+            
+            
+            if DataManager.shared.depthPoint1 <= 1.2 {
+                intensity1 = 1
+            }
+            else if DataManager.shared.depthPoint1 <= 2.2 {
+                intensity1 = 0.2
+            }
+            else {
+                intensity1 = 0.05
+            }
+            
+            print ("Intensity 1 is \(intensity1)")
+            
+            if DataManager.shared.depthPoint2 <= 1.2 {
+                intensity2 = 1
+            }
+            else if DataManager.shared.depthPoint2 <= 2.2 {
+                intensity2 = 0.2
+            }
+            else {
+                intensity2 = 0.05
+            }
+            
+            print ("Intensity 2 is \(intensity2)")
+            
+            if DataManager.shared.depthPoint3 <= 1.2 {
+                intensity3 = 1
+            }
+            else if DataManager.shared.depthPoint3 <= 2.2 {
+                intensity3 = 0.2
+            }
+            else {
+                intensity3 = 0.05
+            }
+            
+            print ("Intensity 3 is \(intensity3)")
+            
+            
+            if DataManager.shared.depthPoint4 <= 1.2 {
+                intensity4 = 1
+            }
+            else if DataManager.shared.depthPoint4 <= 2.2 {
+                intensity4 = 0.2
+            }
+            else {
+                intensity4 = 0.05
+            }
+            
+            print ("Intensity 4 is \(intensity4)")
+            
+            
+            if DataManager.shared.depthPoint5 <= 1.2 {
+                intensity5 = 1
+            }
+            else if DataManager.shared.depthPoint5 <= 2.2 {
+                intensity5 = 0.2
+            }
+            else {
+                intensity5 = 0.05
+            }
+            
+            print ("Intensity 5 is \(intensity5)")
+            
+            if DataManager.shared.depthPoint6 <= 1.2 {
+                intensity6 = 1
+            }
+            else if DataManager.shared.depthPoint6 <= 2.2 {
+                intensity6 = 0.2
+            }
+            else {
+                intensity6 = 0.05
+            }
+            
+            print ("Intensity 6 is \(intensity6)")
+            
+            if DataManager.shared.depthPoint7 <= 1.2 {
+                intensity7 = 1
+            }
+            else if DataManager.shared.depthPoint7 <= 2.2 {
+                intensity7 = 0.2
+            }
+            else {
+                intensity7 = 0.05
+            }
+            
+            print ("Intensity 7 is \(intensity7)")
+            
+            if DataManager.shared.depthPoint8 <= 1.2 {
+                intensity8 = 1
+            }
+            else if DataManager.shared.depthPoint8 <= 2.2 {
+                intensity8 = 0.2
+            }
+            else {
+                intensity8 = 0.05
+            }
+            
+            print ("Intensity 8 is \(intensity8)")
+            
+            if DataManager.shared.depthPoint9 <= 1.2 {
+                intensity9 = 1
+            }
+            else if DataManager.shared.depthPoint9 <= 2.2 {
+                intensity9 = 0.2
+            }
+            else {
+                intensity9 = 0.05
+            }
+
+            print ("Intensity 9 is \(intensity9)")
+            
+            if DataManager.shared.depthPoint10 <= 1.2 {
+                intensity10 = 1
+            }
+            else if DataManager.shared.depthPoint10 <= 2.2 {
+                intensity10 = 0.2
+            }
+            else {
+                intensity10 = 0.05
+            }
+            
+            print ("Intensity 10 is \(intensity10)")
+            
+            
+            // example of previous code
+//            if DataManager.shared.depthPoint10 >= 3 {
+//                intensity10 = 0
+//            }
+//            else {
+//                intensity10 = 1 - (DataManager.shared.depthPoint10 / 3)
+//                intensity10 = intensity10 * intensity10
+//            }
+//            print ("Intensity 10 is \(intensity10)")
+            
+          
             //Giles - Haptic engine intensity code is below - can try with live audio feedback.
             
 //            guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
@@ -917,6 +1064,17 @@ extension LiveMetalCameraViewController {
                         liveSound8obj = modeValue8Int
                         liveSound9obj = modeValue9Int
                         liveSound10obj = modeValue10Int
+                        
+                        liveSound1vol = 1.0
+                        liveSound2vol = 1.0
+                        liveSound3vol = 1.0
+                        liveSound4vol = 1.0
+                        liveSound5vol = 1.0
+                        liveSound6vol = 1.0
+                        liveSound7vol = 1.0
+                        liveSound8vol = 1.0
+                        liveSound9vol = 1.0
+                        liveSound10vol = 1.0
                     }
                     else {
                         liveSound1obj = (Int(truncating: segmentationmap[131332]))
@@ -929,6 +1087,18 @@ extension LiveMetalCameraViewController {
                         liveSound8obj = (Int(truncating: segmentationmap[131724]))
                         liveSound9obj = (Int(truncating: segmentationmap[131780]))
                         liveSound10obj = (Int(truncating: segmentationmap[131836]))
+                        
+                        liveSound1vol = intensity1
+                        liveSound2vol = intensity2
+                        liveSound3vol = intensity3
+                        liveSound4vol = intensity4
+                        liveSound5vol = intensity5
+                        liveSound6vol = intensity6
+                        liveSound7vol = intensity7
+                        liveSound8vol = intensity8
+                        liveSound9vol = intensity9
+                        liveSound10vol = intensity10
+                        
                     }
                     
 
@@ -945,35 +1115,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound1obj == 6 || liveSound1obj == 7 || liveSound1obj == 14 || liveSound1obj == 19 || liveSound1obj == 2 || liveSound1obj == 1) {
                         liveSound1str = "1trumpet"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 20) {
                         liveSound1str = "1breath"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 15) {
                         liveSound1str = "1piano"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 8 || liveSound1obj == 12) {
                         liveSound1str = "1cat"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 9 || liveSound1obj == 11 || liveSound1obj == 18) {
                         liveSound1str = "1chair"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 5) {
                         liveSound1str = "1bottle"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj == 3) {
                         liveSound1str = "1bird"
-                        liveSound1vol = 1.0
                     }
                     else if (liveSound1obj >= 1) {
                         liveSound1str = "1"
-                        liveSound1vol = 1.0
                     }
                     else
                     {
@@ -984,35 +1146,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound2obj == 6 || liveSound2obj == 7 || liveSound2obj == 14 || liveSound2obj == 19 || liveSound2obj == 2 || liveSound2obj == 1) {
                         liveSound2str = "2trumpet"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 20) {
                         liveSound2str = "2breath"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 15) {
                         liveSound2str = "2piano"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 8 || liveSound2obj == 12) {
                         liveSound2str = "2cat"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 9 || liveSound2obj == 11 || liveSound2obj == 18) {
                         liveSound2str = "2chair"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 5) {
                         liveSound2str = "2bottle"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj == 3) {
                         liveSound2str = "2bird"
-                        liveSound2vol = 1.0
                     }
                     else if (liveSound2obj >= 1) {
                         liveSound2str = "2"
-                        liveSound2vol = 1.0
                     }
                     else
                     {
@@ -1022,35 +1176,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound3obj == 6 || liveSound3obj == 7 || liveSound3obj == 14 || liveSound3obj == 19 || liveSound3obj == 2 || liveSound3obj == 1) {
                         liveSound3str = "3trumpet"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 20) {
                         liveSound3str = "3breath"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 15) {
                         liveSound3str = "3piano"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 8 || liveSound3obj == 12) {
                         liveSound3str = "3cat"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 9 || liveSound3obj == 11 || liveSound3obj == 18) {
                         liveSound3str = "3chair"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 5) {
                         liveSound3str = "3bottle"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj == 3) {
                         liveSound3str = "3bird"
-                        liveSound3vol = 1.0
                     }
                     else if (liveSound3obj >= 1) {
                         liveSound3str = "3"
-                        liveSound3vol = 1.0
                     }
                     else
                     {
@@ -1060,35 +1206,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound4obj == 6 || liveSound4obj == 7 || liveSound4obj == 14 || liveSound4obj == 19 || liveSound4obj == 2 || liveSound4obj == 1) {
                         liveSound4str = "4trumpet"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 20) {
                         liveSound4str = "4breath"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 15) {
                         liveSound4str = "4piano"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 8 || liveSound4obj == 12) {
                         liveSound4str = "4cat"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 9 || liveSound4obj == 11 || liveSound4obj == 18) {
                         liveSound4str = "4chair"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 5) {
                         liveSound4str = "4bottle"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj == 3) {
                         liveSound4str = "4bird"
-                        liveSound4vol = 1.0
                     }
                     else if (liveSound4obj >= 1) {
                         liveSound4str = "4"
-                        liveSound4vol = 1.0
                     }
                     else
                     {
@@ -1098,35 +1236,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound5obj == 6 || liveSound5obj == 7 || liveSound5obj == 14 || liveSound5obj == 19 || liveSound5obj == 2 || liveSound5obj == 1) {
                         liveSound5str = "5trumpet"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 20) {
                         liveSound5str = "5breath"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 15) {
                         liveSound5str = "5piano"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 8 || liveSound5obj == 12) {
                         liveSound5str = "5cat"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 9 || liveSound5obj == 11 || liveSound5obj == 18) {
                         liveSound5str = "5chair"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 5) {
                         liveSound5str = "5bottle"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj == 3) {
                         liveSound5str = "5bird"
-                        liveSound5vol = 1.0
                     }
                     else if (liveSound5obj >= 1) {
                         liveSound5str = "5"
-                        liveSound5vol = 1.0
                     }
                     else
                     {
@@ -1136,35 +1266,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound6obj == 6 || liveSound6obj == 7 || liveSound6obj == 14 || liveSound6obj == 19 || liveSound6obj == 2 || liveSound6obj == 1) {
                         liveSound6str = "6trumpet"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 20) {
                         liveSound6str = "6breath"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 15) {
                         liveSound6str = "6piano"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 8 || liveSound6obj == 12) {
                         liveSound6str = "6cat"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 9 || liveSound6obj == 11 || liveSound6obj == 18) {
                         liveSound6str = "6chair"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 5) {
                         liveSound6str = "6bottle"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj == 3) {
                         liveSound6str = "6bird"
-                        liveSound6vol = 1.0
                     }
                     else if (liveSound6obj >= 1) {
                         liveSound6str = "6"
-                        liveSound6vol = 1.0
                     }
                     else
                     {
@@ -1174,35 +1296,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound7obj == 6 || liveSound7obj == 7 || liveSound7obj == 14 || liveSound7obj == 19 || liveSound7obj == 2 || liveSound7obj == 1) {
                         liveSound7str = "7trumpet"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 20) {
                         liveSound7str = "7breath"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 15) {
                         liveSound7str = "7piano"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 8 || liveSound7obj == 12) {
                         liveSound7str = "7cat"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 9 || liveSound7obj == 11 || liveSound7obj == 18) {
                         liveSound7str = "7chair"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 5) {
                         liveSound7str = "7bottle"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj == 3) {
                         liveSound7str = "7bird"
-                        liveSound7vol = 1.0
                     }
                     else if (liveSound7obj >= 1) {
                         liveSound7str = "7"
-                        liveSound7vol = 1.0
                     }
                     else
                     {
@@ -1212,35 +1326,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound8obj == 6 || liveSound8obj == 7 || liveSound8obj == 14 || liveSound8obj == 19 || liveSound8obj == 2 || liveSound8obj == 1) {
                         liveSound8str = "8trumpet"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 20) {
                         liveSound8str = "8breath"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 15) {
                         liveSound8str = "8piano"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 8 || liveSound8obj == 12) {
                         liveSound8str = "8cat"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 9 || liveSound8obj == 11 || liveSound8obj == 18) {
                         liveSound8str = "8chair"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 5) {
                         liveSound8str = "8bottle"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj == 3) {
                         liveSound8str = "8bird"
-                        liveSound8vol = 1.0
                     }
                     else if (liveSound8obj >= 1) {
                         liveSound8str = "8"
-                        liveSound8vol = 1.0
                     }
                     else
                     {
@@ -1250,35 +1356,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound9obj == 6 || liveSound9obj == 7 || liveSound9obj == 14 || liveSound9obj == 19 || liveSound9obj == 2 || liveSound9obj == 1) {
                         liveSound9str = "9trumpet"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 20) {
                         liveSound9str = "9breath"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 15) {
                         liveSound9str = "9piano"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 8 || liveSound9obj == 12) {
                         liveSound9str = "9cat"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 9 || liveSound9obj == 11 || liveSound9obj == 18) {
                         liveSound9str = "9chair"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 5) {
                         liveSound9str = "9bottle"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj == 3) {
                         liveSound9str = "9bird"
-                        liveSound9vol = 1.0
                     }
                     else if (liveSound9obj >= 1) {
                         liveSound9str = "9"
-                        liveSound9vol = 1.0
                     }
                     else
                     {
@@ -1288,35 +1386,27 @@ extension LiveMetalCameraViewController {
 
                     if (liveSound10obj == 6 || liveSound10obj == 7 || liveSound10obj == 14 || liveSound10obj == 19 || liveSound10obj == 2 || liveSound10obj == 1) {
                         liveSound10str = "10trumpet"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 20) {
                         liveSound10str = "10breath"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 15) {
                         liveSound10str = "10piano"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 8 || liveSound10obj == 12) {
                         liveSound10str = "10cat"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 9 || liveSound10obj == 11 || liveSound10obj == 18) {
                         liveSound10str = "10chair"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 5) {
                         liveSound10str = "10bottle"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj == 3) {
                         liveSound10str = "10bird"
-                        liveSound10vol = 1.0
                     }
                     else if (liveSound10obj >= 1) {
                         liveSound10str = "10"
-                        liveSound10vol = 1.0
                     }
                     else
                     {
