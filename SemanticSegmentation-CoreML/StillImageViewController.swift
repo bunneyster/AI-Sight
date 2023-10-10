@@ -147,66 +147,66 @@ class StillImageViewController: UIViewController,
         return (objects[k], multiplier, xValue, size)
     }
 
-    /*
-     * Speaks the given String using a particular tone and pitch
-     *
-     * @param   text is the String to be spoken
-     *          multiplier alters the tone and pitch in which text is said
-     */
-    // Deep exhibit 7
-    public static func speak(text: String, multiplier: Float) {
+    /// Speaks the phrase "[object name] + [vertical position] + [horizontal position]".
+    ///
+    /// - Parameters:
+    ///   - objectName: The name of the object.
+    ///   - multiplier: The number corresponding to the object's vertical position.
+    ///   - posValue: The number corresponding to the object's horizontal position.
+    public static func speak(objectName: String, multiplier: Float, posValue: Double) {
+        let phrase = [
+            objectName,
+            verticalPosition(multiplier: multiplier),
+            horizontalPosition(posValue: posValue),
+        ].joined(separator: " ")
+        speak(text: phrase)
+    }
+
+    /// Speaks the given text.
+    public static func speak(text: String) {
         let utterance = AVSpeechUtterance(string: String(text))
-// Giles 11/23 - enter volume in speak () above and set values throughout code in live metal
-        //        utterance.volume = 1.0
         utterance.rate = 0.5 // slows down speaking speed
-        
-        //Semantic-mode only needs to remove multipliers and accents
         utterance.pitchMultiplier = 1.3
         utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
-        
-        //Semantic-mode only needs to remove multipliers and accents
-//        utterance.pitchMultiplier = multiplier; // 0.7 - was if (multiplier < 1)
-//        if (multiplier < 1.3) {
-//            utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
-//        }
-//        else {
-//            utterance.voice = AVSpeechSynthesisVoice(language: "en-AU")
-//        }
-        
-        
         synthesizer.speak(utterance)
     }
-    
-    //could add size descriptors
-    
-    public static func horizontalPosition(posValue:Double) -> String {
-        if (posValue <= 0.20) {
+
+    /// Returns a phrase describing the horizontal position represented by the given number.
+    ///
+    /// - Parameters:
+    ///   - posValue: A number ranging from 0 to 1.
+    public static func horizontalPosition(posValue: Double) -> String {
+        if posValue <= 0.20 {
             return "far left"
-        } else if (posValue <= 0.40) {
+        } else if posValue <= 0.40 {
             return "left"
-        } else if (posValue <= 0.60) {
+        } else if posValue <= 0.60 {
             return "center"
-        } else if (posValue <= 0.80) {
+        } else if posValue <= 0.80 {
             return "right"
         } else {
             return "far right"
         }
     }
-    
-    //multiplier float seems to go between 0.7 and 1.7
-    public static func verticalPosition(multiplier:Float) -> String {
-        if (multiplier <= 0.9) {
+
+    /// Returns a phrase describing the vertical position represented by the given number.
+    ///
+    /// - Parameters:
+    ///   - multiplier: A number ranging from 0.7 to 1.7.
+    public static func verticalPosition(multiplier: Float) -> String {
+        if multiplier <= 0.9 {
             return "bottom"
-        } else if (multiplier <= 1.1) {
+        } else if multiplier <= 1.1 {
             return "lower"
-        } else if (multiplier >= 1.5) {
+        } else if multiplier >= 1.5 {
             return "top"
-        } else if (multiplier >= 1.3) {
+        } else if multiplier >= 1.3 {
             return "upper"
         } else {
             return " "
         }
     }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

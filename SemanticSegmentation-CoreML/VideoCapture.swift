@@ -245,17 +245,7 @@ public class VideoCapture: NSObject{
     
 class DataManager {
     static let shared = DataManager()
-    var depthPoint1:Float = 0
-    var depthPoint2:Float = 0
-    var depthPoint3:Float = 0
-    var depthPoint4:Float = 0
-    var depthPoint5:Float = 0
-    var depthPoint6:Float = 0
-    var depthPoint7:Float = 0
-    var depthPoint8:Float = 0
-    var depthPoint9:Float = 0
-    var depthPoint10:Float = 0
-    
+    var depthPoints = Array(repeating: Float(0), count: 10)
     var sharedDistanceAtXYPoint:Float = 0
     private init() {}
 }
@@ -296,120 +286,41 @@ extension CVPixelBuffer {
     CVPixelBufferUnlockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
   }
 }
+
+// MARK: - VideoCapture + AVCaptureDepthDataOutputDelegate
+
 extension VideoCapture: AVCaptureDepthDataOutputDelegate {
-   public func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
-       var convertedDepth : AVDepthData
-       let depthDataType=kCVPixelFormatType_DepthFloat32
-       if depthData.depthDataType != depthDataType {
-           convertedDepth = depthData.converting(toDepthDataType: depthDataType)
-       } else {
-           convertedDepth = depthData
-       }
-       
-       let depthDataMap = convertedDepth.depthDataMap
-       //depthDataMap.clamp()
-//        let depthMap=CIImage(cvPixelBuffer: depthDataMap)
-//        let depthUIImage = UIImage(ciImage: depthMap)
-//        print(saveImage(image: depthUIImage, id:"\(Date())"))
-//        [UIImagePNGRepresentation(depthUIImage), writeToFile,:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0], stringByAppendingString,:@"/myImage.png"] atomically:NO];
-       
-       //Width is 180 and Height is 320 on this
-//        let width = CVPixelBufferGetWidth(depthDataMap) //768 on an iPhone 7+
-//        let height = CVPixelBufferGetHeight(depthDataMap) //576 on an iPhone 7+
-//
-//        print("depthMap pixel width is \(width)")
-//        print("depthMap pixel height is \(height)")
-       
-       CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
+    public func depthDataOutput(
+        _: AVCaptureDepthDataOutput,
+        didOutput depthData: AVDepthData,
+        timestamp _: CMTime,
+        connection _: AVCaptureConnection
+    ) {
+        var convertedDepth: AVDepthData
+        let depthDataType = kCVPixelFormatType_DepthFloat32
+        if depthData.depthDataType != depthDataType {
+            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
+        } else {
+            convertedDepth = depthData
+        }
 
-       // Convert the base address to a safe pointer of the appropriate type
-       let floatBuffer = unsafeBitCast(CVPixelBufferGetBaseAddress(depthDataMap), to: UnsafeMutablePointer<Float32>.self)
+        let depthDataMap = convertedDepth.depthDataMap
+        CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
 
-       // Read the data (returns value of type Float)
-       // Accessible values : (width-1) * (height-1) = 767 * 575
-       
-       //This is 28890
-//        let middleLocation = ((width * (height/2))+width/2)
-       //This is 28890
-       //Width is 180 and height is 320
-       // 28804    28823    28842    28861    28880    28900    28919    28938    28957    28976
-       let depthLocation1:Int = 28804
-       let depthLocation2:Int = 28823
-       let depthLocation3:Int = 28842
-       let depthLocation4:Int = 28861
-       let depthLocation5:Int = 28880
-       let depthLocation6:Int = 28900
-       let depthLocation7:Int = 28919
-       let depthLocation8:Int = 28938
-       let depthLocation9:Int = 28957
-       let depthLocation10:Int = 28976
-       
-       let middleLocationSimpleInt:Int = 28890
-//        print("middle location is \(middleLocation)")
-//
-////        let distanceAtXYPoint = floatBuffer[Int(3 * 3)]
-//        let widthDouble:Double = Double(width)
-//        let heightDouble:Double = Double(height)
-//
-//        let proportionX:Double = 0.5
-//        let proportionY:Double = 0.5
-//        let pixelSelected:Double = ((widthDouble*proportionX)*(heightDouble*proportionY))
-//
-//        let pixelSelectedInt:Int = Int(pixelSelected)
-//        print("The pixel selected is \(pixelSelected)")
-       
-//        let distanceAtXYPoint = floatBuffer[Int(middleLocation)]
-//        let distanceAtXYPoint = floatBuffer[pixelSelectedInt]
-      
-       let distanceAtDepthPoint1 = floatBuffer[depthLocation1]
-       let distanceAtDepthPoint2 = floatBuffer[depthLocation2]
-       let distanceAtDepthPoint3 = floatBuffer[depthLocation3]
-       let distanceAtDepthPoint4 = floatBuffer[depthLocation4]
-       let distanceAtDepthPoint5 = floatBuffer[depthLocation5]
-       let distanceAtDepthPoint6 = floatBuffer[depthLocation6]
-       let distanceAtDepthPoint7 = floatBuffer[depthLocation7]
-       let distanceAtDepthPoint8 = floatBuffer[depthLocation8]
-       let distanceAtDepthPoint9 = floatBuffer[depthLocation9]
-       let distanceAtDepthPoint10 = floatBuffer[depthLocation10]
-       
-       DataManager.shared.depthPoint1 = distanceAtDepthPoint1
-       DataManager.shared.depthPoint2 = distanceAtDepthPoint2
-       DataManager.shared.depthPoint3 = distanceAtDepthPoint3
-       DataManager.shared.depthPoint4 = distanceAtDepthPoint4
-       DataManager.shared.depthPoint5 = distanceAtDepthPoint5
-       DataManager.shared.depthPoint6 = distanceAtDepthPoint6
-       DataManager.shared.depthPoint7 = distanceAtDepthPoint7
-       DataManager.shared.depthPoint8 = distanceAtDepthPoint8
-       DataManager.shared.depthPoint9 = distanceAtDepthPoint9
-       DataManager.shared.depthPoint10 = distanceAtDepthPoint10
-       
-       let distanceAtXYPoint = floatBuffer[middleLocationSimpleInt]
-       DataManager.shared.sharedDistanceAtXYPoint = distanceAtXYPoint
-       
+        // Convert the base address to a safe pointer of the appropriate type
+        let floatBuffer = unsafeBitCast(
+            CVPixelBufferGetBaseAddress(depthDataMap),
+            to: UnsafeMutablePointer<Float32>.self
+        )
 
-       
-       
-//        redirectLogs(flag:true)
-//        print("The distance is \(distanceAtXYPoint)")
-       
-       
-//        Tactile feedback style 1
-    
-//       var impactFeedbackGenerator:UIImpactFeedbackGenerator
-//       if distanceAtXYPoint < 0.5 {
-//           impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
-//           impactFeedbackGenerator.impactOccurred(intensity: 1)
-//       }
-//
-//       else if distanceAtXYPoint < 1 {
-//           impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
-//           impactFeedbackGenerator.impactOccurred(intensity: 0.5)
-//       }
-//       else if distanceAtXYPoint < 1.5 {
-//           impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-//           impactFeedbackGenerator.impactOccurred(intensity: 0.5)
-//       }
-   }
+        for i in 0..<10 {
+            DataManager.shared.depthPoints[i] = floatBuffer[28804 + i * 19]
+        }
+
+        let middleLocationSimpleInt = 28890
+        let distanceAtXYPoint = floatBuffer[middleLocationSimpleInt]
+        DataManager.shared.sharedDistanceAtXYPoint = distanceAtXYPoint
+    }
 }
 
 func redirectLogs(flag:Bool)  {
