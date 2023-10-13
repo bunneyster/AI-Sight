@@ -60,36 +60,6 @@ public class VideoCapture: NSObject {
         return previewLayer
     }
 
-    /// Giles this needs to be public in order to initialize the distance values BUT the below print
-    /// code never activates
-    public func depthDataOutput(
-        depthDelegate _: AVCaptureDepthDataOutput,
-        didOutput depthData: AVDepthData,
-        timestamp _: CMTime,
-        connection _: AVCaptureConnection
-    ) {
-        var convertedDepth: AVDepthData
-        let depthDataType = kCVPixelFormatType_DepthFloat32
-        if depthData.depthDataType != depthDataType {
-            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
-        } else {
-            convertedDepth = depthData
-        }
-
-        let depthDataMap = convertedDepth.depthDataMap
-        CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
-
-        // Convert the base address to a safe pointer of the appropriate type
-        let floatBuffer = unsafeBitCast(
-            CVPixelBufferGetBaseAddress(depthDataMap),
-            to: UnsafeMutablePointer<Float32>.self
-        )
-
-        let middleLocationSimpleInt = 28890
-        let distanceAtXYPoint = floatBuffer[middleLocationSimpleInt]
-        print("First \(distanceAtXYPoint)")
-    }
-
     // MARK: Internal
 
     let captureSession = AVCaptureSession()
