@@ -61,8 +61,6 @@ var liveViewVerbalModeActive: Int = 1
 
 var centerObj = ""
 
-var longSpeechModeActivate: Int = 0
-
 // MARK: - LiveMetalCameraViewController
 
 class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelegate {
@@ -303,7 +301,82 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 
     @IBAction
     func speechModeButtonTapped(_: Any) {
-        longSpeechModeActivate = 1
+        if let observations = request?.results as? [VNCoreMLFeatureValueObservation],
+           let segmentationmap = observations.first?.featureValue.multiArrayValue
+        {
+            usleep(1_500_000)
+
+            guard let row = segmentationmap.shape[0] as? Int,
+                  let col = segmentationmap.shape[1] as? Int
+            else {
+                return
+            }
+
+            let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
+                segmentationmap: segmentationmap,
+                row: row,
+                col: col
+            )
+
+            let d = imageFrameCoordinates.d
+            let x = imageFrameCoordinates.x
+            let y = imageFrameCoordinates.y
+
+            var objs = [String]()
+            var mults = [Float]()
+            var x_vals = [Double]()
+            var objSizes = [Double]()
+
+            for (k, v) in d {
+                if k == 0 {
+                    continue
+                }
+
+                let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
+                    k: k,
+                    v: v,
+                    x: x,
+                    y: y,
+                    row: row,
+                    col: col
+                )
+                let obj = objectAndPitchMultiplier.obj
+                let mult_val = objectAndPitchMultiplier.mult_val
+                let x_val = objectAndPitchMultiplier.xValue
+                let objSize = objectAndPitchMultiplier.sizes
+
+                objs.append(obj)
+                mults.append(mult_val)
+                x_vals.append(x_val)
+                objSizes.append(objSize)
+            }
+
+            if objs.isEmpty {
+                StillImageViewController.speak(text: "No Objects Identified")
+            } else {
+                let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
+                var sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
+                for (i, e) in sorted {
+                    let obj = objs[i]
+                    if ignoredObjects.contains(obj) {
+                        continue
+                    }
+                    if obj != "bottle", objSizes[i] <= 0.02 {
+                        continue
+                    }
+                    let mult = mults[i]
+                    let x_value = x_vals[i]
+                    StillImageViewController.speak(
+                        objectName: obj,
+                        multiplier: mult,
+                        posValue: x_value
+                    )
+                    print("The mult value is \(mult)")
+                }
+            }
+
+            usleep(1_000_000)
+        }
     }
 
     // MARK: Private
@@ -472,36 +545,6 @@ extension LiveMetalCameraViewController {
                 } else {
                     centerObj = ""
                 }
-            }
-
-            if longSpeechModeActivate == 1 {
-                usleep(1_500_000)
-
-                if objs.isEmpty {
-                    StillImageViewController.speak(text: "No Objects Identified")
-                } else {
-                    let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
-                    var sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
-                    for (i, e) in sorted {
-                        let obj = objs[i]
-                        if ignoredObjects.contains(obj) {
-                            continue
-                        }
-                        if obj != "bottle", objSizes[i] <= 0.02 {
-                            continue
-                        }
-                        let mult = mults[i]
-                        let x_value = x_vals[i]
-                        StillImageViewController.speak(
-                            objectName: obj,
-                            multiplier: mult,
-                            posValue: x_value
-                        )
-                        print("The mult value is \(mult)")
-                    }
-                }
-                longSpeechModeActivate = 0
-                usleep(1_000_000)
             }
 
             print(
