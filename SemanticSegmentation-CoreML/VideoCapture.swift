@@ -41,7 +41,10 @@ public class VideoCapture: NSObject {
 
     public func start() {
         if !captureSession.isRunning {
-            captureSession.startRunning()
+            // Offload `.startRunning()` to serial background thread since it's a blocking call.
+            sessionQueue.async {
+                self.captureSession.startRunning()
+            }
         }
     }
 
@@ -68,10 +71,10 @@ public class VideoCapture: NSObject {
 
     let queue = DispatchQueue(label: "com.tucan9389.camera-queue")
     let sessionQueue = DispatchQueue(
-        label: "data queue",
-        qos: .userInitiated,
+        label: "SessionQueue",
         attributes: [],
-        autoreleaseFrequency: .workItem
+        autoreleaseFrequency: .workItem,
+        target: .global()
     )
     var outputSynchronizer: AVCaptureDataOutputSynchronizer?
     var videoTextureCache: CVMetalTextureCache?
