@@ -1358,7 +1358,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3LRKS9U4FW;
+				DEVELOPMENT_TEAM = QB9T9UD5TR;
 				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = "SemanticSegmentation-CoreML/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Sight";
@@ -1368,7 +1368,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "diweisheng1-gmail.com-ghf-full-5";
+				PRODUCT_BUNDLE_IDENTIFIER = "diweisheng1-gmail.com-ghf-full-5-sp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1381,7 +1381,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3LRKS9U4FW;
+				DEVELOPMENT_TEAM = QB9T9UD5TR;
 				INFOPLIST_FILE = "SemanticSegmentation-CoreML/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Sight";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
@@ -1390,7 +1390,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "diweisheng1-gmail.com-ghf-full-5";
+				PRODUCT_BUNDLE_IDENTIFIER = "diweisheng1-gmail.com-ghf-full-5-sp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

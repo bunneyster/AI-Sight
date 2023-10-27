@@ -7,6 +7,7 @@
 //
 
 import CoreMedia
+import OSLog
 
 class CameraTextureGenerater: NSObject {
     
@@ -27,7 +28,7 @@ class CameraTextureGenerater: NSObject {
         let bufferHeight = CVPixelBufferGetHeight(cameraFrame)
 
         var textureRef: CVMetalTexture? = nil
-        let _ = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+        let result = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
                                                           videoTextureCache,
                                                           cameraFrame,
                                                           nil,
@@ -36,6 +37,20 @@ class CameraTextureGenerater: NSObject {
                                                           bufferHeight,
                                                           0,
                                                           &textureRef)
+        switch result {
+        case kCVReturnAllocationFailed:
+            Logger().debug("aa create texture status: allocation failed")
+        case kCVReturnError:
+            Logger().debug("aa create texture status: error")
+        case kCVReturnInvalidArgument:
+            Logger().debug("aa create texture status: invalid argument")
+        case kCVReturnSuccess:
+            Logger().debug("aa create texture status: success")
+        case kCVReturnUnsupported:
+            Logger().debug("aa create texture status: unsupported")
+        default:
+            Logger().debug("aa create texture status: unknown - \(result)")
+        }
         if let concreteTexture = textureRef,
             let cameraTexture = CVMetalTextureGetTexture(concreteTexture) {
             return Texture(texture: cameraTexture, textureKey: self.sourceKey)

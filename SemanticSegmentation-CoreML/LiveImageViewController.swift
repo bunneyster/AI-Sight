@@ -146,6 +146,9 @@ class LiveImageViewController: UIViewController, AVSpeechSynthesizerDelegate {
 
 // MARK: - VideoCaptureDelegate
 extension LiveImageViewController: VideoCaptureDelegate {
+    func processData(depthData: AVDepthData?, videoData: CVPixelBuffer?) { }
+    func processData(depthData: AVDepthData?, videoData: CMSampleBuffer?) { }
+    
     func videoCapture(_ capture: VideoCapture, didCaptureVideoSampleBuffer sampleBuffer: CMSampleBuffer) {
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         

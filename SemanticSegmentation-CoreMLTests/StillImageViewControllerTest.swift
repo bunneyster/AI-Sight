@@ -11,6 +11,19 @@ import Vision
 import XCTest
 
 final class StillImageViewControllerTest: XCTestCase {
+    func testLargetsObjectId() throws {
+        let segmentationData = [
+            [0, 0, 0, 0, 0],
+            [0, 2, 2, 2, 0],
+            [0, 2, 2, 2, 0],
+            [0, 2, 2, 2, 0],
+            [0, 0, 0, 0, 0],
+        ]
+        let segmentationMap = buildSegmentationMap(data: segmentationData)
+        
+        let result = StillImageViewController.getLargestObjectId(segmentationMap: segmentationMap)
+    }
+    
     func testGetImageFrameCoordinates() throws {
         let segmentationData = [
             [0, 6, 0],
@@ -35,8 +48,8 @@ final class StillImageViewControllerTest: XCTestCase {
         guard let segmentationMap = try? MLMultiArray(shape: shape, dataType: .int32) else {
             return MLMultiArray()
         }
-        for x in 0 ..< 3 {
-            for y in 0 ..< 3 {
+        for x in 0 ..< data.count {
+            for y in 0 ..< data[0].count {
                 let key = [x, y] as [NSNumber]
                 segmentationMap[key] = data[x][y] as NSNumber
             }

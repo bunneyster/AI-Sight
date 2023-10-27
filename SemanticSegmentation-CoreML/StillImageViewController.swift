@@ -56,6 +56,16 @@ class StillImageViewController: UIViewController,
     // MARK: - Vision Properties
     var request: VNCoreMLRequest?
     var visionModel: VNCoreMLModel?
+    
+    public static func getLargestObjectId(segmentationMap: MLMultiArray) -> Int {
+        let numRows = segmentationMap.shape[0] as? Int
+        let numCols = segmentationMap.shape[1] as? Int
+        let innerFrameMinYCoord = numRows! / 3
+        let innerFrameMaxYCoord = numRows! * 2 / 3
+        let innerFrameMinXCoord = numCols! / 3
+        let innerFrameMaxXCoord = numCols! * 2 / 3
+        return 0
+    }
 
     /// Groups the segmentation data per object ID.
     ///
@@ -70,6 +80,9 @@ class StillImageViewController: UIViewController,
     public static func getImageFrameCoordinates(
         segmentationmap: MLMultiArray, row: Int, col: Int
     ) -> (d: [Int: Int], x: [Int: Int], y: [Int: Int]) {
+//        var d = Dictionary(uniqueKeysWithValues: zip(0...20, 0...20))
+//        var x = Dictionary(uniqueKeysWithValues: zip(0...20, 0...20))
+//        var y = Dictionary(uniqueKeysWithValues: zip(0...20, 0...20))
         var d = [Int: Int](), x = [Int: Int](), y = [Int: Int]()
         for i in 0 ... row - 1 {
             for j in 0 ... col - 1 {

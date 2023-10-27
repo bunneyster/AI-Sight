@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import OSLog
 import UIKit
 import Vision
 
@@ -99,6 +100,9 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     var SpeechModeButton: UIButton!
     @IBOutlet
     var MusicModeButton: UIButton!
+    
+    let dataProcessingQueue = DispatchQueue(label: "DataProcessingQueue", attributes: [], autoreleaseFrequency: .workItem, target: .global())
+    let playQueue = DispatchQueue(label: "PlayQueue", attributes: [], autoreleaseFrequency: .workItem, target: .global())
 
     var cameraTextureGenerater = CameraTextureGenerater()
     var multitargetSegmentationTextureGenerater = MultitargetSegmentationTextureGenerater()
@@ -135,6 +139,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     var visionModel: VNCoreMLModel?
 
     var isInferencing = false
+    var isPlaying = false
 
     let maf1 = MovingAverageFilter()
     let maf2 = MovingAverageFilter()
@@ -404,6 +409,69 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
             predict(with: pixelBuffer)
         }
     }
+    
+    func processData(depthData: AVDepthData?, videoData: CMSampleBuffer?) {}
+    
+    func processData(depthData: AVDepthData?, videoData: CVPixelBuffer?) {
+        dataProcessingQueue.async { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
+            if let visionModel = try? VNCoreMLModel(for: strongSelf.segmentationModel.model) {
+                strongSelf.visionModel = visionModel
+                Logger().debug("aa [DATA] making request")
+                let request = VNCoreMLRequest(
+                    model: visionModel,
+                    completionHandler: { request, _ in
+                        Logger().debug("aa [DATA] completionHandler")
+                        let depthPoints = strongSelf.processDepth(depthData: depthData)
+                        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+                           let segmentationMap = observations.first?.featureValue.multiArrayValue
+                        {
+                            if !strongSelf.isPlaying {
+                                strongSelf.isPlaying = true
+                                strongSelf.playQueue.async {
+                                    Logger().debug("aa [PLAY] process segmentation map")
+                                    let (
+                                        objs,
+                                        _,
+                                        x_vals,
+                                        objSizes
+                                    ) = strongSelf.processSegmentationMap(segmentationMap: segmentationMap)
+                                    let objectName = strongSelf.computeLateralCenterObject(
+                                        objs: objs,
+                                        x_vals: x_vals,
+                                        objSizes: objSizes
+                                    )
+                                    let melody = strongSelf.computeMusic(
+                                        segmentationMap: segmentationMap,
+                                        depthPoints: depthPoints
+                                    )
+                                    Logger().debug("aa [PLAY] speak and play: (\(objs.count)) \(objectName)")
+                                    StillImageViewController.speak(text: objectName)
+                                    strongSelf.play(melody: melody)
+                                }
+                                strongSelf.isPlaying = false
+                            }
+                            DispatchQueue.main.async {
+                                Logger().debug("aa [MAIN] render texture")
+                                let overlayedTexture = strongSelf.computeTexture(videoData: videoData, segmentationMap: segmentationMap)
+                                strongSelf.metalVideoPreview.currentTexture = overlayedTexture
+                            }
+                        }
+                    }
+                )
+                request.imageCropAndScaleOption = .centerCrop
+                if let videoData = videoData {
+                    let handler = VNImageRequestHandler(cvPixelBuffer: videoData, options: [:])
+//                    guard let request = request else { fatalError() }
+                    try? handler.perform([request])
+                }
+            } else {
+                fatalError()
+            }
+        }
+    }
 }
 
 // MARK: - Inference
@@ -471,6 +539,211 @@ extension LiveMetalCameraViewController {
             }
         }
         return objectIds
+    }
+    
+    func processDepth(depthData: AVDepthData?) -> Array<Float> {
+        var depthPoints = Array(repeating: Float(0), count: 10)
+        if let depthData = depthData {
+            var convertedDepth: AVDepthData
+            let depthDataType = kCVPixelFormatType_DepthFloat32
+            if depthData.depthDataType != depthDataType {
+                convertedDepth = depthData.converting(toDepthDataType: depthDataType)
+            } else {
+                convertedDepth = depthData
+            }
+
+            let depthDataMap = convertedDepth.depthDataMap
+            CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
+
+            // Convert the base address to a safe pointer of the appropriate type
+            let floatBuffer = unsafeBitCast(
+                CVPixelBufferGetBaseAddress(depthDataMap),
+                to: UnsafeMutablePointer<Float32>.self
+            )
+
+            for i in 0..<10 {
+                depthPoints[i] = floatBuffer[28804 + i * 19]
+            }
+        }
+        return depthPoints
+    }
+    
+//    func processVNRequest(request: VNRequest) -> MLMultiArray {
+//        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+//           let segmentationMap = observations.first?.featureValue.multiArrayValue {
+//            let (objs, mults, x_vals, objSizes) = processSegmentationMap(segmentationMap: segmentationMap)
+//            let objectName = computeLateralCenterObject(objs: objs, x_vals: x_vals, objSizes: objSizes)
+//        }
+//    }
+    
+    func processSegmentationMap(segmentationMap: MLMultiArray) -> ([String], [Float], [Double], [Double]) {
+        var objs = [String]()
+        var mults = [Float]()
+        var x_vals = [Double]()
+        var objSizes = [Double]()
+        
+        guard let row = segmentationMap.shape[0] as? Int,
+              let col = segmentationMap.shape[1] as? Int
+        else {
+            return (objs, mults, x_vals, objSizes)
+        }
+        
+        let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
+            segmentationmap: segmentationMap,
+            row: row,
+            col: col
+        )
+        
+        let d = imageFrameCoordinates.d
+        let x = imageFrameCoordinates.x
+        let y = imageFrameCoordinates.y
+        
+        for (k, v) in d {
+            if k == 0 {
+                continue
+            }
+            
+            let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
+                k: k,
+                v: v,
+                x: x,
+                y: y,
+                row: row,
+                col: col
+            )
+            let obj = objectAndPitchMultiplier.obj
+            let mult_val = objectAndPitchMultiplier.mult_val
+            let x_val = objectAndPitchMultiplier.xValue
+            let objSize = objectAndPitchMultiplier.sizes
+            
+            objs.append(obj)
+            mults.append(mult_val)
+            x_vals.append(x_val)
+            objSizes.append(objSize)
+        }
+        
+        return (objs, mults, x_vals, objSizes)
+    }
+    
+    func computeLateralCenterObject(objs: [String], x_vals: [Double], objSizes: [Double]) -> String {
+        let numObjects = x_vals.count
+        if numObjects == 0 {
+            centerObj = ""
+        } else {
+            if liveViewVerbalModeActive == 1 {
+                let med = x_vals.sorted(by: <)[numObjects / 2]
+                var med_ind = 0
+                for i in 0...(numObjects - 1) {
+                    if x_vals[i] == med {
+                        med_ind = i
+                    }
+                }
+                if objs[med_ind] != centerObj, objSizes[med_ind] >= 0.1 {
+                    centerObj = objs[med_ind]
+                    return centerObj
+                }
+            } else {
+                centerObj = ""
+            }
+        }
+        return ""
+    }
+    
+    func computeMusic(segmentationMap: MLMultiArray, depthPoints: [Float]) -> [Note] {
+        var columnModes = [Int]()
+        for column in 0..<numColumns {
+            let mode = LiveMetalCameraViewController.mode(objectIdsInColumn(
+                column,
+                segmentationMap: segmentationMap
+            )) ?? 0
+            columnModes.append(mode)
+            print("Mode value \(column + 1) is \(mode)")
+        }
+        
+        var melody: [Note] = []
+        var columnObjectIds: [Int] = []
+        var columnVolumes: [Float] = []
+        for column in 0..<numColumns {
+            let objectId = liveViewModeColumns == 1 ? columnModes[column] :
+            Int(truncating: segmentationMap[
+                liveMusicModePixelOffset + column * columnWidth
+            ])
+            print(objectId)
+            columnObjectIds.append(objectId)
+            
+            columnVolumes
+                .append(liveViewModeColumns == 1 ? 1.0 : depthPoints[column])
+            
+            let fileName = [String(column + 1), objectIdToSound[objectId]]
+                .compactMap { $0 }
+                .joined()
+            let file = try! AVAudioFile(
+                forReading: Bundle.main.url(
+                    forResource: fileName,
+                    withExtension: "wav"
+                )!
+            )
+            melody.append(Note(
+                file: file,
+                pan: -0.9 + Float(column) * 0.2,
+                volume: Float(objectId >= 1 ? columnVolumes[column] : 0.0)
+            ))
+        }
+        return melody
+    }
+    
+    func computeTexture(videoData: CVPixelBuffer?, segmentationMap: MLMultiArray) -> Texture? {
+        guard let row = segmentationMap.shape[0] as? Int,
+              let col = segmentationMap.shape[1] as? Int else {
+            return nil
+        }
+        guard let videoData = videoData,
+              let cameraTexture = cameraTextureGenerater.texture(from: videoData),
+              let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
+                  segmentationMap,
+                  row,
+                  col,
+                  numberOfLabels
+              )
+        else {
+            return nil
+        }
+        let overlayedTexture = overlayingTexturesGenerater.texture(
+            cameraTexture,
+            segmentationTexture
+        )
+        return overlayedTexture
+    }
+    
+    func play(melody: [Note]) {
+        let liveEngine = AVAudioEngine()
+
+        for note in melody {
+            liveEngine.attach(note.node)
+            liveEngine.connect(
+                note.node,
+                to: liveEngine.mainMixerNode,
+                format: note.file.processingFormat
+            )
+        }
+
+        for (column, note) in melody.enumerated() {
+            let delayTime = AVAudioTime(
+                sampleTime: AVAudioFramePosition(44100 * Float(column) * 0.007),
+                atRate: note.file.processingFormat.sampleRate
+            )
+            note.node.scheduleFile(note.file, at: delayTime, completionHandler: nil)
+        }
+
+        liveEngine.prepare()
+        try! liveEngine.start()
+
+        for note in melody {
+            note.node.play()
+        }
+        usleep(500_000)
+
+        try! liveEngine.stop()
     }
 
     public func visionRequestDidComplete(request: VNRequest, error _: Error?) {
@@ -576,8 +849,6 @@ extension LiveMetalCameraViewController {
                         print("Mode value \(column + 1) is \(mode)")
                     }
 
-                    let liveEngine = AVAudioEngine()
-
                     var melody: [Note] = []
                     var columnObjectIds: [Int] = []
                     var columnVolumes: [Float] = []
@@ -607,6 +878,8 @@ extension LiveMetalCameraViewController {
                             volume: Float(objectId >= 1 ? columnVolumes[column] : 0.0)
                         ))
                     }
+
+                    let liveEngine = AVAudioEngine()
 
                     for note in melody {
                         liveEngine.attach(note.node)
