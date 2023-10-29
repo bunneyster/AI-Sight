@@ -92,7 +92,7 @@ class StillImageViewController: UIViewController,
         return (d, x, y)
     }
 
-    /// Computes the object attributes that will be vocalized.
+    /// Computes the vocalized attributes for a given object.
     ///
     /// - Parameters:
     ///   - k: The object ID.

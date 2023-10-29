@@ -59,7 +59,8 @@ var liveViewModeColumns: Int = 1
 
 var liveViewVerbalModeActive: Int = 1
 
-var centerObj = ""
+/// The last object to be announced in the center of the frame.
+var lastCenterObject = ""
 
 // MARK: - LiveMetalCameraViewController
 
@@ -226,6 +227,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
             Swift.print("Live-Objects Verbal Mode On")
         } else {
             liveViewVerbalModeActive = 0
+            lastCenterObject = ""
             Swift.print("Live-Objects Verbal Mode Off")
         }
     }
@@ -473,6 +475,28 @@ extension LiveMetalCameraViewController {
         return objectIds
     }
 
+    static func computeCenterObject(
+        objs: [String],
+        x_vals: [Double],
+        objSizes: [Double],
+        threshold: Double
+    )
+        -> String
+    {
+        let numObjects = x_vals.count
+        if numObjects == 0 {
+            return ""
+        }
+        let med = x_vals.sorted(by: <)[numObjects / 2]
+        var med_ind = 0
+        for i in 0...(numObjects - 1) {
+            if x_vals[i] == med {
+                med_ind = i
+            }
+        }
+        return objSizes[med_ind] >= threshold ? objs[med_ind] : ""
+    }
+
     public func visionRequestDidComplete(request: VNRequest, error _: Error?) {
         👨‍🔧.🏷(with: "endInference")
 
@@ -524,26 +548,16 @@ extension LiveMetalCameraViewController {
                 objSizes.append(objSize)
             }
 
-            let numObjects = x_vals.count
-            print(numObjects)
-            if numObjects == 0 {
-                centerObj = ""
-            } else if numObjects > 0 {
-                let med = x_vals.sorted(by: <)[numObjects / 2]
-                var med_ind = 0
-                for i in 0...(numObjects - 1) {
-                    if x_vals[i] == med {
-                        med_ind = i
-                    }
-                }
-                if liveViewVerbalModeActive == 1 {
-                    if objs[med_ind] != centerObj, objSizes[med_ind] >= 0.1 {
-                        StillImageViewController.speak(text: objs[med_ind])
-                        centerObj = objs[med_ind]
-                    }
-                    print(centerObj)
-                } else {
-                    centerObj = ""
+            if liveViewVerbalModeActive == 1 {
+                let centerObject = LiveMetalCameraViewController.computeCenterObject(
+                    objs: objs,
+                    x_vals: x_vals,
+                    objSizes: objSizes,
+                    threshold: 0.1
+                )
+                if centerObject != lastCenterObject {
+                    StillImageViewController.speak(text: centerObject)
+                    lastCenterObject = centerObject
                 }
             }
 

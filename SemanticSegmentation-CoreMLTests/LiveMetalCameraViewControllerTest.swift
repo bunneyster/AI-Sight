@@ -63,4 +63,46 @@ final class LiveMetalCameraViewControllerTest: XCTestCase {
         let result2 = LiveMetalCameraViewController.mode(data2)
         XCTAssertEqual(result2, 20)
     }
+
+    func testComputeCenterObject_underThreshold() throws {
+        let objs = ["bird", "cat", "person"]
+        let x_vals = [0.2, 0.5, 0.7]
+        let objSizes = [0.04, 0.25, 0.64]
+
+        let result = LiveMetalCameraViewController.computeCenterObject(
+            objs: objs,
+            x_vals: x_vals,
+            objSizes: objSizes,
+            threshold: 0.3
+        )
+        XCTAssertEqual(result, "")
+    }
+
+    func testComputeCenterObject_aboveThreshold() throws {
+        let objs = ["bird", "cat", "person"]
+        let x_vals = [0.2, 0.5, 0.7]
+        let objSizes = [0.04, 0.25, 0.64]
+
+        let result = LiveMetalCameraViewController.computeCenterObject(
+            objs: objs,
+            x_vals: x_vals,
+            objSizes: objSizes,
+            threshold: 0.2
+        )
+        XCTAssertEqual(result, "cat")
+    }
+
+    func testComputeCenterObject_noObjects() throws {
+        let objs = [String]()
+        let x_vals = [Double]()
+        let objSizes = [Double]()
+
+        let result = LiveMetalCameraViewController.computeCenterObject(
+            objs: objs,
+            x_vals: x_vals,
+            objSizes: objSizes,
+            threshold: 0.5
+        )
+        XCTAssertEqual(result, "")
+    }
 }
