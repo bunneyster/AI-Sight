@@ -165,12 +165,12 @@ extension LiveFaceDetectionAndFaceParsingViewController {
         try? segmentationHandler.perform([segmentationRequest])
         
         // post-processing
-        guard let segmentationObservations = segmentationRequest.results as? [VNCoreMLFeatureValueObservation],
-              let segmentationmap = segmentationObservations.first?.featureValue.multiArrayValue,
-              let row = segmentationmap.shape[0] as? Int,
-              let col = segmentationmap.shape[1] as? Int else { fatalError() }
-            
-        guard let segmentationTexture = multitargetSegmentationTextureGenerater.texture(segmentationmap, row, col, numberOfLabels) else {
+        guard let segmentationObservations = segmentationRequest
+            .results as? [VNCoreMLFeatureValueObservation],
+            let segmentationmap = segmentationObservations.first?.featureValue.multiArrayValue
+        else { fatalError() }
+
+        guard let segmentationTexture = multitargetSegmentationTextureGenerater.texture(segmentationmap, numberOfLabels) else {
             return
         }
         

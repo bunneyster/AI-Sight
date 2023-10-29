@@ -29,7 +29,13 @@ class MultitargetSegmentationTextureGenerater: NSObject {
         }
     }
     
-    func texture(_ segmentationMap: MLMultiArray, _ row: Int, _ col: Int, _ numberOfClasses: Int) -> Texture? {
+    func texture(_ segmentationMap: MLMultiArray, _ numberOfClasses: Int) -> Texture? {
+        guard let row = segmentationMap.shape[0] as? Int,
+              let col = segmentationMap.shape[1] as? Int
+        else {
+            fatalError()
+        }
+
         if pipelineState == nil {
             setupPiplineState(width: col, height: row)
         }

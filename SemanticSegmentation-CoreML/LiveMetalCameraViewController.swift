@@ -308,50 +308,12 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
         {
             usleep(1_500_000)
 
-            guard let row = segmentationmap.shape[0] as? Int,
-                  let col = segmentationmap.shape[1] as? Int
-            else {
-                return
-            }
-
-            let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
-                segmentationmap: segmentationmap,
-                row: row,
-                col: col
-            )
-
-            let d = imageFrameCoordinates.d
-            let x = imageFrameCoordinates.x
-            let y = imageFrameCoordinates.y
-
             var objs = [String]()
             var mults = [Float]()
             var x_vals = [Double]()
             var objSizes = [Double]()
-
-            for (k, v) in d {
-                if k == 0 {
-                    continue
-                }
-
-                let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
-                    k: k,
-                    v: v,
-                    x: x,
-                    y: y,
-                    row: row,
-                    col: col
-                )
-                let obj = objectAndPitchMultiplier.obj
-                let mult_val = objectAndPitchMultiplier.mult_val
-                let x_val = objectAndPitchMultiplier.xValue
-                let objSize = objectAndPitchMultiplier.sizes
-
-                objs.append(obj)
-                mults.append(mult_val)
-                x_vals.append(x_val)
-                objSizes.append(objSize)
-            }
+            (objs, mults, x_vals, objSizes) = LiveMetalCameraViewController
+                .processSegmentationMap(segmentationMap: segmentationmap)
 
             if objs.isEmpty {
                 StillImageViewController.speak(text: "No Objects Identified")
@@ -475,6 +437,57 @@ extension LiveMetalCameraViewController {
         return objectIds
     }
 
+    static func processSegmentationMap(segmentationMap: MLMultiArray)
+        -> ([String], [Float], [Double], [Double])
+    {
+        var objs = [String]()
+        var mults = [Float]()
+        var x_vals = [Double]()
+        var objSizes = [Double]()
+
+        guard let row = segmentationMap.shape[0] as? Int,
+              let col = segmentationMap.shape[1] as? Int
+        else {
+            return (objs, mults, x_vals, objSizes)
+        }
+
+        let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
+            segmentationmap: segmentationMap,
+            row: row,
+            col: col
+        )
+
+        let d = imageFrameCoordinates.d
+        let x = imageFrameCoordinates.x
+        let y = imageFrameCoordinates.y
+
+        for (k, v) in d {
+            if k == 0 {
+                continue
+            }
+
+            let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
+                k: k,
+                v: v,
+                x: x,
+                y: y,
+                row: row,
+                col: col
+            )
+            let obj = objectAndPitchMultiplier.obj
+            let mult_val = objectAndPitchMultiplier.mult_val
+            let x_val = objectAndPitchMultiplier.xValue
+            let objSize = objectAndPitchMultiplier.sizes
+
+            objs.append(obj)
+            mults.append(mult_val)
+            x_vals.append(x_val)
+            objSizes.append(objSize)
+        }
+
+        return (objs, mults, x_vals, objSizes)
+    }
+
     static func computeCenterObject(
         objs: [String],
         x_vals: [Double],
@@ -503,50 +516,12 @@ extension LiveMetalCameraViewController {
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
            let segmentationmap = observations.first?.featureValue.multiArrayValue
         {
-            guard let row = segmentationmap.shape[0] as? Int,
-                  let col = segmentationmap.shape[1] as? Int
-            else {
-                return
-            }
-
-            let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
-                segmentationmap: segmentationmap,
-                row: row,
-                col: col
-            )
-
-            let d = imageFrameCoordinates.d
-            let x = imageFrameCoordinates.x
-            let y = imageFrameCoordinates.y
-
             var objs = [String]()
-            var mults = [Float]()
+            var _ = [Float]()
             var x_vals = [Double]()
             var objSizes = [Double]()
-
-            for (k, v) in d {
-                if k == 0 {
-                    continue
-                }
-
-                let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
-                    k: k,
-                    v: v,
-                    x: x,
-                    y: y,
-                    row: row,
-                    col: col
-                )
-                let obj = objectAndPitchMultiplier.obj
-                let mult_val = objectAndPitchMultiplier.mult_val
-                let x_val = objectAndPitchMultiplier.xValue
-                let objSize = objectAndPitchMultiplier.sizes
-
-                objs.append(obj)
-                mults.append(mult_val)
-                x_vals.append(x_val)
-                objSizes.append(objSize)
-            }
+            (objs, _, x_vals, objSizes) = LiveMetalCameraViewController
+                .processSegmentationMap(segmentationMap: segmentationmap)
 
             if liveViewVerbalModeActive == 1 {
                 let centerObject = LiveMetalCameraViewController.computeCenterObject(
@@ -654,8 +629,6 @@ extension LiveMetalCameraViewController {
             guard let cameraTexture = cameraTexture,
                   let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
                       segmentationmap,
-                      row,
-                      col,
                       numberOfLabels
                   )
             else {
