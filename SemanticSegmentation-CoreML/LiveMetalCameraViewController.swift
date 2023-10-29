@@ -425,7 +425,7 @@ extension LiveMetalCameraViewController {
         return returnValue
     }
 
-    func objectIdsInColumn(_ column: Int, segmentationMap: MLMultiArray) -> [Int] {
+    static func objectIdsInColumn(_ column: Int, segmentationMap: MLMultiArray) -> [Int] {
         var objectIds = [Int]()
         let firstPixel = column * 51
         for row in 0..<513 {
@@ -510,6 +510,82 @@ extension LiveMetalCameraViewController {
         return objSizes[med_ind] >= threshold ? objs[med_ind] : ""
     }
 
+    static func composeLiveMusic(segmentationMap: MLMultiArray, depthPoints: [Float]) -> [Note] {
+        var columnModes = [Int]()
+        for column in 0..<numColumns {
+            let mode = LiveMetalCameraViewController.mode(objectIdsInColumn(
+                column,
+                segmentationMap: segmentationMap
+            )) ?? 0
+            columnModes.append(mode)
+            print("Mode value \(column + 1) is \(mode)")
+        }
+
+        var melody: [Note] = []
+        var columnObjectIds: [Int] = []
+        var columnVolumes: [Float] = []
+        for column in 0..<numColumns {
+            let objectId = liveViewModeColumns == 1 ? columnModes[column] :
+                Int(truncating: segmentationMap[
+                    liveMusicModePixelOffset + column * columnWidth
+                ])
+            print(objectId)
+            columnObjectIds.append(objectId)
+
+            let intensity = LiveMetalCameraViewController
+                .intensityForDepth(depth: depthPoints[column])
+            columnVolumes
+                .append(liveViewModeColumns == 1 ? 1.0 : intensity)
+
+            let fileName = [String(column + 1), objectIdToSound[objectId]]
+                .compactMap { $0 }
+                .joined()
+            let file = try! AVAudioFile(
+                forReading: Bundle.main.url(
+                    forResource: fileName,
+                    withExtension: "wav"
+                )!
+            )
+            melody.append(Note(
+                file: file,
+                pan: -0.9 + Float(column) * 0.2,
+                volume: Float(objectId >= 1 ? columnVolumes[column] : 0.0)
+            ))
+        }
+        return melody
+    }
+
+    static func playMusic(melody: [Note]) {
+        let liveEngine = AVAudioEngine()
+
+        for note in melody {
+            liveEngine.attach(note.node)
+            liveEngine.connect(
+                note.node,
+                to: liveEngine.mainMixerNode,
+                format: note.file.processingFormat
+            )
+        }
+
+        for (column, note) in melody.enumerated() {
+            let delayTime = AVAudioTime(
+                sampleTime: AVAudioFramePosition(44100 * Float(column) * 0.007),
+                atRate: note.file.processingFormat.sampleRate
+            )
+            note.node.scheduleFile(note.file, at: delayTime, completionHandler: nil)
+        }
+
+        liveEngine.prepare()
+        try! liveEngine.start()
+
+        for note in melody {
+            note.node.play()
+        }
+        usleep(500_000)
+
+        try! liveEngine.stop()
+    }
+
     public func visionRequestDidComplete(request: VNRequest, error _: Error?) {
         👨‍🔧.🏷(with: "endInference")
 
@@ -536,94 +612,13 @@ extension LiveMetalCameraViewController {
                 }
             }
 
-            print(
-                "DATA MANAGER is reporting \(DataManager.shared.sharedDistanceAtXYPoint)"
-            )
-            for (i, point) in DataManager.shared.depthPoints.enumerated() {
-                print("Depth Value \(i + 1) \(point)")
-            }
-
-            var columnIntensities: [Float] = []
-            for column in 0..<numColumns {
-                let intensity = LiveMetalCameraViewController
-                    .intensityForDepth(depth: DataManager.shared.depthPoints[column])
-                columnIntensities.append(intensity)
-                print("Intensity \(column + 1) is \(intensity)")
-            }
-
             if liveViewModeActive == true {
-                if let observations = request.results as? [VNCoreMLFeatureValueObservation],
-                   let segmentationmap = observations.first?.featureValue.multiArrayValue
-                {
-                    var columnModes = [Int]()
-                    for column in 0..<numColumns {
-                        let mode = LiveMetalCameraViewController.mode(objectIdsInColumn(
-                            column,
-                            segmentationMap: segmentationmap
-                        )) ?? 0
-                        columnModes.append(mode)
-                        print("Mode value \(column + 1) is \(mode)")
-                    }
+                let melody = LiveMetalCameraViewController.composeLiveMusic(
+                    segmentationMap: segmentationmap,
+                    depthPoints: DataManager.shared.depthPoints
+                )
 
-                    let liveEngine = AVAudioEngine()
-
-                    var melody: [Note] = []
-                    var columnObjectIds: [Int] = []
-                    var columnVolumes: [Float] = []
-                    for column in 0..<numColumns {
-                        let objectId = liveViewModeColumns == 1 ? columnModes[column] :
-                            Int(truncating: segmentationmap[
-                                liveMusicModePixelOffset + column * columnWidth
-                            ])
-                        print(objectId)
-                        columnObjectIds.append(objectId)
-
-                        columnVolumes
-                            .append(liveViewModeColumns == 1 ? 1.0 : columnIntensities[column])
-
-                        let fileName = [String(column + 1), objectIdToSound[objectId]]
-                            .compactMap { $0 }
-                            .joined()
-                        let file = try! AVAudioFile(
-                            forReading: Bundle.main.url(
-                                forResource: fileName,
-                                withExtension: "wav"
-                            )!
-                        )
-                        melody.append(Note(
-                            file: file,
-                            pan: -0.9 + Float(column) * 0.2,
-                            volume: Float(objectId >= 1 ? columnVolumes[column] : 0.0)
-                        ))
-                    }
-
-                    for note in melody {
-                        liveEngine.attach(note.node)
-                        liveEngine.connect(
-                            note.node,
-                            to: liveEngine.mainMixerNode,
-                            format: note.file.processingFormat
-                        )
-                    }
-
-                    for (column, note) in melody.enumerated() {
-                        let delayTime = AVAudioTime(
-                            sampleTime: AVAudioFramePosition(44100 * Float(column) * 0.007),
-                            atRate: note.file.processingFormat.sampleRate
-                        )
-                        note.node.scheduleFile(note.file, at: delayTime, completionHandler: nil)
-                    }
-
-                    liveEngine.prepare()
-                    try! liveEngine.start()
-
-                    for note in melody {
-                        note.node.play()
-                    }
-                    usleep(500_000)
-
-                    try! liveEngine.stop()
-                }
+                LiveMetalCameraViewController.playMusic(melody: melody)
             }
 
             guard let cameraTexture = cameraTexture,
