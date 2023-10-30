@@ -97,9 +97,8 @@ class LiveFaceDetectionAndFaceParsingViewController: UIViewController {
 
 // MARK: - VideoCaptureDelegate
 extension LiveFaceDetectionAndFaceParsingViewController: VideoCaptureDelegate {
-    func videoCapture(_ capture: VideoCapture, didCaptureVideoSampleBuffer sampleBuffer: CMSampleBuffer) {
+    func videoCapture(_ capture: VideoCapture, didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer) {
         
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         if !isInferencing {
             // predict!
             predict(with: pixelBuffer)

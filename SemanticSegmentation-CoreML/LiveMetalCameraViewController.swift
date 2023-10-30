@@ -368,13 +368,12 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 // MARK: - LiveMetalCameraViewController + VideoCaptureDelegate
 
 extension LiveMetalCameraViewController: VideoCaptureDelegate {
-    func videoCapture(_: VideoCapture, didCaptureVideoSampleBuffer sampleBuffer: CMSampleBuffer) {
+    func videoCapture(_: VideoCapture, didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer) {
         dataProcessingQueue.async { [weak self] in
             guard let strongSelf = self else {
                 return
             }
 
-            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
             strongSelf.cameraTexture = strongSelf.cameraTextureGenerater.texture(from: pixelBuffer)
 
             if !strongSelf.isInferencing {

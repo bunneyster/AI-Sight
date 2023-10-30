@@ -15,7 +15,7 @@ import UIKit
 // MARK: - VideoCaptureDelegate
 
 public protocol VideoCaptureDelegate: AnyObject {
-    func videoCapture(_ capture: VideoCapture, didCaptureVideoSampleBuffer: CMSampleBuffer)
+    func videoCapture(_ capture: VideoCapture, didCaptureVideoPixelBuffer: CVPixelBuffer)
 }
 
 // MARK: - VideoCapture
@@ -67,7 +67,7 @@ public class VideoCapture: NSObject {
     // MARK: Internal
 
     let captureSession = AVCaptureSession()
-    let videoOutput = AVCaptureVideoDataOutput()
+    let videoDataOutput = AVCaptureVideoDataOutput()
     let depthDataOutput = AVCaptureDepthDataOutput()
 
     let queue = DispatchQueue(label: "com.tucan9389.camera-queue")
@@ -127,12 +127,12 @@ public class VideoCapture: NSObject {
             kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA),
         ]
 
-        videoOutput.videoSettings = settings
-        videoOutput.alwaysDiscardsLateVideoFrames = true
-        videoOutput.setSampleBufferDelegate(self, queue: queue)
+        videoDataOutput.videoSettings = settings
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        videoDataOutput.setSampleBufferDelegate(self, queue: queue)
 
-        if captureSession.canAddOutput(videoOutput) {
-            captureSession.addOutput(videoOutput)
+        if captureSession.canAddOutput(videoDataOutput) {
+            captureSession.addOutput(videoDataOutput)
         }
 
         if captureSession.canAddOutput(depthDataOutput) {
@@ -145,10 +145,10 @@ public class VideoCapture: NSObject {
 
         // We want the buffers to be in portrait orientation otherwise they are
         // rotated by 90 degrees. Need to set this _after_ addOutput()!
-        videoOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
+        videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
 
         outputSynchronizer = AVCaptureDataOutputSynchronizer(dataOutputs: [
-            videoOutput,
+            videoDataOutput,
             depthDataOutput,
         ])
         captureSession.commitConfiguration()
@@ -189,7 +189,9 @@ extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from _: AVCaptureConnection
     ) {
-        delegate?.videoCapture(self, didCaptureVideoSampleBuffer: sampleBuffer)
+        if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)?.clone() {
+            delegate?.videoCapture(self, didCaptureVideoPixelBuffer: pixelBuffer)
+        }
         Logger().debug("[VideoCapture] video capture success")
     }
 

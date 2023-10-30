@@ -146,11 +146,9 @@ class LiveImageViewController: UIViewController, AVSpeechSynthesizerDelegate {
 
 // MARK: - VideoCaptureDelegate
 extension LiveImageViewController: VideoCaptureDelegate {
-    func videoCapture(_ capture: VideoCapture, didCaptureVideoSampleBuffer sampleBuffer: CMSampleBuffer) {
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        
+    func videoCapture(_ capture: VideoCapture, didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer) {
         // the captured image from camera is contained on pixelBuffer
-        if let pixelBuffer = pixelBuffer, !isInferencing {
+        if !isInferencing {
             isInferencing = true
             
             // start of measure
