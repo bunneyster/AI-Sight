@@ -9,6 +9,7 @@
 
 import AVFoundation
 import CoreVideo
+import OSLog
 import UIKit
 
 // MARK: - VideoCaptureDelegate
@@ -189,13 +190,21 @@ extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
         from _: AVCaptureConnection
     ) {
         delegate?.videoCapture(self, didCaptureVideoSampleBuffer: sampleBuffer)
+        Logger().debug("[VideoCapture] video capture success")
     }
 
     public func captureOutput(
         _: AVCaptureOutput,
-        didDrop _: CMSampleBuffer,
+        didDrop sampleBuffer: CMSampleBuffer,
         from _: AVCaptureConnection
-    ) {}
+    ) {
+        let droppedReason = CMGetAttachment(
+            sampleBuffer,
+            key: kCMSampleBufferAttachmentKey_DroppedFrameReason,
+            attachmentModeOut: nil
+        )
+        Logger().debug("[VideoCapture] dropped reason: \(String(describing: droppedReason))")
+    }
 }
 
 extension CVPixelBuffer {

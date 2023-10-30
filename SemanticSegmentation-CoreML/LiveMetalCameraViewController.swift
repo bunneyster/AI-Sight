@@ -130,6 +130,21 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     let numberOfLabels =
         21 // <#if you changed the segmentationModel, you have to change the numberOfLabels#>
 
+    let dataProcessingQueue = DispatchQueue(
+        label: "DataProcessingQueue",
+        attributes: [],
+        autoreleaseFrequency: .workItem,
+        target: .global()
+    )
+    let compositionQueue = DispatchQueue(
+        label: "CompositionQueue",
+        attributes: [],
+        autoreleaseFrequency: .workItem,
+        target: .global()
+    )
+
+    var isComposing = false
+
     // MARK: - Vision Properties
 
     var request: VNCoreMLRequest?
@@ -350,22 +365,27 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     private let 👨‍🔧 = 📏()
 }
 
-// MARK: VideoCaptureDelegate
+// MARK: - LiveMetalCameraViewController + VideoCaptureDelegate
 
 extension LiveMetalCameraViewController: VideoCaptureDelegate {
     func videoCapture(_: VideoCapture, didCaptureVideoSampleBuffer sampleBuffer: CMSampleBuffer) {
-        // 카메라 프리뷰 텍스쳐
-        cameraTexture = cameraTextureGenerater.texture(from: sampleBuffer)
+        dataProcessingQueue.async { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
 
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        if !isInferencing {
-            isInferencing = true
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+            strongSelf.cameraTexture = strongSelf.cameraTextureGenerater.texture(from: pixelBuffer)
 
-            // start of measure
-            👨‍🔧.🎬👏()
+            if !strongSelf.isInferencing {
+                strongSelf.isInferencing = true
 
-            // predict!
-            predict(with: pixelBuffer)
+                // start of measure
+                strongSelf.👨‍🔧.🎬👏()
+
+                // predict!
+                strongSelf.predict(with: pixelBuffer)
+            }
         }
     }
 }
@@ -592,33 +612,39 @@ extension LiveMetalCameraViewController {
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
            let segmentationmap = observations.first?.featureValue.multiArrayValue
         {
-            var objs = [String]()
-            var _ = [Float]()
-            var x_vals = [Double]()
-            var objSizes = [Double]()
-            (objs, _, x_vals, objSizes) = LiveMetalCameraViewController
-                .processSegmentationMap(segmentationMap: segmentationmap)
+            if !isComposing {
+                isComposing = true
+                compositionQueue.async { [weak self] in
+                    var objs = [String]()
+                    _ = [Float]()
+                    var x_vals = [Double]()
+                    var objSizes = [Double]()
+                    (objs, _, x_vals, objSizes) = LiveMetalCameraViewController
+                        .processSegmentationMap(segmentationMap: segmentationmap)
 
-            if liveViewVerbalModeActive == 1 {
-                let centerObject = LiveMetalCameraViewController.computeCenterObject(
-                    objs: objs,
-                    x_vals: x_vals,
-                    objSizes: objSizes,
-                    threshold: 0.1
-                )
-                if centerObject != lastCenterObject {
-                    StillImageViewController.speak(text: centerObject)
-                    lastCenterObject = centerObject
+                    if liveViewVerbalModeActive == 1 {
+                        let centerObject = LiveMetalCameraViewController.computeCenterObject(
+                            objs: objs,
+                            x_vals: x_vals,
+                            objSizes: objSizes,
+                            threshold: 0.1
+                        )
+                        if centerObject != lastCenterObject {
+                            StillImageViewController.speak(text: centerObject)
+                            lastCenterObject = centerObject
+                        }
+                    }
+
+                    if liveViewModeActive == true {
+                        let melody = LiveMetalCameraViewController.composeLiveMusic(
+                            segmentationMap: segmentationmap,
+                            depthPoints: DataManager.shared.depthPoints
+                        )
+
+                        LiveMetalCameraViewController.playMusic(melody: melody)
+                    }
+                    self?.isComposing = false
                 }
-            }
-
-            if liveViewModeActive == true {
-                let melody = LiveMetalCameraViewController.composeLiveMusic(
-                    segmentationMap: segmentationmap,
-                    depthPoints: DataManager.shared.depthPoints
-                )
-
-                LiveMetalCameraViewController.playMusic(melody: melody)
             }
 
             guard let cameraTexture = cameraTexture,
@@ -633,9 +659,9 @@ extension LiveMetalCameraViewController {
                 cameraTexture,
                 segmentationTexture
             )
-            metalVideoPreview.currentTexture = overlayedTexture
 
             DispatchQueue.main.async { [weak self] in
+                self?.metalVideoPreview.currentTexture = overlayedTexture
                 self?.👨‍🔧.🎬🤚()
                 self?.isInferencing = false
             }
