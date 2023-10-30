@@ -15,7 +15,11 @@ import UIKit
 // MARK: - VideoCaptureDelegate
 
 public protocol VideoCaptureDelegate: AnyObject {
-    func videoCapture(_ capture: VideoCapture, didCaptureVideoPixelBuffer: CVPixelBuffer)
+    func videoCapture(
+        _ capture: VideoCapture,
+        didCaptureVideoPixelBuffer: CVPixelBuffer,
+        didCaptureVideoDepthData: AVDepthData
+    )
 }
 
 // MARK: - VideoCapture
@@ -70,9 +74,14 @@ public class VideoCapture: NSObject {
     let videoDataOutput = AVCaptureVideoDataOutput()
     let depthDataOutput = AVCaptureDepthDataOutput()
 
-    let queue = DispatchQueue(label: "com.tucan9389.camera-queue")
     let sessionQueue = DispatchQueue(
         label: "SessionQueue",
+        attributes: [],
+        autoreleaseFrequency: .workItem,
+        target: .global()
+    )
+    let dataOutputQueue = DispatchQueue(
+        label: "DataOutputQueue",
         attributes: [],
         autoreleaseFrequency: .workItem,
         target: .global()
@@ -129,14 +138,12 @@ public class VideoCapture: NSObject {
 
         videoDataOutput.videoSettings = settings
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
-        videoDataOutput.setSampleBufferDelegate(self, queue: queue)
 
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)
         }
 
         if captureSession.canAddOutput(depthDataOutput) {
-            depthDataOutput.setDelegate(self, callbackQueue: queue)
             depthDataOutput.isFilteringEnabled = true
             captureSession.addOutput(depthDataOutput)
             let depthConnection = depthDataOutput.connection(with: .depthData)
@@ -151,6 +158,7 @@ public class VideoCapture: NSObject {
             videoDataOutput,
             depthDataOutput,
         ])
+        outputSynchronizer?.setDelegate(self, queue: dataOutputQueue)
         captureSession.commitConfiguration()
 
         CVMetalTextureCacheCreate(
@@ -166,46 +174,56 @@ public class VideoCapture: NSObject {
     }
 }
 
-// MARK: - DataManager
+// MARK: AVCaptureDataOutputSynchronizerDelegate
 
-class DataManager {
-    // MARK: Lifecycle
-
-    private init() {}
-
-    // MARK: Internal
-
-    static let shared = DataManager()
-
-    var depthPoints = Array(repeating: Float(0), count: 10)
-    var sharedDistanceAtXYPoint: Float = 0
-}
-
-// MARK: - VideoCapture + AVCaptureVideoDataOutputSampleBufferDelegate
-
-extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
-    public func captureOutput(
-        _: AVCaptureOutput,
-        didOutput sampleBuffer: CMSampleBuffer,
-        from _: AVCaptureConnection
+extension VideoCapture: AVCaptureDataOutputSynchronizerDelegate {
+    public func dataOutputSynchronizer(
+        _: AVCaptureDataOutputSynchronizer,
+        didOutput synchronizedDataCollection: AVCaptureSynchronizedDataCollection
     ) {
-        if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)?.clone() {
-            delegate?.videoCapture(self, didCaptureVideoPixelBuffer: pixelBuffer)
+        var videoData: CVPixelBuffer?
+        if let syncedVideoData = synchronizedDataCollection
+            .synchronizedData(for: videoDataOutput) as? AVCaptureSynchronizedSampleBufferData
+        {
+            if !syncedVideoData.sampleBufferWasDropped {
+                if let pixelBuffer = CMSampleBufferGetImageBuffer(syncedVideoData.sampleBuffer) {
+                    // Use a deep copy to release the memory buffer pool, which will otherwise drop
+                    // frames if exhausted.
+                    videoData = pixelBuffer.clone()
+                }
+            } else {
+                Logger()
+                    .debug(
+                        "[VideoCapture] video data dropped: \(syncedVideoData.droppedReason.rawValue)"
+                    )
+            }
         }
-        Logger().debug("[VideoCapture] video capture success")
-    }
 
-    public func captureOutput(
-        _: AVCaptureOutput,
-        didDrop sampleBuffer: CMSampleBuffer,
-        from _: AVCaptureConnection
-    ) {
-        let droppedReason = CMGetAttachment(
-            sampleBuffer,
-            key: kCMSampleBufferAttachmentKey_DroppedFrameReason,
-            attachmentModeOut: nil
-        )
-        Logger().debug("[VideoCapture] dropped reason: \(String(describing: droppedReason))")
+        var depthData: AVDepthData?
+        if let syncedDepthData = synchronizedDataCollection
+            .synchronizedData(for: depthDataOutput) as? AVCaptureSynchronizedDepthData
+        {
+            if !syncedDepthData.depthDataWasDropped {
+                // Use a deep copy to release the memory buffer pool, which will otherwise drop
+                // frames if exhausted.
+                depthData = syncedDepthData.depthData.clone()
+            } else {
+                Logger()
+                    .debug(
+                        "[VideoCapture] depth data dropped: \(syncedDepthData.droppedReason.rawValue)"
+                    )
+            }
+        }
+
+        if let videoData = videoData,
+           let depthData = depthData
+        {
+            delegate?.videoCapture(
+                self,
+                didCaptureVideoPixelBuffer: videoData,
+                didCaptureVideoDepthData: depthData
+            )
+        }
     }
 }
 
@@ -236,41 +254,39 @@ extension CVPixelBuffer {
 
         CVPixelBufferUnlockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
     }
+
+    func clone() -> CVPixelBuffer? {
+        var clone: CVPixelBuffer?
+        let width = CVPixelBufferGetWidth(self)
+        let height = CVPixelBufferGetHeight(self)
+        let format = CVPixelBufferGetPixelFormatType(self)
+        let attrs = [
+            kCVPixelBufferMetalCompatibilityKey: true,
+            kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA,
+        ] as CFDictionary
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, format, attrs, &clone)
+
+        if let clone = clone {
+            CVPixelBufferLockBaseAddress(self, .readOnly)
+            CVPixelBufferLockBaseAddress(clone, CVPixelBufferLockFlags(rawValue: 0))
+            if let srcAddress = CVPixelBufferGetBaseAddress(self),
+               let destAddress = CVPixelBufferGetBaseAddress(clone)
+            {
+                let bytesPerRow = CVPixelBufferGetBytesPerRow(self)
+                destAddress.copyMemory(from: srcAddress, byteCount: height * bytesPerRow)
+            }
+        }
+
+        return clone
+    }
 }
 
-// MARK: - VideoCapture + AVCaptureDepthDataOutputDelegate
-
-extension VideoCapture: AVCaptureDepthDataOutputDelegate {
-    public func depthDataOutput(
-        _: AVCaptureDepthDataOutput,
-        didOutput depthData: AVDepthData,
-        timestamp _: CMTime,
-        connection _: AVCaptureConnection
-    ) {
-        var convertedDepth: AVDepthData
-        let depthDataType = kCVPixelFormatType_DepthFloat32
-        if depthData.depthDataType != depthDataType {
-            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
-        } else {
-            convertedDepth = depthData
-        }
-
-        let depthDataMap = convertedDepth.depthDataMap
-        CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
-
-        // Convert the base address to a safe pointer of the appropriate type
-        let floatBuffer = unsafeBitCast(
-            CVPixelBufferGetBaseAddress(depthDataMap),
-            to: UnsafeMutablePointer<Float32>.self
-        )
-
-        for i in 0..<10 {
-            DataManager.shared.depthPoints[i] = floatBuffer[28804 + i * 19]
-        }
-
-        let middleLocationSimpleInt = 28890
-        let distanceAtXYPoint = floatBuffer[middleLocationSimpleInt]
-        DataManager.shared.sharedDistanceAtXYPoint = distanceAtXYPoint
+extension AVDepthData {
+    func clone() -> AVDepthData? {
+        var auxDataType: NSString?
+        guard let dict = dictionaryRepresentation(forAuxiliaryDataType: &auxDataType),
+              let clone = try? AVDepthData(fromDictionaryRepresentation: dict) else { return nil }
+        return clone
     }
 }
 

@@ -147,7 +147,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 
     // MARK: - Vision Properties
 
-    var request: VNCoreMLRequest?
+    var lastRequest: VNCoreMLRequest?
     var visionModel: VNCoreMLModel?
 
     var isInferencing = false
@@ -188,11 +188,6 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     func setUpModel() {
         if let visionModel = try? VNCoreMLModel(for: segmentationModel.model) {
             self.visionModel = visionModel
-            request = VNCoreMLRequest(
-                model: visionModel,
-                completionHandler: visionRequestDidComplete
-            )
-            request?.imageCropAndScaleOption = .centerCrop
         } else {
             fatalError()
         }
@@ -268,7 +263,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
         shutterNode.play()
         usleep(1_000_000)
 
-        if let observations = request?.results as? [VNCoreMLFeatureValueObservation],
+        if let observations = lastRequest?.results as? [VNCoreMLFeatureValueObservation],
            let segmentationmap = observations.first?.featureValue.multiArrayValue
         {
             var melody: [Note] = []
@@ -318,7 +313,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 
     @IBAction
     func speechModeButtonTapped(_: Any) {
-        if let observations = request?.results as? [VNCoreMLFeatureValueObservation],
+        if let observations = lastRequest?.results as? [VNCoreMLFeatureValueObservation],
            let segmentationmap = observations.first?.featureValue.multiArrayValue
         {
             usleep(1_500_000)
@@ -368,13 +363,15 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 // MARK: - LiveMetalCameraViewController + VideoCaptureDelegate
 
 extension LiveMetalCameraViewController: VideoCaptureDelegate {
-    func videoCapture(_: VideoCapture, didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer) {
+    func videoCapture(
+        _: VideoCapture,
+        didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer,
+        didCaptureVideoDepthData depthData: AVDepthData
+    ) {
         dataProcessingQueue.async { [weak self] in
             guard let strongSelf = self else {
                 return
             }
-
-            strongSelf.cameraTexture = strongSelf.cameraTextureGenerater.texture(from: pixelBuffer)
 
             if !strongSelf.isInferencing {
                 strongSelf.isInferencing = true
@@ -383,7 +380,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                 strongSelf.👨‍🔧.🎬👏()
 
                 // predict!
-                strongSelf.predict(with: pixelBuffer)
+                strongSelf.predict(pixelBuffer: pixelBuffer, depthData: depthData)
             }
         }
     }
@@ -392,13 +389,53 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
 // MARK: - Inference
 
 extension LiveMetalCameraViewController {
-    func predict(with pixelBuffer: CVPixelBuffer) {
-        guard let request = request else { fatalError() }
+    func predict(pixelBuffer: CVPixelBuffer, depthData: AVDepthData) {
+        if let visionModel = visionModel {
+            let request = VNCoreMLRequest(
+                model: visionModel,
+                completionHandler: buildVNRequestCompletionHandler(
+                    completionHandler: visionRequestDidComplete(request:pixelBuffer:depthData:),
+                    pixelBuffer: pixelBuffer,
+                    depthData: depthData
+                )
+            )
+            request.imageCropAndScaleOption = .centerCrop
+            lastRequest = request
 
-        // vision framework configures the input size of image following our model's input
-        // configuration automatically
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
-        try? handler.perform([request])
+            // vision framework configures the input size of image following our model's input
+            // configuration automatically
+            let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
+            try? handler.perform([request])
+        } else {
+            fatalError()
+        }
+    }
+
+    static func computeDepthPoints(depthData: AVDepthData) -> [Float] {
+        var convertedDepth: AVDepthData
+        let depthDataType = kCVPixelFormatType_DepthFloat32
+        if depthData.depthDataType != depthDataType {
+            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
+        } else {
+            convertedDepth = depthData
+        }
+
+        let depthDataMap = convertedDepth.depthDataMap
+        CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
+
+        // Convert the base address to a safe pointer of the appropriate type
+        let floatBuffer = unsafeBitCast(
+            CVPixelBufferGetBaseAddress(depthDataMap),
+            to: UnsafeMutablePointer<Float32>.self
+        )
+
+        CVPixelBufferUnlockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
+
+        var depthPoints = Array(repeating: Float(0), count: 10)
+        for i in 0..<10 {
+            depthPoints[i] = floatBuffer[28804 + i * 19]
+        }
+        return depthPoints
     }
 
     static func intensityForDepth(depth: Float) -> Float {
@@ -529,7 +566,10 @@ extension LiveMetalCameraViewController {
         return objSizes[med_ind] >= threshold ? objs[med_ind] : ""
     }
 
-    static func composeLiveMusic(segmentationMap: MLMultiArray, depthPoints: [Float]) -> [Note] {
+    static func composeLiveMusic(
+        segmentationMap: MLMultiArray,
+        depthPoints: [Float]
+    ) -> [Note] {
         var columnModes = [Int]()
         for column in 0..<numColumns {
             let mode = LiveMetalCameraViewController.mode(objectIdsInColumn(
@@ -605,7 +645,21 @@ extension LiveMetalCameraViewController {
         try! liveEngine.stop()
     }
 
-    public func visionRequestDidComplete(request: VNRequest, error _: Error?) {
+    func buildVNRequestCompletionHandler(
+        completionHandler: @escaping (VNRequest, CVPixelBuffer, AVDepthData) -> Void,
+        pixelBuffer: CVPixelBuffer,
+        depthData: AVDepthData
+    ) -> (VNRequest, Error?) -> Void {
+        return { request, _ in
+            completionHandler(request, pixelBuffer, depthData)
+        }
+    }
+
+    public func visionRequestDidComplete(
+        request: VNRequest,
+        pixelBuffer: CVPixelBuffer,
+        depthData: AVDepthData
+    ) {
         👨‍🔧.🏷(with: "endInference")
 
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
@@ -635,9 +689,11 @@ extension LiveMetalCameraViewController {
                     }
 
                     if liveViewModeActive == true {
+                        let depthPoints = LiveMetalCameraViewController
+                            .computeDepthPoints(depthData: depthData)
                         let melody = LiveMetalCameraViewController.composeLiveMusic(
                             segmentationMap: segmentationmap,
-                            depthPoints: DataManager.shared.depthPoints
+                            depthPoints: depthPoints
                         )
 
                         LiveMetalCameraViewController.playMusic(melody: melody)
@@ -646,7 +702,7 @@ extension LiveMetalCameraViewController {
                 }
             }
 
-            guard let cameraTexture = cameraTexture,
+            guard let cameraTexture = cameraTextureGenerater.texture(from: pixelBuffer),
                   let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
                       segmentationmap,
                       numberOfLabels

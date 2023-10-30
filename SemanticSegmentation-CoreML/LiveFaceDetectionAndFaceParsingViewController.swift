@@ -8,6 +8,7 @@
 
 import UIKit
 import Vision
+import AVFoundation
 
 class LiveFaceDetectionAndFaceParsingViewController: UIViewController {
 
@@ -97,8 +98,11 @@ class LiveFaceDetectionAndFaceParsingViewController: UIViewController {
 
 // MARK: - VideoCaptureDelegate
 extension LiveFaceDetectionAndFaceParsingViewController: VideoCaptureDelegate {
-    func videoCapture(_ capture: VideoCapture, didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer) {
-        
+    func videoCapture(
+        _: VideoCapture,
+        didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer,
+        didCaptureVideoDepthData _: AVDepthData
+    ) {
         if !isInferencing {
             // predict!
             predict(with: pixelBuffer)
