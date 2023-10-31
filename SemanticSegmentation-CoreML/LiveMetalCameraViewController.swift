@@ -64,7 +64,7 @@ var lastCenterObject = ""
 
 // MARK: - LiveMetalCameraViewController
 
-class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelegate {
+class LiveMetalCameraViewController: UIViewController {
     // MARK: Internal
 
     struct Note {
@@ -108,7 +108,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     var cameraTexture: Texture?
     var segmentationTexture: Texture?
 
-    let speaker = Speaker(synthesizer: AVSpeechSynthesizer())
+    var speaker: Speaker!
 
     // MARK: - AV Properties
 
@@ -143,10 +143,11 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     )
 
     var isComposing = false
+    var buttonActivated = false
 
     // MARK: - Vision Properties
 
-    var lastRequest: VNCoreMLRequest?
+    var lastSegmentationMap: MLMultiArray?
     var visionModel: VNCoreMLModel?
 
     var isInferencing = false
@@ -160,11 +161,9 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // setup ml model
         setUpModel()
-
-        // setup camera
         setUpCamera()
+        setUpSpeech()
     }
 
     override func didReceiveMemoryWarning() { // override
@@ -207,6 +206,14 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
         }
     }
 
+    // MARK: - Setup speech
+
+    func setUpSpeech() {
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.delegate = self
+        speaker = Speaker(synthesizer: synthesizer)
+    }
+
     @IBAction
     func LiveMusicColumnsOn(_: Any) {
         if liveViewModeColumns == 0 {
@@ -243,112 +250,123 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
 
     @IBAction
     func musicModeV2ButtonTapped(_: Any) {
-        let engine = AVAudioEngine()
+        buttonActivated = true
+        compositionQueue.async { [weak self] in
+            self?.isComposing = true
 
-        let shutterNode = AVAudioPlayerNode()
-        let shutterFile = try! AVAudioFile(
-            forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
-        )
-        engine.attach(shutterNode)
-        engine.connect(
-            shutterNode,
-            to: engine.mainMixerNode,
-            format: shutterFile.processingFormat
-        )
-        engine.prepare()
+            let engine = AVAudioEngine()
 
-        shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
-        try! engine.start()
-        shutterNode.play()
-        usleep(1_000_000)
+            let shutterNode = AVAudioPlayerNode()
+            let shutterFile = try! AVAudioFile(
+                forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
+            )
+            engine.attach(shutterNode)
+            engine.connect(
+                shutterNode,
+                to: engine.mainMixerNode,
+                format: shutterFile.processingFormat
+            )
+            engine.prepare()
 
-        if let observations = lastRequest?.results as? [VNCoreMLFeatureValueObservation],
-           let segmentationmap = observations.first?.featureValue.multiArrayValue
-        {
-            var melody: [Note] = []
+            shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
+            try! engine.start()
+            shutterNode.play()
+            usleep(1_000_000)
 
-            for column in 0..<10 {
-                let pan = -0.9 + Float(column) * 0.2 // [-0.9, 0.9] in increments of 0.2
-                let fileDrums = try! AVAudioFile(
-                    forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!
-                )
-                melody.append(Note(file: fileDrums, pan: pan, volume: 0.5))
+            if let segmentationMap = self?.lastSegmentationMap {
+                var melody: [Note] = []
 
-                for row in 0..<10 {
-                    let pixelIndex = snapshotMusicModePixelOffsets[row] + column * columnWidth
-                    let objectId = Int(truncating: segmentationmap[pixelIndex])
-                    let fileName = [String(row + 1), objectIdToSound[objectId]].compactMap { $0 }
-                        .joined()
-                    let file = try! AVAudioFile(
-                        forReading: Bundle.main.url(forResource: fileName, withExtension: "wav")!
+                for column in 0..<10 {
+                    let pan = -0.9 + Float(column) * 0.2 // [-0.9, 0.9] in increments of 0.2
+                    let fileDrums = try! AVAudioFile(
+                        forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!
                     )
-                    melody.append(Note(
-                        file: file,
-                        pan: pan,
-                        volume: Float(objectId >= 1 ? 1.0 : 0.0)
-                    ))
-                }
+                    melody.append(Note(file: fileDrums, pan: pan, volume: 0.5))
 
-                for note in melody {
-                    engine.attach(note.node)
-                    engine.connect(
-                        note.node,
-                        to: engine.mainMixerNode,
-                        format: note.file.processingFormat
-                    )
-                    note.node.scheduleFile(note.file, at: nil, completionHandler: nil)
-                }
+                    for row in 0..<10 {
+                        let pixelIndex = snapshotMusicModePixelOffsets[row] + column * columnWidth
+                        let objectId = Int(truncating: segmentationMap[pixelIndex])
+                        let fileName = [String(row + 1), objectIdToSound[objectId]]
+                            .compactMap { $0 }
+                            .joined()
+                        let file = try! AVAudioFile(
+                            forReading: Bundle.main.url(
+                                forResource: fileName,
+                                withExtension: "wav"
+                            )!
+                        )
+                        melody.append(Note(
+                            file: file,
+                            pan: pan,
+                            volume: Float(objectId >= 1 ? 1.0 : 0.0)
+                        ))
+                    }
 
-                for note in melody {
-                    note.node.play()
-                    usleep(1000)
-                }
+                    for note in melody {
+                        engine.attach(note.node)
+                        engine.connect(
+                            note.node,
+                            to: engine.mainMixerNode,
+                            format: note.file.processingFormat
+                        )
+                        note.node.scheduleFile(note.file, at: nil, completionHandler: nil)
+                    }
 
-                melody = []
-                usleep(500_000)
+                    for note in melody {
+                        note.node.play()
+                        usleep(1000)
+                    }
+
+                    melody = []
+                    usleep(500_000)
+                }
             }
+            self?.isComposing = false
         }
+        buttonActivated = false
     }
 
     @IBAction
     func speechModeButtonTapped(_: Any) {
-        if let observations = lastRequest?.results as? [VNCoreMLFeatureValueObservation],
-           let segmentationmap = observations.first?.featureValue.multiArrayValue
-        {
-            usleep(1_500_000)
+        if let segmentationMap = lastSegmentationMap {
+            buttonActivated = true
+            compositionQueue.async { [weak self] in
+                self?.isComposing = true
+                usleep(1_500_000)
 
-            var objs = [String]()
-            var mults = [Float]()
-            var x_vals = [Double]()
-            var objSizes = [Double]()
-            (objs, mults, x_vals, objSizes) = LiveMetalCameraViewController
-                .processSegmentationMap(segmentationMap: segmentationmap)
+                var objs = [String]()
+                var mults = [Float]()
+                var x_vals = [Double]()
+                var objSizes = [Double]()
+                (objs, mults, x_vals, objSizes) = LiveMetalCameraViewController
+                    .processSegmentationMap(segmentationMap: segmentationMap)
 
-            if objs.isEmpty {
-                speaker.speak(text: "No Objects Identified")
-            } else {
-                let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
-                var sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
-                for (i, e) in sorted {
-                    let obj = objs[i]
-                    if ignoredObjects.contains(obj) {
-                        continue
+                if objs.isEmpty {
+                    self?.speaker.speak(text: "No Objects Identified")
+                } else {
+                    let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
+                    let sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
+                    for (i, _) in sorted {
+                        let obj = objs[i]
+                        if ignoredObjects.contains(obj) {
+                            continue
+                        }
+                        if obj != "bottle", objSizes[i] <= 0.02 {
+                            continue
+                        }
+                        let mult = mults[i]
+                        let x_value = x_vals[i]
+                        self?.speaker.speak(
+                            objectName: obj,
+                            multiplier: mult,
+                            posValue: x_value
+                        )
+                        print("The mult value is \(mult)")
                     }
-                    if obj != "bottle", objSizes[i] <= 0.02 {
-                        continue
-                    }
-                    let mult = mults[i]
-                    let x_value = x_vals[i]
-                    speaker.speak(
-                        objectName: obj,
-                        multiplier: mult,
-                        posValue: x_value
-                    )
-                    print("The mult value is \(mult)")
                 }
-            }
 
-            usleep(1_000_000)
+                usleep(1_000_000)
+            }
         }
     }
 
@@ -357,6 +375,19 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     // MARK: - Performance Measurement Property
 
     private let 👨‍🔧 = 📏()
+}
+
+// MARK: - LiveMetalCameraViewController + AVSpeechSynthesizerDelegate
+
+extension LiveMetalCameraViewController: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
+        // FIXME: This callback seems to get triggered before the utterance actually finishes, so
+        // any live mode sounds will resume and overlap with the end of a long utterance.
+        if buttonActivated == true {
+            buttonActivated = false
+            isComposing = false
+        }
+    }
 }
 
 // MARK: - LiveMetalCameraViewController + VideoCaptureDelegate
@@ -399,7 +430,6 @@ extension LiveMetalCameraViewController {
                 )
             )
             request.imageCropAndScaleOption = .centerCrop
-            lastRequest = request
 
             // vision framework configures the input size of image following our model's input
             // configuration automatically
@@ -662,9 +692,14 @@ extension LiveMetalCameraViewController {
         👨‍🔧.🏷(with: "endInference")
 
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
-           let segmentationmap = observations.first?.featureValue.multiArrayValue
+           let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
-            if !isComposing {
+            lastSegmentationMap = segmentationMap
+
+            // Video data is captured faster than it takes to compose the sound for a single output,
+            // so composition can be skipped for data that is captured while a composition is
+            // already in progress.
+            if !isComposing && !buttonActivated {
                 isComposing = true
                 compositionQueue.async { [weak self] in
                     var objs = [String]()
@@ -672,7 +707,7 @@ extension LiveMetalCameraViewController {
                     var x_vals = [Double]()
                     var objSizes = [Double]()
                     (objs, _, x_vals, objSizes) = LiveMetalCameraViewController
-                        .processSegmentationMap(segmentationMap: segmentationmap)
+                        .processSegmentationMap(segmentationMap: segmentationMap)
 
                     if liveViewVerbalModeActive == 1 {
                         let centerObject = LiveMetalCameraViewController.computeCenterObject(
@@ -691,7 +726,7 @@ extension LiveMetalCameraViewController {
                         let depthPoints = LiveMetalCameraViewController
                             .computeDepthPoints(depthData: depthData)
                         let melody = LiveMetalCameraViewController.composeLiveMusic(
-                            segmentationMap: segmentationmap,
+                            segmentationMap: segmentationMap,
                             depthPoints: depthPoints
                         )
 
@@ -703,7 +738,7 @@ extension LiveMetalCameraViewController {
 
             guard let cameraTexture = cameraTextureGenerater.texture(from: pixelBuffer),
                   let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
-                      segmentationmap,
+                      segmentationMap,
                       numberOfLabels
                   )
             else {
