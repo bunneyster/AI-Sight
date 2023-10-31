@@ -108,8 +108,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
     var cameraTexture: Texture?
     var segmentationTexture: Texture?
 
-    let synthesizer = AVSpeechSynthesizer() // Speech
-    var speechDelayTimer: Timer? // Makes sure that it doesn't speak too fast.
+    let speaker = Speaker(synthesizer: AVSpeechSynthesizer())
 
     // MARK: - AV Properties
 
@@ -326,7 +325,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
                 .processSegmentationMap(segmentationMap: segmentationmap)
 
             if objs.isEmpty {
-                StillImageViewController.speak(text: "No Objects Identified")
+                speaker.speak(text: "No Objects Identified")
             } else {
                 let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
                 var sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
@@ -340,7 +339,7 @@ class LiveMetalCameraViewController: UIViewController, AVSpeechSynthesizerDelega
                     }
                     let mult = mults[i]
                     let x_value = x_vals[i]
-                    StillImageViewController.speak(
+                    speaker.speak(
                         objectName: obj,
                         multiplier: mult,
                         posValue: x_value
@@ -683,7 +682,7 @@ extension LiveMetalCameraViewController {
                             threshold: 0.1
                         )
                         if centerObject != lastCenterObject {
-                            StillImageViewController.speak(text: centerObject)
+                            self?.speaker.speak(text: centerObject)
                             lastCenterObject = centerObject
                         }
                     }

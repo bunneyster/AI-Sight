@@ -214,6 +214,7 @@
 		41DD1BE12AD477D5004572F8 /* 18trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5C928AC1860004BD0AE /* 18trumpet.wav */; };
 		41DD1BE22AD477D5004572F8 /* 19trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B61C28AC1865004BD0AE /* 19trumpet.wav */; };
 		41DD1BE32AD477D5004572F8 /* 20trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5D728AC1861004BD0AE /* 20trumpet.wav */; };
+		41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DDEF6C2AF09068001A75B0 /* Speaker.swift */; };
 		71BBE04422E33B2500E74F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BBE04322E33B2500E74F11 /* AppDelegate.swift */; };
 		71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BBE04522E33B2500E74F11 /* LiveImageViewController.swift */; };
 		71BBE04922E33B2500E74F11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71BBE04722E33B2500E74F11 /* Main.storyboard */; };
@@ -319,6 +320,7 @@
 		41DD1B022AD47743004572F8 /* 11flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 11flute.wav; sourceTree = "<group>"; };
 		41DD1B032AD47743004572F8 /* 15flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 15flute.wav; sourceTree = "<group>"; };
 		41DD1B042AD47743004572F8 /* 8flute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 8flute.wav; sourceTree = "<group>"; };
+		41DDEF6C2AF09068001A75B0 /* Speaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speaker.swift; sourceTree = "<group>"; };
 		4698D93528AAEE1C00618E27 /* 1breath.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1breath.wav; sourceTree = "<group>"; };
 		4698D93828AAEE1D00618E27 /* 1trumpet.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1trumpet.wav; sourceTree = "<group>"; };
 		4698D93928AAEE1D00618E27 /* 1cat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1cat.wav; sourceTree = "<group>"; };
@@ -766,6 +768,7 @@
 				41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */,
 				71BBE04C22E33B2600E74F11 /* LaunchScreen.storyboard */,
 				71BBE04F22E33B2600E74F11 /* Info.plist */,
+				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
 			);
 			path = "SemanticSegmentation-CoreML";
 			sourceTree = "<group>";
@@ -1131,6 +1134,7 @@
 				C4BB0DB52561A47900354C08 /* Shaders.metal in Sources */,
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
+				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
 				71BBE05A22E33BF300E74F11 /* DeepLabV3Int8LUT.mlmodel in Sources */,
 				71BBE06322E3400E00E74F11 /* Measure.swift in Sources */,

@@ -26,9 +26,6 @@ import UIKit
 import Vision
 import AVFoundation
 
-// Declaring AVSpeechSynthesizer as an instance variable to hold it in reference until the last utterance is spoken
-let synthesizer = AVSpeechSynthesizer() // Speech
-
 //class CustomTapGestureRecognizer: UITapGestureRecognizer {
 //    //var obj_name: String = ""
 //    //var mult_val: Float = 0.0
@@ -40,8 +37,7 @@ let synthesizer = AVSpeechSynthesizer() // Speech
 //    var objSize = [Double] ()
 //}
 
-class StillImageViewController: UIViewController,
-                                    AVSpeechSynthesizerDelegate {
+class StillImageViewController: UIViewController {
 
     // MARK: - UI Properties
     @IBOutlet weak var mainImageView: UIImageView!
@@ -147,66 +143,6 @@ class StillImageViewController: UIViewController,
         return (objects[k], multiplier, xValue, size)
     }
 
-    /// Speaks the phrase "[object name] + [vertical position] + [horizontal position]".
-    ///
-    /// - Parameters:
-    ///   - objectName: The name of the object.
-    ///   - multiplier: The number corresponding to the object's vertical position.
-    ///   - posValue: The number corresponding to the object's horizontal position.
-    public static func speak(objectName: String, multiplier: Float, posValue: Double) {
-        let phrase = [
-            objectName,
-            verticalPosition(multiplier: multiplier),
-            horizontalPosition(posValue: posValue),
-        ].joined(separator: " ")
-        speak(text: phrase)
-    }
-
-    /// Speaks the given text.
-    public static func speak(text: String) {
-        let utterance = AVSpeechUtterance(string: String(text))
-        utterance.rate = 0.5 // slows down speaking speed
-        utterance.pitchMultiplier = 1.3
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
-        synthesizer.speak(utterance)
-    }
-
-    /// Returns a phrase describing the horizontal position represented by the given number.
-    ///
-    /// - Parameters:
-    ///   - posValue: A number ranging from 0 to 1.
-    public static func horizontalPosition(posValue: Double) -> String {
-        if posValue <= 0.20 {
-            return "far left"
-        } else if posValue <= 0.40 {
-            return "left"
-        } else if posValue <= 0.60 {
-            return "center"
-        } else if posValue <= 0.80 {
-            return "right"
-        } else {
-            return "far right"
-        }
-    }
-
-    /// Returns a phrase describing the vertical position represented by the given number.
-    ///
-    /// - Parameters:
-    ///   - multiplier: A number ranging from 0.7 to 1.7.
-    public static func verticalPosition(multiplier: Float) -> String {
-        if multiplier <= 0.9 {
-            return "bottom"
-        } else if multiplier <= 1.1 {
-            return "lower"
-        } else if multiplier >= 1.5 {
-            return "top"
-        } else if multiplier >= 1.3 {
-            return "upper"
-        } else {
-            return " "
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -252,15 +188,10 @@ extension StillImageViewController: UIImagePickerControllerDelegate, UINavigatio
             let url = info[.imageURL] as? URL {
             mainImageView.image = image
             self.predict(with: url)
-            //StillImageViewController.speak(text: "Sofa to the right", multiplier: 0.7)
         }
         dismiss(animated: true, completion: nil)
     }
 }
-
-//class StillImageViewController: UIViewController, AVSpeechSynthesizerDelegate {
-//extension StillImageViewController: AVSpeechSynthesizerDelegate {
-//}
 
 // MARK: - Inference
 extension StillImageViewController {
@@ -317,7 +248,6 @@ extension StillImageViewController {
                 x_vals.append(x_val)
                 // Giles added append objSize
                 objSizes.append(objSize)
-                //StillImageViewController.speak(text: obj, multiplier: mult_val)
                 
                 // DispatchQueue.main.asyncAfter(deadline: .now() + 2)
             }
@@ -335,22 +265,4 @@ extension StillImageViewController {
             drawingView.segmentationmap = SegmentationResultMLMultiArray(mlMultiArray: segmentationmap)
         }
     }
-    
-    // Deep exhibit 8
-//    @objc func tapSelector(sender: CustomTapGestureRecognizer) {
-//        let cnt = sender.objs.count
-//        if cnt == 0 {
-//            StillImageViewController.speak(text: "No Objects Identified", multiplier: 1)
-//        } else {
-//            for i in 0...cnt-1 {
-//                let obj = sender.objs[i]
-//                let mult = sender.mults[i]
-//                let x_value = sender.x_vals[i]
-//                
-//                // Giles thought - does objSize etc need to be here
-//                StillImageViewController.speak(text: (obj + " " + StillImageViewController.horizontalPosition(posValue:x_value)), multiplier: mult)
-//            }
-//        }
-//    }
-    
 }
