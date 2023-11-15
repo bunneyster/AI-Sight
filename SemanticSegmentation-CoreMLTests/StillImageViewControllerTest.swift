@@ -25,7 +25,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 3
         )
 
-        XCTAssertTrue(result.d == [0: 3, 4: 1, 6: 1, 8: 0])
+        XCTAssertTrue(result.o == [0: 3, 4: 1, 6: 1, 8: 0])
         XCTAssertTrue(result.x == [0: 4, 4: 1, 6: 3, 8: 1])
         XCTAssertTrue(result.y == [0: 4, 4: 3, 6: 1, 8: 1])
     }

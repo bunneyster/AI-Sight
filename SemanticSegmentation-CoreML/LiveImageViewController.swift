@@ -191,7 +191,7 @@ extension LiveImageViewController {
             let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(segmentationmap: segmentationmap, row: row, col: col)
             
 
-            let d = imageFrameCoordinates.d
+            let o = imageFrameCoordinates.o
             let x = imageFrameCoordinates.x
             let y = imageFrameCoordinates.y
             //Giles 1a commenting out
@@ -201,7 +201,7 @@ extension LiveImageViewController {
             var x_vals = [Double]()
             var objSizes = [Double]()
             
-            for (k,v) in d {
+            for (k,v) in o {
                 if (k==0) {
                     continue
                 }

@@ -59,33 +59,30 @@ class StillImageViewController: UIViewController {
     ///   - segmentationMap: The 2D map containing the object-level image.
     ///   - row: The number of rows in the segmentation map.
     ///   - col: The number of columns in the segmentation map.
-    /// - Returns: A tuple containing 3 maps: `d`, a map of object ID to the number of corresponding
+    /// - Returns: A tuple containing 3 maps: `o`, a map of object ID to the number of corresponding
     /// segmentation map elements, `x`, a map of object ID to the sum of the x-coordinates of its
     /// corresponding segmentation map elements, and `y`, a map of object ID to the sum of the
     /// y-coordinates of its corresponding segmentation map elements.
     public static func getImageFrameCoordinates(
         segmentationmap: MLMultiArray, row: Int, col: Int
-    ) -> (d: [Int: Int], x: [Int: Int], y: [Int: Int]) {
-        var d = [Int: Int](), x = [Int: Int](), y = [Int: Int]()
-        for i in 0 ... row - 1 {
-            for j in 0 ... col - 1 {
+    ) -> (o: [Int: Int], x: [Int: Int], y: [Int: Int]) {
+        var o = [Int: Int](), x = [Int: Int](), y = [Int: Int]()
+        for i in 0...row - 1 {
+            for j in 0...col - 1 {
                 let key = [i, j] as [NSNumber]
                 let k = segmentationmap[key].intValue
-                if d.keys.contains(k) {
-                    let a: Int = d[k] ?? 0
-                    let b: Int = x[k] ?? 0
-                    let c: Int = y[k] ?? 0
-                    d[k] = a + 1
-                    x[k] = b + j
-                    y[k] = c + i
+                if o.keys.contains(k) {
+                    o[k, default: 0] += 1
+                    x[k, default: 0] += j
+                    y[k, default: 0] += i
                 } else {
-                    d[k] = 0
+                    o[k] = 0
                     x[k] = j
                     y[k] = i
                 }
             }
         }
-        return (d, x, y)
+        return (o, x, y)
     }
 
     /// Computes the vocalized attributes for a given object.
@@ -219,7 +216,7 @@ extension StillImageViewController {
             
             let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(segmentationmap: segmentationmap, row: row, col: col)
             
-            let d = imageFrameCoordinates.d
+            let o = imageFrameCoordinates.o
             let x = imageFrameCoordinates.x
             let y = imageFrameCoordinates.y
 
@@ -231,7 +228,7 @@ extension StillImageViewController {
             // Giles added
             var objSizes = [Double]()
             
-            for (k,v) in d {
+            for (k,v) in o {
                 if (k==0) {
                     continue
                 }
