@@ -117,7 +117,10 @@ extension LiveFaceDetectionAndFaceParsingViewController {
         // ==================================================
         // 1. rendering camera frame
         // ==================================================
-        guard let cameraTexture = cameraTextureGenerater.texture(from: pixelBuffer) else { return }
+        guard let cameraTexture = cameraTextureGenerater.texture(
+            from: pixelBuffer,
+            pixelFormat: .bgra8Unorm
+        ) else { return }
         cameraMetalVideoView?.currentTexture = cameraTexture
         
         guard !isInferencing else { return }

@@ -736,11 +736,14 @@ extension LiveMetalCameraViewController {
                 }
             }
 
-            guard let cameraTexture = cameraTextureGenerater.texture(from: pixelBuffer),
-                  let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
-                      segmentationMap,
-                      numberOfLabels
-                  )
+            guard let cameraTexture = cameraTextureGenerater.texture(
+                from: pixelBuffer,
+                pixelFormat: .bgra8Unorm
+            ),
+                let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
+                    segmentationMap,
+                    numberOfLabels
+                )
             else {
                 return
             }

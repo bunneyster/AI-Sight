@@ -20,7 +20,7 @@ class CameraTextureGenerater: NSObject {
         CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, sharedMetalRenderingDevice.device, nil, &videoTextureCache)
     }
     
-    func texture(from cameraFrame: CVPixelBuffer) -> Texture? {
+    func texture(from cameraFrame: CVPixelBuffer, pixelFormat: MTLPixelFormat) -> Texture? {
         guard let videoTextureCache = videoTextureCache else { return nil }
 
         let bufferWidth = CVPixelBufferGetWidth(cameraFrame)
@@ -31,7 +31,7 @@ class CameraTextureGenerater: NSObject {
                                                           videoTextureCache,
                                                           cameraFrame,
                                                           nil,
-                                                          .bgra8Unorm,
+                                                          pixelFormat,
                                                           bufferWidth,
                                                           bufferHeight,
                                                           0,
@@ -44,8 +44,8 @@ class CameraTextureGenerater: NSObject {
         }
     }
     
-    func texture(from sampleBuffer: CMSampleBuffer) -> Texture? {
+    func texture(from sampleBuffer: CMSampleBuffer, pixelFormat: MTLPixelFormat) -> Texture? {
         guard let cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
-        return texture(from: cameraFrame)
+        return texture(from: cameraFrame, pixelFormat: pixelFormat)
     }
 }
