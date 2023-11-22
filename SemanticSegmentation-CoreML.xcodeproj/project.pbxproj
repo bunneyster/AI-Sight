@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4159AF2D2B0D9D80000C52D3 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */; };
+		4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */; };
 		418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */; };
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
@@ -254,6 +256,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
+		4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ExtensionsTest.swift"; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillImageViewControllerTest.swift; sourceTree = "<group>"; };
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
@@ -516,6 +520,7 @@
 			children = (
 				41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */,
 				418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */,
+				4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */,
 			);
 			path = "SemanticSegmentation-CoreMLTests";
 			sourceTree = "<group>";
@@ -763,12 +768,13 @@
 				71BBE06622E3446300E74F11 /* SegmentationResultMLMultiArray.swift */,
 				71BBE06122E3400E00E74F11 /* Measure.swift */,
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
+				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
+				4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */,
 				C4BB0D90256192F100354C08 /* MetalCamera */,
 				71BBE05D22E33CEA00E74F11 /* mlmodel */,
 				41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */,
 				71BBE04C22E33B2600E74F11 /* LaunchScreen.storyboard */,
 				71BBE04F22E33B2600E74F11 /* Info.plist */,
-				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
 			);
 			path = "SemanticSegmentation-CoreML";
 			sourceTree = "<group>";
@@ -1123,6 +1129,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */,
+				4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */,
 				41D3F4F32AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1156,6 +1163,7 @@
 				419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */,
 				71BBE04422E33B2500E74F11 /* AppDelegate.swift in Sources */,
 				C4BB0DA02561983C00354C08 /* SegmentationTextureGenerater.swift in Sources */,
+				4159AF2D2B0D9D80000C52D3 /* Float+Extensions.swift in Sources */,
 				C4CA64502603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
