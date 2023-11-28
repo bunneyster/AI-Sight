@@ -188,8 +188,12 @@ extension LiveImageViewController {
                     return
             }
             
-            let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(segmentationmap: segmentationmap, row: row, col: col)
-            
+            let imageFrameCoordinates = MLMultiArrayHelper.getImageFrameCoordinates(
+                segmentationmap: segmentationmap,
+                row: row,
+                col: col
+            )
+
 
             let o = imageFrameCoordinates.o
             let x = imageFrameCoordinates.x
@@ -205,7 +209,14 @@ extension LiveImageViewController {
                 if (k==0) {
                     continue
                 }
-                let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(k:k, v:v, x:x, y:y, row: row, col: col)
+                let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(
+                    k: k,
+                    v: v,
+                    x: x,
+                    y: y,
+                    row: row,
+                    col: col
+                )
                 let obj = objectAndPitchMultiplier.obj
                 let mult_val = objectAndPitchMultiplier.mult_val
                 let x_val = objectAndPitchMultiplier.xValue

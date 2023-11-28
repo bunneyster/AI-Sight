@@ -92,23 +92,6 @@ var lastMainObject: MLObject?
 // MARK: - LiveMetalCameraViewController
 
 class LiveMetalCameraViewController: UIViewController {
-    // MARK: Internal
-
-    struct Note {
-        // MARK: Lifecycle
-
-        init(file: AVAudioFile, pan: Float = 0.0, volume: Float = 0.0) {
-            self.file = file
-            node.pan = pan
-            node.volume = volume
-        }
-
-        // MARK: Internal
-
-        var node: AVAudioPlayerNode = .init()
-        var file: AVAudioFile
-    }
-
     // MARK: - UI Properties
 
     @IBOutlet
@@ -467,35 +450,6 @@ extension LiveMetalCameraViewController {
         }
     }
 
-    static func computeDepthPoints(depthData: AVDepthData) -> [Float] {
-        let depthDataMap = LiveMetalCameraViewController.getDepthMap(depthData: depthData)
-        CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
-
-        // Convert the base address to a safe pointer of the appropriate type
-        let floatBuffer = unsafeBitCast(
-            CVPixelBufferGetBaseAddress(depthDataMap),
-            to: UnsafeMutablePointer<Float32>.self
-        )
-
-        CVPixelBufferUnlockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
-
-        var depthPoints = Array(repeating: Float(0), count: 10)
-        for i in 0..<10 {
-            depthPoints[i] = floatBuffer[28804 + i * 19]
-        }
-        return depthPoints
-    }
-
-    static func intensityForDepth(depth: Float) -> Float {
-        if depth <= 1.2 {
-            return 1
-        } else if depth <= 2.2 {
-            return 0.2
-        } else {
-            return 0.05
-        }
-    }
-
     static func mode(_ array: [Int]) -> (Int)? {
         let countedSet = NSCountedSet(array: array)
         var counts = [(value: Int, count: Int)]()
@@ -529,18 +483,6 @@ extension LiveMetalCameraViewController {
         return returnValue
     }
 
-    static func objectIdsInColumn(_ column: Int, segmentationMap: MLMultiArray) -> [Int] {
-        var objectIds = [Int]()
-        let firstPixel = column * 51
-        for row in 0..<513 {
-            for col in firstPixel..<(firstPixel + 50) {
-                let id = segmentationMap[[row, col] as [NSNumber]].intValue
-                objectIds.append(id)
-            }
-        }
-        return objectIds
-    }
-
     static func processSegmentationMap(segmentationMap: MLMultiArray)
         -> ([String], [Float], [Double], [Double])
     {
@@ -555,7 +497,7 @@ extension LiveMetalCameraViewController {
             return (objs, mults, x_vals, objSizes)
         }
 
-        let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(
+        let imageFrameCoordinates = MLMultiArrayHelper.getImageFrameCoordinates(
             segmentationmap: segmentationMap,
             row: row,
             col: col
@@ -570,7 +512,7 @@ extension LiveMetalCameraViewController {
                 continue
             }
 
-            let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(
+            let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(
                 k: k,
                 v: v,
                 x: x,
@@ -590,18 +532,6 @@ extension LiveMetalCameraViewController {
         }
 
         return (objs, mults, x_vals, objSizes)
-    }
-
-    public static func getDepthMap(depthData: AVDepthData) -> CVPixelBuffer {
-        var convertedDepth: AVDepthData
-        let depthDataType = kCVPixelFormatType_DepthFloat32
-        if depthData.depthDataType != depthDataType {
-            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
-        } else {
-            convertedDepth = depthData
-        }
-
-        return convertedDepth.depthDataMap
     }
 
     public static func processObjectData(
@@ -711,85 +641,6 @@ extension LiveMetalCameraViewController {
         }
     }
 
-    static func composeLiveMusic(
-        segmentationMap: MLMultiArray,
-        depthPoints: [Float]
-    ) -> [Note] {
-        var columnModes = [Int]()
-        for column in 0..<numColumns {
-            let mode = LiveMetalCameraViewController.mode(objectIdsInColumn(
-                column,
-                segmentationMap: segmentationMap
-            )) ?? 0
-            columnModes.append(mode)
-            print("Mode value \(column + 1) is \(mode)")
-        }
-
-        var melody: [Note] = []
-        var columnObjectIds: [Int] = []
-        var columnVolumes: [Float] = []
-        for column in 0..<numColumns {
-            let objectId = liveViewModeColumns == 1 ? columnModes[column] :
-                Int(truncating: segmentationMap[
-                    liveMusicModePixelOffset + column * columnWidth
-                ])
-            print(objectId)
-            columnObjectIds.append(objectId)
-
-            let intensity = LiveMetalCameraViewController
-                .intensityForDepth(depth: depthPoints[column])
-            columnVolumes
-                .append(liveViewModeColumns == 1 ? 1.0 : intensity)
-
-            let fileName = [String(column + 1), objectIdToSound[objectId]]
-                .compactMap { $0 }
-                .joined()
-            let file = try! AVAudioFile(
-                forReading: Bundle.main.url(
-                    forResource: fileName,
-                    withExtension: "wav"
-                )!
-            )
-            melody.append(Note(
-                file: file,
-                pan: -0.9 + Float(column) * 0.2,
-                volume: Float(objectId >= 1 ? columnVolumes[column] : 0.0)
-            ))
-        }
-        return melody
-    }
-
-    static func playMusic(melody: [Note]) {
-        let liveEngine = AVAudioEngine()
-
-        for note in melody {
-            liveEngine.attach(note.node)
-            liveEngine.connect(
-                note.node,
-                to: liveEngine.mainMixerNode,
-                format: note.file.processingFormat
-            )
-        }
-
-        for (column, note) in melody.enumerated() {
-            let delayTime = AVAudioTime(
-                sampleTime: AVAudioFramePosition(44100 * Float(column) * 0.007),
-                atRate: note.file.processingFormat.sampleRate
-            )
-            note.node.scheduleFile(note.file, at: delayTime, completionHandler: nil)
-        }
-
-        liveEngine.prepare()
-        try! liveEngine.start()
-
-        for note in melody {
-            note.node.play()
-        }
-        usleep(500_000)
-
-        try! liveEngine.stop()
-    }
-
     func buildVNRequestCompletionHandler(
         completionHandler: @escaping (VNRequest, CVPixelBuffer, AVDepthData) -> Void,
         pixelBuffer: CVPixelBuffer,
@@ -819,8 +670,7 @@ extension LiveMetalCameraViewController {
                 isComposing = true
                 compositionQueue.async { [weak self] in
                     if liveViewVerbalModeActive == 1 {
-                        let depthMap = LiveMetalCameraViewController
-                            .getDepthMap(depthData: depthData)
+                        let depthMap = DepthHelper.getDepthMap(depthData: depthData)
                         let objects = LiveMetalCameraViewController.processObjectData(
                             pixelBuffer: pixelBuffer,
                             segmentationMap: segmentationMap,
@@ -847,14 +697,13 @@ extension LiveMetalCameraViewController {
                     }
 
                     if liveViewModeActive == true {
-                        let depthPoints = LiveMetalCameraViewController
-                            .computeDepthPoints(depthData: depthData)
-                        let melody = LiveMetalCameraViewController.composeLiveMusic(
+                        let depthPoints = DepthHelper.computeDepthPoints(depthData: depthData)
+                        let melody = Player.composeLiveMusic(
                             segmentationMap: segmentationMap,
                             depthPoints: depthPoints
                         )
 
-                        LiveMetalCameraViewController.playMusic(melody: melody)
+                        Player.playMusic(melody: melody)
                     }
                     self?.isComposing = false
                 }

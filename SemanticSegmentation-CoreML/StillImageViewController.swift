@@ -53,69 +53,6 @@ class StillImageViewController: UIViewController {
     var request: VNCoreMLRequest?
     var visionModel: VNCoreMLModel?
 
-    /// Groups the segmentation data per object ID.
-    ///
-    /// - Parameters:
-    ///   - segmentationMap: The 2D map containing the object-level image.
-    ///   - row: The number of rows in the segmentation map.
-    ///   - col: The number of columns in the segmentation map.
-    /// - Returns: A tuple containing 3 maps: `o`, a map of object ID to the number of corresponding
-    /// segmentation map elements, `x`, a map of object ID to the sum of the x-coordinates of its
-    /// corresponding segmentation map elements, and `y`, a map of object ID to the sum of the
-    /// y-coordinates of its corresponding segmentation map elements.
-    public static func getImageFrameCoordinates(
-        segmentationmap: MLMultiArray, row: Int, col: Int
-    ) -> (o: [Int: Int], x: [Int: Int], y: [Int: Int]) {
-        var o = [Int: Int](), x = [Int: Int](), y = [Int: Int]()
-        for i in 0...row - 1 {
-            for j in 0...col - 1 {
-                let key = [i, j] as [NSNumber]
-                let k = segmentationmap[key].intValue
-                if o.keys.contains(k) {
-                    o[k, default: 0] += 1
-                    x[k, default: 0] += j
-                    y[k, default: 0] += i
-                } else {
-                    o[k] = 0
-                    x[k] = j
-                    y[k] = i
-                }
-            }
-        }
-        return (o, x, y)
-    }
-
-    /// Computes the vocalized attributes for a given object.
-    ///
-    /// - Parameters:
-    ///   - k: The object ID.
-    ///   - v: The number of segmentation map elements corresponding to the given object ID.
-    ///   - x: A map of object ID to the sum of the x-coordinates of the corresponding segmentation
-    /// map elements.
-    ///   - y: A map of object ID to the sum of the y-coordinates of the corresponding segmentation
-    /// map elements.
-    ///   - row: The number of rows in the segmentation map.
-    ///   - col: The number of columns in the segmentation map.
-    /// - Returns: A tuple containing 4 elements: `obj`, the object name, `mult_val`, the pitch
-    /// multiplier, `xValue`, the representative x-coordinate, and `sizes`, the size of the object
-    /// relative to its containing image.
-    public static func getObjectAndPitchMultiplier(
-        k: Int,
-        v: Int,
-        x: [Int: Int],
-        y: [Int: Int],
-        row: Int,
-        col: Int
-    ) -> (obj: String, mult_val: Float, xValue: Double, sizes: Double) {
-        let b: Int = x[k] ?? 0
-        let c: Int = y[k] ?? 0
-        let size = Double(v) / (Double(row) * Double(col))
-        let multiplier = 0.7 + Float(1 - Double(c) / Double(v) / Double(row))
-        let xValue = Double(b) / Double(v) / Double(col)
-
-        return (labels[k], multiplier, xValue, size)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -190,8 +127,12 @@ extension StillImageViewController {
                     return
             }
             
-            let imageFrameCoordinates = StillImageViewController.getImageFrameCoordinates(segmentationmap: segmentationmap, row: row, col: col)
-            
+            let imageFrameCoordinates = MLMultiArrayHelper.getImageFrameCoordinates(
+                segmentationmap: segmentationmap,
+                row: row,
+                col: col
+            )
+
             let o = imageFrameCoordinates.o
             let x = imageFrameCoordinates.x
             let y = imageFrameCoordinates.y
@@ -209,7 +150,7 @@ extension StillImageViewController {
                     continue
                 }
 
-                let objectAndPitchMultiplier = StillImageViewController.getObjectAndPitchMultiplier(k:k, v:v, x:x, y:y, row: row, col: col)
+                let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(k:k, v:v, x:x, y:y, row: row, col: col)
                 let obj = objectAndPitchMultiplier.obj
                 let mult_val = objectAndPitchMultiplier.mult_val
                 let x_val = objectAndPitchMultiplier.xValue

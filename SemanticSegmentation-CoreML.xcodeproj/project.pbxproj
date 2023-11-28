@@ -11,8 +11,13 @@
 		4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */; };
 		4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF302B0DA871000C52D3 /* ModelDimensions.swift */; };
 		4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */; };
-		418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */; };
+		418E5A362AC400A900D0813E /* PlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* PlayerTest.swift */; };
 		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
+		4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1B2B16A8A5009FE885 /* Note.swift */; };
+		4195BE1E2B16A9AC009FE885 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1D2B16A9AC009FE885 /* Player.swift */; };
+		4195BE202B16AA6A009FE885 /* MLMultiArrayHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */; };
+		4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE212B16AAE2009FE885 /* DepthHelper.swift */; };
+		4195BE242B16AC49009FE885 /* MLMultiArrayHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */; };
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		41D3F4F32AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */; };
@@ -264,8 +269,13 @@
 		4159AF302B0DA871000C52D3 /* ModelDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDimensions.swift; sourceTree = "<group>"; };
 		4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntPoint.swift; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillImageViewControllerTest.swift; sourceTree = "<group>"; };
+		418E5A352AC400A900D0813E /* PlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTest.swift; sourceTree = "<group>"; };
 		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
+		4195BE1B2B16A8A5009FE885 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		4195BE1D2B16A9AC009FE885 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArrayHelper.swift; sourceTree = "<group>"; };
+		4195BE212B16AAE2009FE885 /* DepthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthHelper.swift; sourceTree = "<group>"; };
+		4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArrayHelperTest.swift; sourceTree = "<group>"; };
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveMetalCameraViewControllerTest.swift; sourceTree = "<group>"; };
@@ -525,7 +535,8 @@
 			isa = PBXGroup;
 			children = (
 				41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */,
-				418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */,
+				418E5A352AC400A900D0813E /* PlayerTest.swift */,
+				4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */,
 				4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */,
 			);
 			path = "SemanticSegmentation-CoreMLTests";
@@ -772,8 +783,12 @@
 				C4CA644F2603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift */,
 				71BBE05E22E33F8D00E74F11 /* DrawingSegmentationView.swift */,
 				71BBE06622E3446300E74F11 /* SegmentationResultMLMultiArray.swift */,
+				4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */,
+				4195BE212B16AAE2009FE885 /* DepthHelper.swift */,
 				71BBE06122E3400E00E74F11 /* Measure.swift */,
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
+				4195BE1B2B16A8A5009FE885 /* Note.swift */,
+				4195BE1D2B16A9AC009FE885 /* Player.swift */,
 				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
 				4195BE192B158DB8009FE885 /* MLObject.swift */,
 				4159AF302B0DA871000C52D3 /* ModelDimensions.swift */,
@@ -1137,8 +1152,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */,
+				418E5A362AC400A900D0813E /* PlayerTest.swift in Sources */,
 				4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */,
+				4195BE242B16AC49009FE885 /* MLMultiArrayHelperTest.swift in Sources */,
 				41D3F4F32AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1148,7 +1164,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4BB0DB52561A47900354C08 /* Shaders.metal in Sources */,
+				4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */,
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
+				4195BE202B16AA6A009FE885 /* MLMultiArrayHelper.swift in Sources */,
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
 				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
@@ -1163,9 +1181,11 @@
 				4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */,
 				4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */,
 				C4BB0D9C256196ED00354C08 /* Texture.swift in Sources */,
+				4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */,
 				71BBE05622E33BEB00E74F11 /* DeepLabV3.mlmodel in Sources */,
 				C4052DC025EFE8960040F98D /* MaskTextureGenerater.swift in Sources */,
 				71BBE05C22E33C6C00E74F11 /* StillImageViewController.swift in Sources */,
+				4195BE1E2B16A9AC009FE885 /* Player.swift in Sources */,
 				C4DDEF7525FBCBC8000CF6A5 /* FaceParsing.mlmodel in Sources */,
 				C4BB0D96256195F800354C08 /* Maths.swift in Sources */,
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,

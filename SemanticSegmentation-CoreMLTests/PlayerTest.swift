@@ -1,5 +1,5 @@
 //
-//  StillImageViewControllerTest.swift
+//  PlayerTest.swift
 //  SemanticSegmentation-CoreMLTests
 //
 //  Created by Staphany Park on 9/27/23.
@@ -10,44 +10,10 @@
 import Vision
 import XCTest
 
-final class StillImageViewControllerTest: XCTestCase {
-    func testGetImageFrameCoordinates() throws {
-        let segmentationData = [
-            [0, 6, 0],
-            [4, 8, 6],
-            [0, 4, 0],
-        ]
-        let segmentationMap = buildSegmentationMap(data: segmentationData)
-
-        let result = StillImageViewController.getImageFrameCoordinates(
-            segmentationmap: segmentationMap,
-            row: 3,
-            col: 3
-        )
-
-        XCTAssertTrue(result.o == [0: 3, 4: 1, 6: 1, 8: 0])
-        XCTAssertTrue(result.x == [0: 4, 4: 1, 6: 3, 8: 1])
-        XCTAssertTrue(result.y == [0: 4, 4: 3, 6: 1, 8: 1])
-    }
-
-    func buildSegmentationMap(data: [[Int]]) -> MLMultiArray {
-        let shape = [data.count as NSNumber, data[0].count as NSNumber]
-        guard let segmentationMap = try? MLMultiArray(shape: shape, dataType: .int32) else {
-            return MLMultiArray()
-        }
-        for x in 0 ..< 3 {
-            for y in 0 ..< 3 {
-                let key = [x, y] as [NSNumber]
-                segmentationMap[key] = data[x][y] as NSNumber
-            }
-        }
-
-        return segmentationMap
-    }
-
+final class PlayerTest: XCTestCase {
     func testGetObjectAndPitchMultiplier_1x1Segment() throws {
         // Cat occupies 1x1 area in center of 3x3 image
-        let result = StillImageViewController.getObjectAndPitchMultiplier(
+        let result = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 0,
             x: [8: 1],
@@ -63,7 +29,7 @@ final class StillImageViewControllerTest: XCTestCase {
     }
 
     func testGetObjectAndPitchMultiplier_objectId() throws {
-        let objectId0 = StillImageViewController.getObjectAndPitchMultiplier(
+        let objectId0 = Player.getObjectAndPitchMultiplier(
             k: 0,
             v: 25,
             x: [8: 125],
@@ -71,7 +37,7 @@ final class StillImageViewControllerTest: XCTestCase {
             row: 10,
             col: 10
         )
-        let objectId8 = StillImageViewController.getObjectAndPitchMultiplier(
+        let objectId8 = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -79,7 +45,7 @@ final class StillImageViewControllerTest: XCTestCase {
             row: 10,
             col: 10
         )
-        let objectId20 = StillImageViewController.getObjectAndPitchMultiplier(
+        let objectId20 = Player.getObjectAndPitchMultiplier(
             k: 20,
             v: 25,
             x: [8: 125],
@@ -95,7 +61,7 @@ final class StillImageViewControllerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_multiplier() throws {
         // Cat occupies 5x5 area at top of 10x10 image
-        let yTop = StillImageViewController.getObjectAndPitchMultiplier(
+        let yTop = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -104,7 +70,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let yMid = StillImageViewController.getObjectAndPitchMultiplier(
+        let yMid = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -113,7 +79,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at bottom of 10x10 image
-        let yBottom = StillImageViewController.getObjectAndPitchMultiplier(
+        let yBottom = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -129,7 +95,7 @@ final class StillImageViewControllerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_xValue() throws {
         // Cat occupies 5x5 area at left of 10x10 image
-        let xLeft = StillImageViewController.getObjectAndPitchMultiplier(
+        let xLeft = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 50],
@@ -138,7 +104,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let xMid = StillImageViewController.getObjectAndPitchMultiplier(
+        let xMid = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -147,7 +113,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at left of 10x10 image
-        let xRight = StillImageViewController.getObjectAndPitchMultiplier(
+        let xRight = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 175],
@@ -163,7 +129,7 @@ final class StillImageViewControllerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_size() throws {
         // Cat occupies 2x2 area at center of 10x10 image
-        let small = StillImageViewController.getObjectAndPitchMultiplier(
+        let small = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 4,
             x: [8: 9],
@@ -172,7 +138,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let medium = StillImageViewController.getObjectAndPitchMultiplier(
+        let medium = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -181,7 +147,7 @@ final class StillImageViewControllerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 8x8 area at center of 10x10 image
-        let large = StillImageViewController.getObjectAndPitchMultiplier(
+        let large = Player.getObjectAndPitchMultiplier(
             k: 8,
             v: 64,
             x: [8: 288],
