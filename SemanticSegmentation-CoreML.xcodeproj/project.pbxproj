@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		4159AF2D2B0D9D80000C52D3 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */; };
 		4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */; };
+		4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF302B0DA871000C52D3 /* ModelDimensions.swift */; };
+		4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */; };
 		418E5A362AC400A900D0813E /* StillImageViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */; };
+		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		41D3F4F32AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */; };
@@ -258,8 +261,11 @@
 /* Begin PBXFileReference section */
 		4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
 		4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ExtensionsTest.swift"; sourceTree = "<group>"; };
+		4159AF302B0DA871000C52D3 /* ModelDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDimensions.swift; sourceTree = "<group>"; };
+		4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntPoint.swift; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418E5A352AC400A900D0813E /* StillImageViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillImageViewControllerTest.swift; sourceTree = "<group>"; };
+		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41D3F4F22AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveMetalCameraViewControllerTest.swift; sourceTree = "<group>"; };
@@ -769,6 +775,9 @@
 				71BBE06122E3400E00E74F11 /* Measure.swift */,
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
 				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
+				4195BE192B158DB8009FE885 /* MLObject.swift */,
+				4159AF302B0DA871000C52D3 /* ModelDimensions.swift */,
+				4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */,
 				4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */,
 				C4BB0D90256192F100354C08 /* MetalCamera */,
 				71BBE05D22E33CEA00E74F11 /* mlmodel */,
@@ -1143,6 +1152,7 @@
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
 				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
+				4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */,
 				71BBE05A22E33BF300E74F11 /* DeepLabV3Int8LUT.mlmodel in Sources */,
 				71BBE06322E3400E00E74F11 /* Measure.swift in Sources */,
 				C4BB0DA625619AA400354C08 /* MetalVideoView.swift in Sources */,
@@ -1150,6 +1160,8 @@
 				C4DDEF4925FB779D000CF6A5 /* MultitargetSegmentationTextureGenerater.swift in Sources */,
 				71BBE06722E3446300E74F11 /* SegmentationResultMLMultiArray.swift in Sources */,
 				C4BB0DA925619C0400354C08 /* LiveMetalCameraViewController.swift in Sources */,
+				4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */,
+				4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */,
 				C4BB0D9C256196ED00354C08 /* Texture.swift in Sources */,
 				71BBE05622E33BEB00E74F11 /* DeepLabV3.mlmodel in Sources */,
 				C4052DC025EFE8960040F98D /* MaskTextureGenerater.swift in Sources */,

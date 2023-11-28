@@ -107,37 +107,13 @@ class StillImageViewController: UIViewController {
         row: Int,
         col: Int
     ) -> (obj: String, mult_val: Float, xValue: Double, sizes: Double) {
-        let objects = [
-            "background",
-            "aeroplane",
-            "bicycle",
-            "bird",
-            "boat",
-            "bottle",
-            "bus",
-            "car",
-            "cat",
-            "chair",
-            "cow",
-            "table",
-            "dog",
-            "horse",
-            "motorbike",
-            "person",
-            "plant",
-            "sheep",
-            "sofa",
-            "train",
-            "tv",
-        ]
-
         let b: Int = x[k] ?? 0
         let c: Int = y[k] ?? 0
         let size = Double(v) / (Double(row) * Double(col))
         let multiplier = 0.7 + Float(1 - Double(c) / Double(v) / Double(row))
         let xValue = Double(b) / Double(v) / Double(col)
 
-        return (objects[k], multiplier, xValue, size)
+        return (labels[k], multiplier, xValue, size)
     }
 
     override func viewDidLoad() {

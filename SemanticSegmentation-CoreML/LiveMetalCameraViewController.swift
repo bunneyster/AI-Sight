@@ -7,11 +7,36 @@
 //
 
 import AVFoundation
+import OSLog
 import UIKit
 import Vision
 
 let numColumns = 10
 let columnWidth = 56
+
+let labels = [
+    "background",
+    "aeroplane",
+    "bicycle",
+    "bird",
+    "boat",
+    "bottle",
+    "bus",
+    "car",
+    "cat",
+    "chair",
+    "cow",
+    "table",
+    "dog",
+    "horse",
+    "motorbike",
+    "person",
+    "plant",
+    "sheep",
+    "sofa",
+    "train",
+    "tv",
+]
 
 let objectIdToSound = [
     0: "", // Background
@@ -59,8 +84,10 @@ var liveViewModeColumns: Int = 1
 
 var liveViewVerbalModeActive: Int = 1
 
-/// The last object to be announced in the center of the frame.
-var lastCenterObject = ""
+/// The last object that was the main object in the frame.
+///
+/// The value may be `nil` when no objects are identified (background does not count).
+var lastMainObject: MLObject?
 
 // MARK: - LiveMetalCameraViewController
 
@@ -243,7 +270,7 @@ class LiveMetalCameraViewController: UIViewController {
             Swift.print("Live-Objects Verbal Mode On")
         } else {
             liveViewVerbalModeActive = 0
-            lastCenterObject = ""
+            lastMainObject = nil
             Swift.print("Live-Objects Verbal Mode Off")
         }
     }
@@ -441,15 +468,7 @@ extension LiveMetalCameraViewController {
     }
 
     static func computeDepthPoints(depthData: AVDepthData) -> [Float] {
-        var convertedDepth: AVDepthData
-        let depthDataType = kCVPixelFormatType_DepthFloat32
-        if depthData.depthDataType != depthDataType {
-            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
-        } else {
-            convertedDepth = depthData
-        }
-
-        let depthDataMap = convertedDepth.depthDataMap
+        let depthDataMap = LiveMetalCameraViewController.getDepthMap(depthData: depthData)
         CVPixelBufferLockBaseAddress(depthDataMap, CVPixelBufferLockFlags(rawValue: 0))
 
         // Convert the base address to a safe pointer of the appropriate type
@@ -573,26 +592,123 @@ extension LiveMetalCameraViewController {
         return (objs, mults, x_vals, objSizes)
     }
 
-    static func computeCenterObject(
-        objs: [String],
-        x_vals: [Double],
-        objSizes: [Double],
-        threshold: Double
-    )
-        -> String
-    {
-        let numObjects = x_vals.count
-        if numObjects == 0 {
-            return ""
+    public static func getDepthMap(depthData: AVDepthData) -> CVPixelBuffer {
+        var convertedDepth: AVDepthData
+        let depthDataType = kCVPixelFormatType_DepthFloat32
+        if depthData.depthDataType != depthDataType {
+            convertedDepth = depthData.converting(toDepthDataType: depthDataType)
+        } else {
+            convertedDepth = depthData
         }
-        let med = x_vals.sorted(by: <)[numObjects / 2]
-        var med_ind = 0
-        for i in 0...(numObjects - 1) {
-            if x_vals[i] == med {
-                med_ind = i
+
+        return convertedDepth.depthDataMap
+    }
+
+    public static func processObjectData(
+        pixelBuffer: CVPixelBuffer,
+        segmentationMap: MLMultiArray,
+        depthBuffer: CVPixelBuffer
+    ) -> [MLObject] {
+        var objects = [Int: MLObject]()
+
+        guard let segmentationHeight = segmentationMap.shape[0] as? Int,
+              let segmentationWidth = segmentationMap.shape[1] as? Int
+        else {
+            return Array(objects.values)
+        }
+
+        CVPixelBufferLockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+        // Convert the base address to a safe pointer of the appropriate type
+        let floatBuffer = unsafeBitCast(
+            CVPixelBufferGetBaseAddress(depthBuffer),
+            to: UnsafeMutablePointer<Float32>.self
+        )
+        let videoWidth = CVPixelBufferGetWidth(pixelBuffer)
+        let videoHeight = CVPixelBufferGetHeight(pixelBuffer)
+        let depthWidth = CVPixelBufferGetWidth(depthBuffer)
+        let depthHeight = CVPixelBufferGetHeight(depthBuffer)
+        let xOffset = (videoWidth - segmentationWidth) / 2
+        let yOffset = (videoHeight - segmentationHeight) / 2
+        let scaleX = videoWidth / depthWidth
+        let scaleY = videoHeight / depthHeight
+
+        for row in 0..<segmentationHeight {
+            for col in 0..<segmentationWidth {
+                let coords = [row, col] as [NSNumber]
+                let id = segmentationMap[coords].intValue
+                if id == 0 {
+                    continue
+                }
+
+                let depthMapX = (col + xOffset) / scaleX
+                let depthMapY = (row + yOffset) / scaleY
+                let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
+                let depth = floatBuffer[Int(depthIndex)]
+                if objects.keys.contains(id) {
+                    objects[id]?.center.x += col
+                    objects[id]?.center.y += row
+                    objects[id]?.depth += depth
+                    objects[id]?.size += 1
+                } else {
+                    objects[id] = MLObject(
+                        id: id,
+                        center: IntPoint(x: row, y: col),
+                        depth: depth,
+                        size: 1
+                    )
+                }
             }
         }
-        return objSizes[med_ind] >= threshold ? objs[med_ind] : ""
+
+        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+        for (id, object) in objects {
+            let size = object.size
+            objects[id]?.center.x /= size
+            objects[id]?.center.y /= size
+            objects[id]?.depth /= Float(size)
+        }
+
+        return Array(objects.values)
+    }
+
+    static func computeMainObject(
+        objects: [MLObject],
+        minSize: Int,
+        maxDepth: Float,
+        modelDimensions: ModelDimensions
+    )
+        -> MLObject?
+    {
+        if objects.isEmpty {
+            return nil
+        } else {
+            let object = objects
+                .max { a, b in
+                    a.relevanceScore(modelDimensions: modelDimensions) <
+                        b.relevanceScore(modelDimensions: modelDimensions)
+                }
+            guard let object = object else { return nil }
+            if object.size >= minSize, object.depth <= maxDepth {
+                return object
+            } else {
+                return nil
+            }
+        }
+    }
+
+    static func objectVisibilityChanged(previous: MLObject?, current: MLObject?) -> Bool {
+        if let current = current {
+            if let previous = previous {
+                return (previous.id != current.id) ||
+                    (previous.depth.round(nearest: 0.5) != current.depth.round(nearest: 0.5))
+            } else {
+                return true
+            }
+        } else {
+            return false
+        }
     }
 
     static func composeLiveMusic(
@@ -699,27 +815,35 @@ extension LiveMetalCameraViewController {
             // Video data is captured faster than it takes to compose the sound for a single output,
             // so composition can be skipped for data that is captured while a composition is
             // already in progress.
-            if !isComposing && !buttonActivated {
+            if !isComposing, !buttonActivated {
                 isComposing = true
                 compositionQueue.async { [weak self] in
-                    var objs = [String]()
-                    _ = [Float]()
-                    var x_vals = [Double]()
-                    var objSizes = [Double]()
-                    (objs, _, x_vals, objSizes) = LiveMetalCameraViewController
-                        .processSegmentationMap(segmentationMap: segmentationMap)
-
                     if liveViewVerbalModeActive == 1 {
-                        let centerObject = LiveMetalCameraViewController.computeCenterObject(
-                            objs: objs,
-                            x_vals: x_vals,
-                            objSizes: objSizes,
-                            threshold: 0.1
+                        let depthMap = LiveMetalCameraViewController
+                            .getDepthMap(depthData: depthData)
+                        let objects = LiveMetalCameraViewController.processObjectData(
+                            pixelBuffer: pixelBuffer,
+                            segmentationMap: segmentationMap,
+                            depthBuffer: depthMap
                         )
-                        if centerObject != lastCenterObject {
-                            self?.speaker.speak(text: centerObject)
-                            lastCenterObject = centerObject
+                        let mainObject = LiveMetalCameraViewController.computeMainObject(
+                            objects: objects,
+                            minSize: 26000,
+                            maxDepth: 16.0,
+                            modelDimensions: ModelDimensions.deepLabV3
+                        )
+                        if let centerObject = mainObject {
+                            if LiveMetalCameraViewController.objectVisibilityChanged(
+                                previous: lastMainObject,
+                                current: centerObject
+                            ) {
+                                self?.speaker.speak(
+                                    objectName: labels[centerObject.id],
+                                    depth: centerObject.depth.round(nearest: 0.5)
+                                )
+                            }
                         }
+                        lastMainObject = mainObject
                     }
 
                     if liveViewModeActive == true {

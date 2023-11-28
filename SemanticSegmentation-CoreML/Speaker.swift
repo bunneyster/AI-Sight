@@ -21,7 +21,9 @@ class Speaker: NSObject {
     ///
     /// - Parameters:
     ///   - posValue: A number ranging from 0 to 1.
-    public static func horizontalPosition(posValue: Double) -> String {
+    public static func horizontalPosition(posValue: Double?) -> String? {
+        guard let posValue = posValue else { return nil }
+
         if posValue <= 0.20 {
             return "far left"
         } else if posValue <= 0.40 {
@@ -39,7 +41,9 @@ class Speaker: NSObject {
     ///
     /// - Parameters:
     ///   - multiplier: A number ranging from 0.7 to 1.7.
-    public static func verticalPosition(multiplier: Float) -> String {
+    public static func verticalPosition(multiplier: Float?) -> String? {
+        guard let multiplier = multiplier else { return nil }
+
         if multiplier <= 0.9 {
             return "bottom"
         } else if multiplier <= 1.1 {
@@ -53,18 +57,36 @@ class Speaker: NSObject {
         }
     }
 
-    /// Speaks the phrase "[object name] + [vertical position] + [horizontal position]".
+    /// Returns a phrase describing the given number as a distance in meters.
+    ///
+    /// - Parameters:
+    ///   - depth: A non-negative multiple of 0.5.
+    public static func depthPosition(depth: Float?) -> String? {
+        guard let depth = depth else { return nil }
+
+        return "\(depth) meters away"
+    }
+
+    /// Speaks the phrase "[object name] + [vertical position] + [horizontal position] +
+    /// [distance]".
     ///
     /// - Parameters:
     ///   - objectName: The name of the object.
     ///   - multiplier: The number corresponding to the object's vertical position.
     ///   - posValue: The number corresponding to the object's horizontal position.
-    public func speak(objectName: String, multiplier: Float, posValue: Double) {
+    ///   - depth: The distance to the object, in meters.
+    public func speak(
+        objectName: String,
+        multiplier: Float? = nil,
+        posValue: Double? = nil,
+        depth: Float? = nil
+    ) {
         let phrase = [
             objectName,
             Speaker.verticalPosition(multiplier: multiplier),
             Speaker.horizontalPosition(posValue: posValue),
-        ].joined(separator: " ")
+            Speaker.depthPosition(depth: depth),
+        ].compactMap { $0 }.joined(separator: " ")
         speak(text: phrase)
     }
 

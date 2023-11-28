@@ -64,45 +64,61 @@ final class LiveMetalCameraViewControllerTest: XCTestCase {
         XCTAssertEqual(result2, 20)
     }
 
-    func testComputeCenterObject_underThreshold() throws {
-        let objs = ["bird", "cat", "person"]
-        let x_vals = [0.2, 0.5, 0.7]
-        let objSizes = [0.04, 0.25, 0.64]
+    func testComputeMainObject() throws {
+        let objects = [
+            MLObject(id: 1, center: IntPoint(x: 1, y: 1), depth: 1, size: 30),
+            MLObject(id: 2, center: IntPoint(x: 5, y: 5), depth: 1, size: 30),
+            MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 1, size: 30),
+        ]
 
-        let result = LiveMetalCameraViewController.computeCenterObject(
-            objs: objs,
-            x_vals: x_vals,
-            objSizes: objSizes,
-            threshold: 0.3
+        let result = LiveMetalCameraViewController.computeMainObject(
+            objects: objects,
+            minSize: 20,
+            maxDepth: 5,
+            modelDimensions: ModelDimensions(height: 10, width: 10)
         )
-        XCTAssertEqual(result, "")
+        XCTAssertEqual(result!.id, 2)
     }
 
-    func testComputeCenterObject_aboveThreshold() throws {
-        let objs = ["bird", "cat", "person"]
-        let x_vals = [0.2, 0.5, 0.7]
-        let objSizes = [0.04, 0.25, 0.64]
+    func testComputeMainObject_underSizeThreshold() throws {
+        let objects = [
+            MLObject(id: 1, center: IntPoint(x: 1, y: 1), depth: 1, size: 10),
+            MLObject(id: 2, center: IntPoint(x: 5, y: 5), depth: 1, size: 10),
+            MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 1, size: 10),
+        ]
 
-        let result = LiveMetalCameraViewController.computeCenterObject(
-            objs: objs,
-            x_vals: x_vals,
-            objSizes: objSizes,
-            threshold: 0.2
+        let result = LiveMetalCameraViewController.computeMainObject(
+            objects: objects,
+            minSize: 20,
+            maxDepth: 5,
+            modelDimensions: ModelDimensions(height: 10, width: 10)
         )
-        XCTAssertEqual(result, "cat")
+        XCTAssertNil(result)
     }
 
-    func testComputeCenterObject_noObjects() throws {
-        let objs = [String]()
-        let x_vals = [Double]()
-        let objSizes = [Double]()
+    func testComputeMainObject_overDepthThreshold() throws {
+        let objects = [
+            MLObject(id: 1, center: IntPoint(x: 1, y: 1), depth: 9, size: 30),
+            MLObject(id: 2, center: IntPoint(x: 5, y: 5), depth: 9, size: 30),
+            MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 9, size: 30),
+        ]
 
-        let result = LiveMetalCameraViewController.computeCenterObject(
-            objs: objs,
-            x_vals: x_vals,
-            objSizes: objSizes,
-            threshold: 0.5
+        let result = LiveMetalCameraViewController.computeMainObject(
+            objects: objects,
+            minSize: 10,
+            maxDepth: 5,
+            modelDimensions: ModelDimensions(height: 10, width: 10)
         )
-        XCTAssertEqual(result, "")
+        XCTAssertNil(result)
+    }
+
+    func testComputeMainObject_noObjects() throws {
+        let result = LiveMetalCameraViewController.computeMainObject(
+            objects: [],
+            minSize: 20,
+            maxDepth: 5,
+            modelDimensions: ModelDimensions(height: 10, width: 10)
+        )
+        XCTAssertNil(result)
     }
 }
