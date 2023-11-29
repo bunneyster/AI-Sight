@@ -8,7 +8,9 @@
 
 import Foundation
 
-/// An object identified via an image processing ML model.
+// MARK: - MLObject
+
+// An object identified via an image processing ML model.
 class MLObject {
     // MARK: Lifecycle
 
@@ -45,5 +47,13 @@ class MLObject {
         let normalizedSize = Float(size) / Float(modelDimensions.size)
 
         return (normalizedDistance * 0.6) + (normalizedSize * 0.4)
+    }
+}
+
+// MARK: CustomStringConvertible
+
+extension MLObject: CustomStringConvertible {
+    var description: String {
+        return "MLObject(id: \(id), center: \(center), depth: \(depth), size: \(size))"
     }
 }

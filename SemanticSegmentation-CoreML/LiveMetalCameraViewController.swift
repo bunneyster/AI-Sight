@@ -575,11 +575,13 @@ extension LiveMetalCameraViewController {
                 let depthMapY = (row + yOffset) / scaleY
                 let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
                 let depth = floatBuffer[Int(depthIndex)]
-                if objects.keys.contains(id) {
-                    objects[id]?.center.x += col
-                    objects[id]?.center.y += row
-                    objects[id]?.depth += depth
-                    objects[id]?.size += 1
+                if let object = objects[id] {
+                    object.center.x += col
+                    object.center.y += row
+                    if depth > 0, depth < object.depth {
+                        object.depth = depth
+                    }
+                    object.size += 1
                 } else {
                     objects[id] = MLObject(
                         id: id,
@@ -597,7 +599,6 @@ extension LiveMetalCameraViewController {
             let size = object.size
             objects[id]?.center.x /= size
             objects[id]?.center.y /= size
-            objects[id]?.depth /= Float(size)
         }
 
         return Array(objects.values)
@@ -676,12 +677,15 @@ extension LiveMetalCameraViewController {
                             segmentationMap: segmentationMap,
                             depthBuffer: depthMap
                         )
+                        Logger()
+                            .debug("\(objects.map { "\($0)" }.joined(separator: "\n"))")
                         let mainObject = LiveMetalCameraViewController.computeMainObject(
                             objects: objects,
                             minSize: 26000,
-                            maxDepth: 16.0,
+                            maxDepth: 5.0,  // maximum range of iPhone LiDAR sensor is ~5 meters
                             modelDimensions: ModelDimensions.deepLabV3
                         )
+                        Logger().debug("main object: \(String(describing: mainObject))")
                         if let centerObject = mainObject {
                             if LiveMetalCameraViewController.objectVisibilityChanged(
                                 previous: lastMainObject,
