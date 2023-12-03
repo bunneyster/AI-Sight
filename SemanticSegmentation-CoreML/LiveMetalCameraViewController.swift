@@ -84,9 +84,9 @@ var liveViewModeColumns: Int = 1
 
 var liveViewVerbalModeActive: Int = 1
 
-/// The last object that was the main object in the frame.
+/// The main object that was last announced.
 ///
-/// The value may be `nil` when no objects are identified (background does not count).
+/// The value may be `nil` when no objects were identified (background does not count).
 var lastMainObject: MLObject?
 
 // MARK: - LiveMetalCameraViewController
@@ -629,16 +629,19 @@ extension LiveMetalCameraViewController {
         }
     }
 
-    static func objectVisibilityChanged(previous: MLObject?, current: MLObject?) -> Bool {
+    static func mainObjectChanged(previous: MLObject?, current: MLObject?) -> Bool {
         if let current = current {
             if let previous = previous {
-                return (previous.id != current.id) ||
-                    (previous.depth.round(nearest: 0.5) != current.depth.round(nearest: 0.5))
+                return current.id != previous.id || !current.depth.isWithinRange(
+                    of: previous.depth,
+                    nearest: 0.5,
+                    tolerance: 0.2
+                )
             } else {
                 return true
             }
         } else {
-            return false
+            return previous != nil
         }
     }
 
@@ -686,18 +689,18 @@ extension LiveMetalCameraViewController {
                             modelDimensions: ModelDimensions.deepLabV3
                         )
                         Logger().debug("main object: \(String(describing: mainObject))")
-                        if let centerObject = mainObject {
-                            if LiveMetalCameraViewController.objectVisibilityChanged(
-                                previous: lastMainObject,
-                                current: centerObject
-                            ) {
+                        if LiveMetalCameraViewController.mainObjectChanged(
+                            previous: lastMainObject,
+                            current: mainObject
+                        ) {
+                            lastMainObject = mainObject
+                            if let mainObject = mainObject {
                                 self?.speaker.speak(
-                                    objectName: labels[centerObject.id],
-                                    depth: centerObject.depth.round(nearest: 0.5)
+                                    objectName: labels[mainObject.id],
+                                    depth: mainObject.depth.round(nearest: 0.5)
                                 )
                             }
                         }
-                        lastMainObject = mainObject
                     }
 
                     if liveViewModeActive == true {

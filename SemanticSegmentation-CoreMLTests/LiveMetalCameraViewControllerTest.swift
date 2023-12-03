@@ -121,4 +121,70 @@ final class LiveMetalCameraViewControllerTest: XCTestCase {
         )
         XCTAssertNil(result)
     }
+
+    func testMainObjectChanged_noChange() throws {
+        let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+        let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertFalse(result)
+    }
+
+    func testMainObjectChanged_objectChangesDepthWithinTolerance() throws {
+        let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+        let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.94, size: 10)
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertFalse(result)
+    }
+
+    func testMainObjectChanged_objectChangesDepthOutsideTolerance() throws {
+        let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+        let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.95, size: 10)
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertTrue(result)
+    }
+
+    func testMainObjectChanged_differentObject() throws {
+        let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+        let current = MLObject(id: 2, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertTrue(result)
+    }
+
+    func testMainObjectChanged_objectAppears() throws {
+        let previous: MLObject? = nil
+        let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertTrue(result)
+    }
+
+    func testMainObjectChanged_objectDisappears() throws {
+        let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.7, size: 10)
+        let current: MLObject? = nil
+
+        let result = LiveMetalCameraViewController.mainObjectChanged(
+            previous: previous,
+            current: current
+        )
+        XCTAssertTrue(result)
+    }
 }
