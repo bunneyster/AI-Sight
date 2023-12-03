@@ -578,8 +578,8 @@ extension LiveMetalCameraViewController {
                 if let object = objects[id] {
                     object.center.x += col
                     object.center.y += row
-                    if depth > 0, depth < object.depth {
-                        object.depth = depth
+                    if depth > 0 {
+                        object.depth = object.depth == 0 ? depth : min(object.depth, depth)
                     }
                     object.size += 1
                 } else {
