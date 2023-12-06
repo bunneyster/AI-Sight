@@ -31,6 +31,9 @@ class MLObject {
     var depth: Float
     /// The number of pixels occupied by this object.
     var size: Int
+    /// The score representing how central this object is within the context of a DeepLabV3
+    /// segmentation map.
+    lazy var relevanceScore = relevanceScore(modelDimensions: ModelDimensions.deepLabV3)
 
     /// A score representing how central this object is within the context of the image.
     ///
@@ -45,8 +48,9 @@ class MLObject {
         let normalizedDistance = 1 - Float(distanceSquared) /
             Float(modelDimensions.maxCenterDistanceSquared)
         let normalizedSize = Float(size) / Float(modelDimensions.size)
+        let curvedSize = exp(-pow(normalizedSize - 0.7, 2) / (2 * pow(0.3, 2)))
 
-        return (normalizedDistance * 0.6) + (normalizedSize * 0.4)
+        return normalizedDistance * curvedSize
     }
 }
 
@@ -54,6 +58,6 @@ class MLObject {
 
 extension MLObject: CustomStringConvertible {
     var description: String {
-        return "MLObject(id: \(id), center: \(center), depth: \(depth), size: \(size))"
+        return "MLObject(id: \(id), center: \(center), depth: \(depth), size: \(size), relevanceScore: \(relevanceScore)"
     }
 }
