@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */; };
 		4120E92A2B1FF8FD006CA565 /* MLObjectTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */; };
+		4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */; };
 		4159AF2D2B0D9D80000C52D3 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */; };
 		4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */; };
 		4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF302B0DA871000C52D3 /* ModelDimensions.swift */; };
@@ -265,7 +267,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorder.swift; sourceTree = "<group>"; };
 		4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObjectTest.swift; sourceTree = "<group>"; };
+		4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorderTest.swift; sourceTree = "<group>"; };
 		4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
 		4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ExtensionsTest.swift"; sourceTree = "<group>"; };
 		4159AF302B0DA871000C52D3 /* ModelDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDimensions.swift; sourceTree = "<group>"; };
@@ -540,6 +544,7 @@
 				418E5A352AC400A900D0813E /* PlayerTest.swift */,
 				4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */,
 				4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */,
+				4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */,
 				4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */,
 			);
 			path = "SemanticSegmentation-CoreMLTests";
@@ -795,6 +800,7 @@
 				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
 				4195BE192B158DB8009FE885 /* MLObject.swift */,
 				4159AF302B0DA871000C52D3 /* ModelDimensions.swift */,
+				4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */,
 				4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */,
 				4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */,
 				C4BB0D90256192F100354C08 /* MetalCamera */,
@@ -1158,6 +1164,7 @@
 				418E5A362AC400A900D0813E /* PlayerTest.swift in Sources */,
 				4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */,
 				4195BE242B16AC49009FE885 /* MLMultiArrayHelperTest.swift in Sources */,
+				4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */,
 				4120E92A2B1FF8FD006CA565 /* MLObjectTest.swift in Sources */,
 				41D3F4F32AD9CE01000738C1 /* LiveMetalCameraViewControllerTest.swift in Sources */,
 			);
@@ -1192,6 +1199,7 @@
 				4195BE1E2B16A9AC009FE885 /* Player.swift in Sources */,
 				C4DDEF7525FBCBC8000CF6A5 /* FaceParsing.mlmodel in Sources */,
 				C4BB0D96256195F800354C08 /* Maths.swift in Sources */,
+				4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */,
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,

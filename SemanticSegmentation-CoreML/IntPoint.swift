@@ -9,7 +9,7 @@
 import Foundation
 
 /// A pair of coordinates, like `CGPoint`, but using `Int`.
-struct IntPoint {
+struct IntPoint: Equatable {
     var x: Int
     var y: Int
 }

@@ -61,3 +61,15 @@ extension MLObject: CustomStringConvertible {
         return "MLObject(id: \(id), center: \(center), depth: \(depth), size: \(size), relevanceScore: \(relevanceScore)"
     }
 }
+
+// MARK: Equatable
+
+extension MLObject: Equatable {
+    static func == (lhs: MLObject, rhs: MLObject) -> Bool {
+        return
+            lhs.id == rhs.id &&
+            lhs.center == rhs.center &&
+            lhs.depth == rhs.depth &&
+            lhs.size == rhs.size
+    }
+}

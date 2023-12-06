@@ -157,6 +157,8 @@ class LiveMetalCameraViewController: UIViewController {
 
     // MARK: - Vision Properties
 
+    let objectFrequencyRecorder = ObjectFrequencyRecorder(frameCount: 3, minFrequency: 3)
+
     var lastSegmentationMap: MLMultiArray?
     var visionModel: VNCoreMLModel?
 
@@ -675,30 +677,38 @@ extension LiveMetalCameraViewController {
                 compositionQueue.async { [weak self] in
                     if liveViewVerbalModeActive == 1 {
                         let depthMap = DepthHelper.getDepthMap(depthData: depthData)
-                        let objects = LiveMetalCameraViewController.processObjectData(
+                        let rawObjects = LiveMetalCameraViewController.processObjectData(
                             pixelBuffer: pixelBuffer,
                             segmentationMap: segmentationMap,
                             depthBuffer: depthMap
                         )
                         Logger()
-                            .debug("\(objects.map { "\($0)" }.joined(separator: "\n"))")
-                        let mainObject = LiveMetalCameraViewController.computeMainObject(
-                            objects: objects,
-                            minSize: 26000,
-                            maxDepth: 5.0,  // maximum range of iPhone LiDAR sensor is ~5 meters
-                            modelDimensions: ModelDimensions.deepLabV3
-                        )
-                        Logger().debug("main object: \(String(describing: mainObject))")
-                        if LiveMetalCameraViewController.mainObjectChanged(
-                            previous: lastMainObject,
-                            current: mainObject
-                        ) {
-                            lastMainObject = mainObject
-                            if let mainObject = mainObject {
-                                self?.speaker.speak(
-                                    objectName: labels[mainObject.id],
-                                    depth: mainObject.depth.round(nearest: 0.5)
+                            .debug("raw:\n\(rawObjects.map { "\($0)" }.joined(separator: "\n"))")
+                        if let filteredObjects = self?.objectFrequencyRecorder
+                            .filter(objects: rawObjects)
+                        {
+                            Logger()
+                                .debug(
+                                    "filtered:\n\(filteredObjects.map { "\($0)" }.joined(separator: "\n"))"
                                 )
+                            let mainObject = LiveMetalCameraViewController.computeMainObject(
+                                objects: filteredObjects,
+                                minSize: 13000,
+                                maxDepth: 5.0, // maximum range of iPhone LiDAR sensor is ~5 meters
+                                modelDimensions: ModelDimensions.deepLabV3
+                            )
+                            Logger().debug("main object: \(String(describing: mainObject))")
+                            if LiveMetalCameraViewController.mainObjectChanged(
+                                previous: lastMainObject,
+                                current: mainObject
+                            ) {
+                                lastMainObject = mainObject
+                                if let mainObject = mainObject {
+                                    self?.speaker.speak(
+                                        objectName: labels[mainObject.id],
+                                        depth: mainObject.depth.round(nearest: 0.5)
+                                    )
+                                }
                             }
                         }
                     }
