@@ -340,6 +340,24 @@ class LiveMetalCameraViewController: UIViewController {
 
     @IBAction
     func speechModeButtonTapped(_: Any) {
+        let engine = AVAudioEngine()
+
+        let shutterNode = AVAudioPlayerNode()
+        let shutterFile = try! AVAudioFile(
+            forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
+        )
+        engine.attach(shutterNode)
+        engine.connect(
+            shutterNode,
+            to: engine.mainMixerNode,
+            format: shutterFile.processingFormat
+        )
+        engine.prepare()
+
+        shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
+        try! engine.start()
+        shutterNode.play()
+
         if let segmentationMap = lastSegmentationMap {
             buttonActivated = true
             compositionQueue.async { [weak self] in
