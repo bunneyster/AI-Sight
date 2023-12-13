@@ -275,6 +275,8 @@ extension CVPixelBuffer {
                 let bytesPerRow = CVPixelBufferGetBytesPerRow(self)
                 destAddress.copyMemory(from: srcAddress, byteCount: height * bytesPerRow)
             }
+            CVPixelBufferUnlockBaseAddress(self, .readOnly)
+            CVPixelBufferUnlockBaseAddress(clone, CVPixelBufferLockFlags(rawValue: 0))
         }
 
         return clone
