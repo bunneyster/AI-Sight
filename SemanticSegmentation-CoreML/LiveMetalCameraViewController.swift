@@ -532,7 +532,7 @@ extension LiveMetalCameraViewController {
                 continue
             }
 
-            let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(
+            let objectAndPitchMultiplier = SoundHelper.getObjectAndPitchMultiplier(
                 k: k,
                 v: v,
                 x: x,
@@ -733,12 +733,12 @@ extension LiveMetalCameraViewController {
 
                     if liveViewModeActive == true {
                         let depthPoints = DepthHelper.computeDepthPoints(depthData: depthData)
-                        let melody = Player.composeLiveMusic(
+                        let melody = SoundHelper.composeLiveMusic(
                             segmentationMap: segmentationMap,
                             depthPoints: depthPoints
                         )
 
-                        Player.playMusic(melody: melody)
+                        SoundHelper.playMusic(melody: melody)
                     }
                     self?.isComposing = false
                 }

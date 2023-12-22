@@ -209,7 +209,7 @@ extension LiveImageViewController {
                 if (k==0) {
                     continue
                 }
-                let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(
+                let objectAndPitchMultiplier = SoundHelper.getObjectAndPitchMultiplier(
                     k: k,
                     v: v,
                     x: x,

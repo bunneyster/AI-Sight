@@ -150,7 +150,7 @@ extension StillImageViewController {
                     continue
                 }
 
-                let objectAndPitchMultiplier = Player.getObjectAndPitchMultiplier(k:k, v:v, x:x, y:y, row: row, col: col)
+                let objectAndPitchMultiplier = SoundHelper.getObjectAndPitchMultiplier(k:k, v:v, x:x, y:y, row: row, col: col)
                 let obj = objectAndPitchMultiplier.obj
                 let mult_val = objectAndPitchMultiplier.mult_val
                 let x_val = objectAndPitchMultiplier.xValue

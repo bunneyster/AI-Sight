@@ -10,7 +10,7 @@ import AVFoundation
 import Foundation
 import Vision
 
-class Player {
+class SoundHelper {
     // MARK: Public
 
     /// Computes the vocalized attributes for a given object.

@@ -10,10 +10,10 @@
 import Vision
 import XCTest
 
-final class PlayerTest: XCTestCase {
+final class SoundHelperTest: XCTestCase {
     func testGetObjectAndPitchMultiplier_1x1Segment() throws {
         // Cat occupies 1x1 area in center of 3x3 image
-        let result = Player.getObjectAndPitchMultiplier(
+        let result = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 0,
             x: [8: 1],
@@ -29,7 +29,7 @@ final class PlayerTest: XCTestCase {
     }
 
     func testGetObjectAndPitchMultiplier_objectId() throws {
-        let objectId0 = Player.getObjectAndPitchMultiplier(
+        let objectId0 = SoundHelper.getObjectAndPitchMultiplier(
             k: 0,
             v: 25,
             x: [8: 125],
@@ -37,7 +37,7 @@ final class PlayerTest: XCTestCase {
             row: 10,
             col: 10
         )
-        let objectId8 = Player.getObjectAndPitchMultiplier(
+        let objectId8 = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -45,7 +45,7 @@ final class PlayerTest: XCTestCase {
             row: 10,
             col: 10
         )
-        let objectId20 = Player.getObjectAndPitchMultiplier(
+        let objectId20 = SoundHelper.getObjectAndPitchMultiplier(
             k: 20,
             v: 25,
             x: [8: 125],
@@ -61,7 +61,7 @@ final class PlayerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_multiplier() throws {
         // Cat occupies 5x5 area at top of 10x10 image
-        let yTop = Player.getObjectAndPitchMultiplier(
+        let yTop = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -70,7 +70,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let yMid = Player.getObjectAndPitchMultiplier(
+        let yMid = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -79,7 +79,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at bottom of 10x10 image
-        let yBottom = Player.getObjectAndPitchMultiplier(
+        let yBottom = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -95,7 +95,7 @@ final class PlayerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_xValue() throws {
         // Cat occupies 5x5 area at left of 10x10 image
-        let xLeft = Player.getObjectAndPitchMultiplier(
+        let xLeft = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 50],
@@ -104,7 +104,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let xMid = Player.getObjectAndPitchMultiplier(
+        let xMid = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -113,7 +113,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at left of 10x10 image
-        let xRight = Player.getObjectAndPitchMultiplier(
+        let xRight = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 175],
@@ -129,7 +129,7 @@ final class PlayerTest: XCTestCase {
 
     func testGetObjectAndPitchMultiplier_size() throws {
         // Cat occupies 2x2 area at center of 10x10 image
-        let small = Player.getObjectAndPitchMultiplier(
+        let small = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 4,
             x: [8: 9],
@@ -138,7 +138,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 5x5 area at center of 10x10 image
-        let medium = Player.getObjectAndPitchMultiplier(
+        let medium = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 25,
             x: [8: 125],
@@ -147,7 +147,7 @@ final class PlayerTest: XCTestCase {
             col: 10
         )
         // Cat occupies 8x8 area at center of 10x10 image
-        let large = Player.getObjectAndPitchMultiplier(
+        let large = SoundHelper.getObjectAndPitchMultiplier(
             k: 8,
             v: 64,
             x: [8: 288],
