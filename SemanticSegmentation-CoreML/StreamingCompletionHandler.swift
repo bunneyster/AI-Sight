@@ -28,13 +28,7 @@ public class StreamingCompletionHandler: Subscriber {
 
     public func receive(_ input: CapturedData) -> Subscribers.Demand {
         if liveViewVerbalModeActive == 1 {
-            let depthBuffer = DepthHelper.getDepthMap(depthData: input.depthData)
-            let rawObjects = StreamingCompletionHandler.processObjectData(
-                videoBufferWidth: input.videoBufferWidth,
-                videoBufferHeight: input.videoBufferHeight,
-                segmentationMap: input.segmentationMap,
-                depthBuffer: depthBuffer
-            )
+            let rawObjects = input.extractObjects()
             Logger()
                 .debug("raw:\n\(rawObjects.map { "\($0)" }.joined(separator: "\n"))")
             let filteredObjects = objectFrequencyRecorder
@@ -86,77 +80,6 @@ public class StreamingCompletionHandler: Subscriber {
     // MARK: Internal
 
     let objectFrequencyRecorder = ObjectFrequencyRecorder(frameCount: 3, minFrequency: 3)
-
-    static func processObjectData(
-        videoBufferWidth: Int,
-        videoBufferHeight: Int,
-        segmentationMap: MLMultiArray,
-        depthBuffer: CVPixelBuffer
-    ) -> [MLObject] {
-        var objects = [Int: MLObject]()
-
-        guard let segmentationHeight = segmentationMap.shape[0] as? Int,
-              let segmentationWidth = segmentationMap.shape[1] as? Int
-        else {
-            return Array(objects.values)
-        }
-
-        CVPixelBufferLockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        // Convert the base address to a safe pointer of the appropriate type
-        let floatBuffer = unsafeBitCast(
-            CVPixelBufferGetBaseAddress(depthBuffer),
-            to: UnsafeMutablePointer<Float32>.self
-        )
-        let videoWidth = videoBufferWidth
-        let videoHeight = videoBufferHeight
-        let depthWidth = CVPixelBufferGetWidth(depthBuffer)
-        let depthHeight = CVPixelBufferGetHeight(depthBuffer)
-        let xOffset = (videoWidth - segmentationWidth) / 2
-        let yOffset = (videoHeight - segmentationHeight) / 2
-        let scaleX = videoWidth / depthWidth
-        let scaleY = videoHeight / depthHeight
-
-        for row in 0..<segmentationHeight {
-            for col in 0..<segmentationWidth {
-                let coords = [row, col] as [NSNumber]
-                let id = segmentationMap[coords].intValue
-                if id == 0 {
-                    continue
-                }
-
-                let depthMapX = (col + xOffset) / scaleX
-                let depthMapY = (row + yOffset) / scaleY
-                let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
-                let depth = floatBuffer[Int(depthIndex)]
-                if let object = objects[id] {
-                    object.center.x += col
-                    object.center.y += row
-                    if depth > 0 {
-                        object.depth = object.depth == 0 ? depth : min(object.depth, depth)
-                    }
-                    object.size += 1
-                } else {
-                    objects[id] = MLObject(
-                        id: id,
-                        center: IntPoint(x: row, y: col),
-                        depth: depth,
-                        size: 1
-                    )
-                }
-            }
-        }
-
-        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        for (id, object) in objects {
-            let size = object.size
-            objects[id]?.center.x /= size
-            objects[id]?.center.y /= size
-        }
-
-        return Array(objects.values)
-    }
 
     static func computeMainObject(
         objects: [MLObject],

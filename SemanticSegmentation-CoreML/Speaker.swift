@@ -15,16 +15,16 @@ class Speaker {
     ///
     /// - Parameters:
     ///   - posValue: A number ranging from 0 to 1.
-    public static func horizontalPosition(posValue: Double?) -> String? {
+    public static func horizontalPosition(posValue: Float?) -> String? {
         guard let posValue = posValue else { return nil }
 
-        if posValue <= 0.20 {
+        if posValue <= 0.2 {
             return "far left"
-        } else if posValue <= 0.40 {
+        } else if posValue <= 0.4 {
             return "left"
-        } else if posValue <= 0.60 {
+        } else if posValue <= 0.6 {
             return "center"
-        } else if posValue <= 0.80 {
+        } else if posValue <= 0.8 {
             return "right"
         } else {
             return "far right"
@@ -34,18 +34,18 @@ class Speaker {
     /// Returns a phrase describing the vertical position represented by the given number.
     ///
     /// - Parameters:
-    ///   - multiplier: A number ranging from 0.7 to 1.7.
+    ///   - multiplier: A number ranging from 0 to 1.
     public static func verticalPosition(multiplier: Float?) -> String? {
         guard let multiplier = multiplier else { return nil }
 
-        if multiplier <= 0.9 {
-            return "bottom"
-        } else if multiplier <= 1.1 {
-            return "lower"
-        } else if multiplier >= 1.5 {
+        if multiplier <= 0.2 {
             return "top"
-        } else if multiplier >= 1.3 {
+        } else if multiplier <= 0.4 {
             return "upper"
+        } else if multiplier >= 0.8 {
+            return "bottom"
+        } else if multiplier >= 0.6 {
+            return "lower"
         } else {
             return " "
         }
@@ -71,15 +71,15 @@ class Speaker {
     ///   - depth: The distance to the object, in meters.
     public func speak(
         objectName: String,
-        multiplier: Float? = nil,
-        posValue: Double? = nil,
+        verticalPosition: Float? = nil,
+        horizontalPosition: Float? = nil,
         depth: Float? = nil,
         interrupt: Bool = true
     ) {
         let phrase = [
             objectName,
-            Speaker.verticalPosition(multiplier: multiplier),
-            Speaker.horizontalPosition(posValue: posValue),
+            Speaker.verticalPosition(multiplier: verticalPosition),
+            Speaker.horizontalPosition(posValue: horizontalPosition),
             Speaker.depthPosition(depth: depth),
         ].compactMap { $0 }.joined(separator: " ")
         speak(text: phrase, interrupt: interrupt)

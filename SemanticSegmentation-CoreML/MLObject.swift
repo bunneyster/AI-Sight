@@ -11,7 +11,7 @@ import Foundation
 // MARK: - MLObject
 
 // An object identified via an image processing ML model.
-class MLObject {
+public class MLObject {
     // MARK: Lifecycle
 
     init(id: Int, center: IntPoint, depth: Float, size: Int) {
@@ -57,7 +57,7 @@ class MLObject {
 // MARK: CustomStringConvertible
 
 extension MLObject: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         return "MLObject(id: \(id), center: \(center), depth: \(depth), size: \(size), relevanceScore: \(relevanceScore)"
     }
 }
@@ -65,7 +65,7 @@ extension MLObject: CustomStringConvertible {
 // MARK: Equatable
 
 extension MLObject: Equatable {
-    static func == (lhs: MLObject, rhs: MLObject) -> Bool {
+    public static func == (lhs: MLObject, rhs: MLObject) -> Bool {
         return
             lhs.id == rhs.id &&
             lhs.center == rhs.center &&

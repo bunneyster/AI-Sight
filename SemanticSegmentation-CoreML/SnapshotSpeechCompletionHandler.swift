@@ -16,88 +16,29 @@ class SnapshotSpeechCompletionHandler: Subscriber {
 
     typealias Failure = Never
 
-    static func processSegmentationMap(segmentationMap: MLMultiArray)
-        -> ([String], [Float], [Double], [Double])
-    {
-        var objs = [String]()
-        var mults = [Float]()
-        var x_vals = [Double]()
-        var objSizes = [Double]()
-
-        guard let row = segmentationMap.shape[0] as? Int,
-              let col = segmentationMap.shape[1] as? Int
-        else {
-            return (objs, mults, x_vals, objSizes)
-        }
-
-        let imageFrameCoordinates = MLMultiArrayHelper.getImageFrameCoordinates(
-            segmentationmap: segmentationMap,
-            row: row,
-            col: col
-        )
-
-        let o = imageFrameCoordinates.o
-        let x = imageFrameCoordinates.x
-        let y = imageFrameCoordinates.y
-
-        for (k, v) in o {
-            if k == 0 {
-                continue
-            }
-
-            let objectAndPitchMultiplier = SoundHelper.getObjectAndPitchMultiplier(
-                k: k,
-                v: v,
-                x: x,
-                y: y,
-                row: row,
-                col: col
-            )
-            let obj = objectAndPitchMultiplier.obj
-            let mult_val = objectAndPitchMultiplier.mult_val
-            let x_val = objectAndPitchMultiplier.xValue
-            let objSize = objectAndPitchMultiplier.sizes
-
-            objs.append(obj)
-            mults.append(mult_val)
-            x_vals.append(x_val)
-            objSizes.append(objSize)
-        }
-
-        return (objs, mults, x_vals, objSizes)
-    }
+    let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
 
     func receive(_ input: CapturedData) -> Subscribers.Demand {
         usleep(1_500_000)
 
-        var objs = [String]()
-        var mults = [Float]()
-        var x_vals = [Double]()
-        var objSizes = [Double]()
-        (objs, mults, x_vals, objSizes) = SnapshotSpeechCompletionHandler
-            .processSegmentationMap(segmentationMap: input.segmentationMap)
-
-        if objs.isEmpty {
-            Speaker.shared.speak(text: "No Objects Identified")
+        let objects = input.extractObjects().sorted(by: { $0.center < $1.center })
+            .filter { !ignoredObjects.contains(labels[$0.id]) }
+        if objects.isEmpty {
+            Speaker.shared.speak(text: "No objects identified")
         } else {
-            let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
-            let sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
-            for (i, _) in sorted {
-                let obj = objs[i]
-                if ignoredObjects.contains(obj) {
+            for object in objects {
+                if labels[object.id] != "bottle", object.size <= 5300 {
                     continue
                 }
-                if obj != "bottle", objSizes[i] <= 0.02 {
-                    continue
-                }
-                let mult = mults[i]
-                let x_value = x_vals[i]
+                let vertical = Float(object.center.y) / Float(ModelDimensions.deepLabV3.height)
+                let horizontal = Float(object.center.x) / Float(ModelDimensions.deepLabV3.width)
                 Speaker.shared.speak(
-                    objectName: obj,
-                    multiplier: mult,
-                    posValue: x_value
+                    objectName: labels[object.id],
+                    verticalPosition: vertical,
+                    horizontalPosition: horizontal,
+                    depth: object.depth.round(nearest: 0.5),
+                    interrupt: false
                 )
-                print("The mult value is \(mult)")
             }
         }
 
