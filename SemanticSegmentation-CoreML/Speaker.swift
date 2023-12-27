@@ -58,7 +58,7 @@ class Speaker {
     public static func depthPosition(depth: Float?) -> String? {
         guard let depth = depth else { return nil }
 
-        return "\(depth) meters away"
+        return "\(depth) meters"
     }
 
     /// Speaks the phrase "[object name] + [vertical position] + [horizontal position] +
