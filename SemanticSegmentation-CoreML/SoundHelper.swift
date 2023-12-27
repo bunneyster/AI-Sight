@@ -50,7 +50,7 @@ class SoundHelper {
     ) -> [Note] {
         var columnModes = [Int]()
         for column in 0..<numColumns {
-            let mode = LiveMetalCameraViewController.mode(MLMultiArrayHelper.objectIdsInColumn(
+            let mode = mode(MLMultiArrayHelper.objectIdsInColumn(
                 column,
                 segmentationMap: segmentationMap
             )) ?? 0
@@ -121,5 +121,40 @@ class SoundHelper {
         usleep(500_000)
 
         try! liveEngine.stop()
+    }
+
+    // MARK: Internal
+
+    static func mode(_ array: [Int]) -> (Int)? {
+        let countedSet = NSCountedSet(array: array)
+        var counts = [(value: Int, count: Int)]()
+        var totalCount = 0
+
+        for value in countedSet {
+            let count = countedSet.count(for: value)
+            if let intValue = value as? Int, intValue != 0 {
+                counts.append((intValue, count))
+                totalCount += count
+            } else if let _ = value as? Int {
+                totalCount += count
+            }
+        }
+
+        counts.sort { $0.count > $1.count }
+        var returnValue = 0
+
+        if let mode = counts.first {
+            let modeValue = mode.value
+            let modeValueInt: Int = modeValue
+
+            let modeCount = Double(mode.count)
+            let modePercentage = modeCount / Double(totalCount) * 100
+            if modePercentage > 5 {
+                returnValue = modeValueInt
+            } else {
+                returnValue = 0
+            }
+        }
+        return returnValue
     }
 }

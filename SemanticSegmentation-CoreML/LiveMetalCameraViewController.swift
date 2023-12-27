@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import Combine
 import OSLog
 import UIKit
 import Vision
@@ -84,10 +85,12 @@ var liveViewModeColumns: Int = 1
 
 var liveViewVerbalModeActive: Int = 1
 
-/// The main object that was last announced.
-///
-/// The value may be `nil` when no objects were identified (background does not count).
-var lastMainObject: MLObject?
+enum CaptureMode {
+    case snapshotMusic
+    case snapshotSpeech
+    case streaming
+}
+var captureMode = CaptureMode.streaming
 
 // MARK: - LiveMetalCameraViewController
 
@@ -117,8 +120,6 @@ class LiveMetalCameraViewController: UIViewController {
 
     var cameraTexture: Texture?
     var segmentationTexture: Texture?
-
-    var speaker: Speaker!
 
     // MARK: - AV Properties
 
@@ -152,17 +153,13 @@ class LiveMetalCameraViewController: UIViewController {
         target: .global()
     )
 
-    var isComposing = false
-    var buttonActivated = false
+    let streamingPublisher = PassthroughSubject<CapturedData, Never>()
+    let snapshotMusicPublisher = PassthroughSubject<CapturedData, Never>()
+    let snapshotSpeechPublisher = PassthroughSubject<CapturedData, Never>()
 
     // MARK: - Vision Properties
 
-    let objectFrequencyRecorder = ObjectFrequencyRecorder(frameCount: 3, minFrequency: 3)
-
-    var lastSegmentationMap: MLMultiArray?
     var visionModel: VNCoreMLModel?
-
-    var isInferencing = false
 
     let maf1 = MovingAverageFilter()
     let maf2 = MovingAverageFilter()
@@ -175,7 +172,7 @@ class LiveMetalCameraViewController: UIViewController {
 
         setUpModel()
         setUpCamera()
-        setUpSpeech()
+        setUpNotifications()
     }
 
     override func didReceiveMemoryWarning() { // override
@@ -218,12 +215,18 @@ class LiveMetalCameraViewController: UIViewController {
         }
     }
 
-    // MARK: - Setup speech
+    // MARK: - Setup notifications
 
-    func setUpSpeech() {
-        let synthesizer = AVSpeechSynthesizer()
-        synthesizer.delegate = self
-        speaker = Speaker(synthesizer: synthesizer)
+    func setUpNotifications() {
+        streamingPublisher
+            .throttle(for: 0.2, scheduler: compositionQueue, latest: true)
+            .subscribe(StreamingCompletionHandler())
+        snapshotMusicPublisher
+            .throttle(for: 0.5, scheduler: compositionQueue, latest: true)
+            .subscribe(SnapshotMusicCompletionHandler())
+        snapshotSpeechPublisher
+            .throttle(for: 0.5, scheduler: compositionQueue, latest: true)
+            .subscribe(SnapshotSpeechCompletionHandler())
     }
 
     @IBAction
@@ -262,161 +265,16 @@ class LiveMetalCameraViewController: UIViewController {
 
     @IBAction
     func musicModeV2ButtonTapped(_: Any) {
-        buttonActivated = true
-        compositionQueue.async { [weak self] in
-            self?.isComposing = true
-
-            let engine = AVAudioEngine()
-
-            let shutterNode = AVAudioPlayerNode()
-            let shutterFile = try! AVAudioFile(
-                forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
-            )
-            engine.attach(shutterNode)
-            engine.connect(
-                shutterNode,
-                to: engine.mainMixerNode,
-                format: shutterFile.processingFormat
-            )
-            engine.prepare()
-
-            shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
-            try! engine.start()
-            shutterNode.play()
-            usleep(1_000_000)
-
-            if let segmentationMap = self?.lastSegmentationMap {
-                var melody: [Note] = []
-
-                for column in 0..<10 {
-                    let pan = -0.9 + Float(column) * 0.2 // [-0.9, 0.9] in increments of 0.2
-                    let fileDrums = try! AVAudioFile(
-                        forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!
-                    )
-                    melody.append(Note(file: fileDrums, pan: pan, volume: 0.5))
-
-                    for row in 0..<10 {
-                        let pixelIndex = snapshotMusicModePixelOffsets[row] + column * columnWidth
-                        let objectId = Int(truncating: segmentationMap[pixelIndex])
-                        let fileName = [String(row + 1), objectIdToSound[objectId]]
-                            .compactMap { $0 }
-                            .joined()
-                        let file = try! AVAudioFile(
-                            forReading: Bundle.main.url(
-                                forResource: fileName,
-                                withExtension: "wav"
-                            )!
-                        )
-                        melody.append(Note(
-                            file: file,
-                            pan: pan,
-                            volume: Float(objectId >= 1 ? 1.0 : 0.0)
-                        ))
-                    }
-
-                    for note in melody {
-                        engine.attach(note.node)
-                        engine.connect(
-                            note.node,
-                            to: engine.mainMixerNode,
-                            format: note.file.processingFormat
-                        )
-                        note.node.scheduleFile(note.file, at: nil, completionHandler: nil)
-                    }
-
-                    for note in melody {
-                        note.node.play()
-                        usleep(1000)
-                    }
-
-                    melody = []
-                    usleep(500_000)
-                }
-            }
-            self?.isComposing = false
-        }
-        buttonActivated = false
+        captureMode = CaptureMode.snapshotMusic
+        Speaker.shared.stop()
+        videoCapture.capturePhoto()
     }
 
     @IBAction
     func speechModeButtonTapped(_: Any) {
-        let engine = AVAudioEngine()
-
-        let shutterNode = AVAudioPlayerNode()
-        let shutterFile = try! AVAudioFile(
-            forReading: Bundle.main.url(forResource: "Shutter", withExtension: "mp3")!
-        )
-        engine.attach(shutterNode)
-        engine.connect(
-            shutterNode,
-            to: engine.mainMixerNode,
-            format: shutterFile.processingFormat
-        )
-        engine.prepare()
-
-        shutterNode.scheduleFile(shutterFile, at: nil, completionHandler: nil)
-        try! engine.start()
-        shutterNode.play()
-
-        if let segmentationMap = lastSegmentationMap {
-            buttonActivated = true
-            compositionQueue.async { [weak self] in
-                self?.isComposing = true
-                usleep(1_500_000)
-
-                var objs = [String]()
-                var mults = [Float]()
-                var x_vals = [Double]()
-                var objSizes = [Double]()
-                (objs, mults, x_vals, objSizes) = LiveMetalCameraViewController
-                    .processSegmentationMap(segmentationMap: segmentationMap)
-
-                if objs.isEmpty {
-                    self?.speaker.speak(text: "No Objects Identified")
-                } else {
-                    let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
-                    let sorted = x_vals.enumerated().sorted(by: { $0.element < $1.element })
-                    for (i, _) in sorted {
-                        let obj = objs[i]
-                        if ignoredObjects.contains(obj) {
-                            continue
-                        }
-                        if obj != "bottle", objSizes[i] <= 0.02 {
-                            continue
-                        }
-                        let mult = mults[i]
-                        let x_value = x_vals[i]
-                        self?.speaker.speak(
-                            objectName: obj,
-                            multiplier: mult,
-                            posValue: x_value
-                        )
-                        print("The mult value is \(mult)")
-                    }
-                }
-
-                usleep(1_000_000)
-            }
-        }
-    }
-
-    // MARK: Private
-
-    // MARK: - Performance Measurement Property
-
-    private let 👨‍🔧 = 📏()
-}
-
-// MARK: - LiveMetalCameraViewController + AVSpeechSynthesizerDelegate
-
-extension LiveMetalCameraViewController: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
-        // FIXME: This callback seems to get triggered before the utterance actually finishes, so
-        // any live mode sounds will resume and overlap with the end of a long utterance.
-        if buttonActivated == true {
-            buttonActivated = false
-            isComposing = false
-        }
+        captureMode = CaptureMode.snapshotSpeech
+        Speaker.shared.stop()
+        videoCapture.capturePhoto()
     }
 }
 
@@ -429,32 +287,28 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
         didCaptureVideoDepthData depthData: AVDepthData
     ) {
         dataProcessingQueue.async { [weak self] in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if !strongSelf.isInferencing {
-                strongSelf.isInferencing = true
-
-                // start of measure
-                strongSelf.👨‍🔧.🎬👏()
-
-                // predict!
-                strongSelf.predict(pixelBuffer: pixelBuffer, depthData: depthData)
-            }
+            self?.predictVideo(pixelBuffer: pixelBuffer, depthData: depthData)
         }
     }
-}
 
-// MARK: - Inference
+    func photoCapture(
+        _: VideoCapture,
+        didCapturePhotoPixelBuffer pixelBuffer: CVPixelBuffer,
+        didCapturePhotoDepthData depthData: AVDepthData
+    ) {
+        dataProcessingQueue.async { [weak self] in
+            self?.predictPhoto(pixelBuffer: pixelBuffer, depthData: depthData)
+        }
+    }
 
-extension LiveMetalCameraViewController {
-    func predict(pixelBuffer: CVPixelBuffer, depthData: AVDepthData) {
+    func predictVideo(pixelBuffer: CVPixelBuffer, depthData: AVDepthData) {
         if let visionModel = visionModel {
             let request = VNCoreMLRequest(
                 model: visionModel,
                 completionHandler: buildVNRequestCompletionHandler(
-                    completionHandler: visionRequestDidComplete(request:pixelBuffer:depthData:),
+                    completionHandler: videoVisionRequestDidComplete(
+                        request:pixelBuffer:depthData:
+                    ),
                     pixelBuffer: pixelBuffer,
                     depthData: depthData
                 )
@@ -470,198 +324,30 @@ extension LiveMetalCameraViewController {
         }
     }
 
-    static func mode(_ array: [Int]) -> (Int)? {
-        let countedSet = NSCountedSet(array: array)
-        var counts = [(value: Int, count: Int)]()
-        var totalCount = 0
-
-        for value in countedSet {
-            let count = countedSet.count(for: value)
-            if let intValue = value as? Int, intValue != 0 {
-                counts.append((intValue, count))
-                totalCount += count
-            } else if let _ = value as? Int {
-                totalCount += count
-            }
-        }
-
-        counts.sort { $0.count > $1.count }
-        var returnValue = 0
-
-        if let mode = counts.first {
-            let modeValue = mode.value
-            let modeValueInt: Int = modeValue
-
-            let modeCount = Double(mode.count)
-            let modePercentage = modeCount / Double(totalCount) * 100
-            if modePercentage > 5 {
-                returnValue = modeValueInt
-            } else {
-                returnValue = 0
-            }
-        }
-        return returnValue
-    }
-
-    static func processSegmentationMap(segmentationMap: MLMultiArray)
-        -> ([String], [Float], [Double], [Double])
-    {
-        var objs = [String]()
-        var mults = [Float]()
-        var x_vals = [Double]()
-        var objSizes = [Double]()
-
-        guard let row = segmentationMap.shape[0] as? Int,
-              let col = segmentationMap.shape[1] as? Int
-        else {
-            return (objs, mults, x_vals, objSizes)
-        }
-
-        let imageFrameCoordinates = MLMultiArrayHelper.getImageFrameCoordinates(
-            segmentationmap: segmentationMap,
-            row: row,
-            col: col
-        )
-
-        let o = imageFrameCoordinates.o
-        let x = imageFrameCoordinates.x
-        let y = imageFrameCoordinates.y
-
-        for (k, v) in o {
-            if k == 0 {
-                continue
-            }
-
-            let objectAndPitchMultiplier = SoundHelper.getObjectAndPitchMultiplier(
-                k: k,
-                v: v,
-                x: x,
-                y: y,
-                row: row,
-                col: col
-            )
-            let obj = objectAndPitchMultiplier.obj
-            let mult_val = objectAndPitchMultiplier.mult_val
-            let x_val = objectAndPitchMultiplier.xValue
-            let objSize = objectAndPitchMultiplier.sizes
-
-            objs.append(obj)
-            mults.append(mult_val)
-            x_vals.append(x_val)
-            objSizes.append(objSize)
-        }
-
-        return (objs, mults, x_vals, objSizes)
-    }
-
-    public static func processObjectData(
-        pixelBuffer: CVPixelBuffer,
-        segmentationMap: MLMultiArray,
-        depthBuffer: CVPixelBuffer
-    ) -> [MLObject] {
-        var objects = [Int: MLObject]()
-
-        guard let segmentationHeight = segmentationMap.shape[0] as? Int,
-              let segmentationWidth = segmentationMap.shape[1] as? Int
-        else {
-            return Array(objects.values)
-        }
-
-        CVPixelBufferLockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        // Convert the base address to a safe pointer of the appropriate type
-        let floatBuffer = unsafeBitCast(
-            CVPixelBufferGetBaseAddress(depthBuffer),
-            to: UnsafeMutablePointer<Float32>.self
-        )
-        let videoWidth = CVPixelBufferGetWidth(pixelBuffer)
-        let videoHeight = CVPixelBufferGetHeight(pixelBuffer)
-        let depthWidth = CVPixelBufferGetWidth(depthBuffer)
-        let depthHeight = CVPixelBufferGetHeight(depthBuffer)
-        let xOffset = (videoWidth - segmentationWidth) / 2
-        let yOffset = (videoHeight - segmentationHeight) / 2
-        let scaleX = videoWidth / depthWidth
-        let scaleY = videoHeight / depthHeight
-
-        for row in 0..<segmentationHeight {
-            for col in 0..<segmentationWidth {
-                let coords = [row, col] as [NSNumber]
-                let id = segmentationMap[coords].intValue
-                if id == 0 {
-                    continue
-                }
-
-                let depthMapX = (col + xOffset) / scaleX
-                let depthMapY = (row + yOffset) / scaleY
-                let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
-                let depth = floatBuffer[Int(depthIndex)]
-                if let object = objects[id] {
-                    object.center.x += col
-                    object.center.y += row
-                    if depth > 0 {
-                        object.depth = object.depth == 0 ? depth : min(object.depth, depth)
-                    }
-                    object.size += 1
-                } else {
-                    objects[id] = MLObject(
-                        id: id,
-                        center: IntPoint(x: row, y: col),
-                        depth: depth,
-                        size: 1
-                    )
-                }
-            }
-        }
-
-        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        for (id, object) in objects {
-            let size = object.size
-            objects[id]?.center.x /= size
-            objects[id]?.center.y /= size
-        }
-
-        return Array(objects.values)
-    }
-
-    static func computeMainObject(
-        objects: [MLObject],
-        minSize: Int,
-        maxDepth: Float,
-        modelDimensions: ModelDimensions
-    )
-        -> MLObject?
-    {
-        if objects.isEmpty {
-            return nil
-        } else {
-            let object = objects
-                .max { a, b in
-                    a.relevanceScore(modelDimensions: modelDimensions) <
-                        b.relevanceScore(modelDimensions: modelDimensions)
-                }
-            guard let object = object else { return nil }
-            if object.size >= minSize, object.depth <= maxDepth {
-                return object
-            } else {
-                return nil
-            }
-        }
-    }
-
-    static func mainObjectChanged(previous: MLObject?, current: MLObject?) -> Bool {
-        if let current = current {
-            if let previous = previous {
-                return current.id != previous.id || !current.depth.isWithinRange(
-                    of: previous.depth,
-                    nearest: 0.5,
-                    tolerance: 0.2
+    func predictPhoto(pixelBuffer: CVPixelBuffer, depthData: AVDepthData) {
+        if let visionModel = visionModel {
+            let request = VNCoreMLRequest(
+                model: visionModel,
+                completionHandler: buildVNRequestCompletionHandler(
+                    completionHandler: photoVisionRequestDidComplete(
+                        request:pixelBuffer:depthData:
+                    ),
+                    pixelBuffer: pixelBuffer,
+                    depthData: depthData
                 )
-            } else {
-                return true
-            }
+            )
+            request.imageCropAndScaleOption = .centerCrop
+
+            // vision framework configures the input size of image following our model's input
+            // configuration automatically
+            let handler = VNImageRequestHandler(
+                cvPixelBuffer: pixelBuffer,
+                orientation: .right,
+                options: [:]
+            )
+            try? handler.perform([request])
         } else {
-            return previous != nil
+            fatalError()
         }
     }
 
@@ -675,100 +361,82 @@ extension LiveMetalCameraViewController {
         }
     }
 
-    public func visionRequestDidComplete(
+    public func videoVisionRequestDidComplete(
         request: VNRequest,
         pixelBuffer: CVPixelBuffer,
         depthData: AVDepthData
     ) {
-        👨‍🔧.🏷(with: "endInference")
-
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
            let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
-            lastSegmentationMap = segmentationMap
-
-            // Video data is captured faster than it takes to compose the sound for a single output,
-            // so composition can be skipped for data that is captured while a composition is
-            // already in progress.
-            if !isComposing, !buttonActivated {
-                isComposing = true
-                compositionQueue.async { [weak self] in
-                    if liveViewVerbalModeActive == 1 {
-                        let depthMap = DepthHelper.getDepthMap(depthData: depthData)
-                        let rawObjects = LiveMetalCameraViewController.processObjectData(
-                            pixelBuffer: pixelBuffer,
-                            segmentationMap: segmentationMap,
-                            depthBuffer: depthMap
-                        )
-                        Logger()
-                            .debug("raw:\n\(rawObjects.map { "\($0)" }.joined(separator: "\n"))")
-                        if let filteredObjects = self?.objectFrequencyRecorder
-                            .filter(objects: rawObjects)
-                        {
-                            Logger()
-                                .debug(
-                                    "filtered:\n\(filteredObjects.map { "\($0)" }.joined(separator: "\n"))"
-                                )
-                            let mainObject = LiveMetalCameraViewController.computeMainObject(
-                                objects: filteredObjects,
-                                minSize: 13000,
-                                maxDepth: 5.0, // maximum range of iPhone LiDAR sensor is ~5 meters
-                                modelDimensions: ModelDimensions.deepLabV3
-                            )
-                            Logger().debug("main object: \(String(describing: mainObject))")
-                            if LiveMetalCameraViewController.mainObjectChanged(
-                                previous: lastMainObject,
-                                current: mainObject
-                            ) {
-                                lastMainObject = mainObject
-                                if let mainObject = mainObject {
-                                    self?.speaker.speak(
-                                        objectName: labels[mainObject.id],
-                                        depth: mainObject.depth.round(nearest: 0.5)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    if liveViewModeActive == true {
-                        let depthPoints = DepthHelper.computeDepthPoints(depthData: depthData)
-                        let melody = SoundHelper.composeLiveMusic(
-                            segmentationMap: segmentationMap,
-                            depthPoints: depthPoints
-                        )
-
-                        SoundHelper.playMusic(melody: melody)
-                    }
-                    self?.isComposing = false
-                }
-            }
-
-            guard let cameraTexture = cameraTextureGenerater.texture(
-                from: pixelBuffer,
-                pixelFormat: .bgra8Unorm
-            ),
-                let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
-                    segmentationMap,
-                    numberOfLabels
+            let completionHandler = DispatchWorkItem {
+                let capturedData = CapturedData(
+                    segmentationMap: segmentationMap,
+                    videoBufferHeight: CVPixelBufferGetHeight(pixelBuffer),
+                    videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
+                    depthData: depthData
                 )
-            else {
-                return
+                self.streamingPublisher.send(capturedData)
             }
-            let overlayedTexture = overlayingTexturesGenerater.texture(
-                cameraTexture,
-                segmentationTexture
-            )
+            compositionQueue.async(execute: completionHandler)
 
-            DispatchQueue.main.async { [weak self] in
-                self?.metalVideoPreview.currentTexture = overlayedTexture
-                self?.👨‍🔧.🎬🤚()
-                self?.isInferencing = false
+            render(pixelBuffer: pixelBuffer, segmentationMap: segmentationMap)
+        }
+    }
+
+    public func photoVisionRequestDidComplete(
+        request: VNRequest,
+        pixelBuffer: CVPixelBuffer,
+        depthData: AVDepthData
+    ) {
+        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+           let segmentationMap = observations.first?.featureValue.multiArrayValue
+        {
+            let completionHandler = DispatchWorkItem {
+                let capturedData = CapturedData(
+                    segmentationMap: segmentationMap,
+                    videoBufferHeight: CVPixelBufferGetHeight(pixelBuffer),
+                    videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
+                    depthData: depthData
+                )
+                switch captureMode {
+                case .snapshotMusic:
+                    self.snapshotMusicPublisher.send(capturedData)
+                case .snapshotSpeech:
+                    self.snapshotSpeechPublisher.send(capturedData)
+                case .streaming:
+                    break
+                }
+                captureMode = CaptureMode.streaming
             }
-        } else {
-            // end of measure
-            👨‍🔧.🎬🤚()
-            isInferencing = false
+            completionHandler.notify(queue: compositionQueue) {
+                self.videoCapture.start()
+            }
+            compositionQueue.async(execute: completionHandler)
+
+            render(pixelBuffer: pixelBuffer, segmentationMap: segmentationMap)
+        }
+    }
+
+    public func render(pixelBuffer: CVPixelBuffer, segmentationMap: MLMultiArray) {
+        guard let cameraTexture = cameraTextureGenerater.texture(
+            from: pixelBuffer,
+            pixelFormat: .bgra8Unorm
+        ),
+            let segmentationTexture = multitargetSegmentationTextureGenerater.texture(
+                segmentationMap,
+                numberOfLabels
+            )
+        else {
+            return
+        }
+        let overlayedTexture = overlayingTexturesGenerater.texture(
+            cameraTexture,
+            segmentationTexture
+        )
+
+        DispatchQueue.main.async { [weak self] in
+            self?.metalVideoPreview.currentTexture = overlayedTexture
         }
     }
 }

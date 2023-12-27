@@ -108,6 +108,12 @@ extension LiveFaceDetectionAndFaceParsingViewController: VideoCaptureDelegate {
             predict(with: pixelBuffer)
         }
     }
+
+    func photoCapture(
+        _: VideoCapture,
+        didCapturePhotoPixelBuffer _: CVPixelBuffer,
+        didCapturePhotoDepthData _: AVDepthData
+    ) {}
 }
 
 // MARK: - Inference

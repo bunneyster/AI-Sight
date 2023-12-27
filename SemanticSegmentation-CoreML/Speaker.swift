@@ -8,13 +8,7 @@
 
 import AVFoundation
 
-class Speaker: NSObject {
-    // MARK: Lifecycle
-
-    init(synthesizer: AVSpeechSynthesizer) {
-        self.synthesizer = synthesizer
-    }
-
+class Speaker {
     // MARK: Public
 
     /// Returns a phrase describing the horizontal position represented by the given number.
@@ -79,7 +73,8 @@ class Speaker: NSObject {
         objectName: String,
         multiplier: Float? = nil,
         posValue: Double? = nil,
-        depth: Float? = nil
+        depth: Float? = nil,
+        interrupt: Bool = true
     ) {
         let phrase = [
             objectName,
@@ -87,11 +82,14 @@ class Speaker: NSObject {
             Speaker.horizontalPosition(posValue: posValue),
             Speaker.depthPosition(depth: depth),
         ].compactMap { $0 }.joined(separator: " ")
-        speak(text: phrase)
+        speak(text: phrase, interrupt: interrupt)
     }
 
     /// Speaks the given text.
-    public func speak(text: String) {
+    public func speak(text: String, interrupt: Bool = true) {
+        if interrupt {
+            synthesizer.stopSpeaking(at: .immediate)
+        }
         let utterance = AVSpeechUtterance(string: String(text))
         utterance.rate = 0.5 // slows down speaking speed
         utterance.pitchMultiplier = 1.3
@@ -99,7 +97,14 @@ class Speaker: NSObject {
         synthesizer.speak(utterance)
     }
 
+    /// Immediately stop any ongoing utterance.
+    public func stop() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
+
     // MARK: Internal
 
-    let synthesizer: AVSpeechSynthesizer
+    static let shared = Speaker()
+
+    let synthesizer = AVSpeechSynthesizer()
 }

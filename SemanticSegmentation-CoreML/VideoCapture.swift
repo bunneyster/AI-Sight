@@ -20,6 +20,12 @@ public protocol VideoCaptureDelegate: AnyObject {
         didCaptureVideoPixelBuffer: CVPixelBuffer,
         didCaptureVideoDepthData: AVDepthData
     )
+
+    func photoCapture(
+        _ capture: VideoCapture,
+        didCapturePhotoPixelBuffer: CVPixelBuffer,
+        didCapturePhotoDepthData: AVDepthData
+    )
 }
 
 // MARK: - VideoCapture
@@ -59,6 +65,15 @@ public class VideoCapture: NSObject {
         }
     }
 
+    public func capturePhoto() {
+        let settings: [String: Any] = [
+            kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA),
+        ]
+        let photoSettings = AVCapturePhotoSettings(format: settings)
+        photoSettings.isDepthDataDeliveryEnabled = true
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+    }
+
     public func makePreview() -> AVCaptureVideoPreviewLayer? {
         guard self.previewLayer == nil else { return self.previewLayer }
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -73,6 +88,7 @@ public class VideoCapture: NSObject {
     let captureSession = AVCaptureSession()
     let videoDataOutput = AVCaptureVideoDataOutput()
     let depthDataOutput = AVCaptureDepthDataOutput()
+    let photoOutput = AVCapturePhotoOutput()
 
     let sessionQueue = DispatchQueue(
         label: "SessionQueue",
@@ -159,6 +175,18 @@ public class VideoCapture: NSObject {
             depthDataOutput,
         ])
         outputSynchronizer?.setDelegate(self, queue: dataOutputQueue)
+
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+            let photoConnection = photoOutput.connection(with: .video)
+            if #available(iOS 17.0, *) {
+                photoConnection?.videoRotationAngle = 90
+            } else {
+                photoOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
+            }
+            photoOutput.isDepthDataDeliveryEnabled = true
+        }
+
         captureSession.commitConfiguration()
 
         CVMetalTextureCacheCreate(
@@ -222,6 +250,31 @@ extension VideoCapture: AVCaptureDataOutputSynchronizerDelegate {
                 self,
                 didCaptureVideoPixelBuffer: videoData,
                 didCaptureVideoDepthData: depthData
+            )
+        }
+    }
+}
+
+// MARK: - VideoCapture + AVCapturePhotoCaptureDelegate
+
+extension VideoCapture: AVCapturePhotoCaptureDelegate {
+    public func photoOutput(
+        _: AVCapturePhotoOutput,
+        didFinishProcessingPhoto photo: AVCapturePhoto,
+        error _: Error?
+    ) {
+        guard let pixelBuffer = photo.pixelBuffer,
+              let depthData = photo.depthData else { return }
+
+        stop()
+
+        if let pixelBuffer = pixelBuffer.clone(),
+           let depthData = depthData.clone()
+        {
+            delegate?.photoCapture(
+                self,
+                didCapturePhotoPixelBuffer: pixelBuffer,
+                didCapturePhotoDepthData: depthData
             )
         }
     }
