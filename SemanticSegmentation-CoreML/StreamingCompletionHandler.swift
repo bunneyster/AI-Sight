@@ -12,10 +12,11 @@ import Foundation
 import OSLog
 import Vision
 
-/// The main object that was last announced.
-///
-/// The value may be `nil` when no objects were identified (background does not count).
-var lastMainObject: MLObject?
+/// The last change observed in the main object.
+var lastMainObjectChange: MainObjectChange?
+/// The amount of time, in seconds, following an announcement, during which subsequent announcements
+/// for the same object should omit the object's name.
+let debouncePeriod = 5.0
 
 // MARK: - StreamingCompletionHandler
 
@@ -45,16 +46,18 @@ public class StreamingCompletionHandler: Subscriber {
             )
             Logger().debug("main object: \(String(describing: mainObject))")
             if StreamingCompletionHandler.mainObjectChanged(
-                previous: lastMainObject,
+                previous: lastMainObjectChange?.object,
                 current: mainObject
             ) {
-                lastMainObject = mainObject
                 if let mainObject = mainObject {
+                    let spokenName = StreamingCompletionHandler
+                        .shouldAnnounceName(object: mainObject) ? labels[mainObject.id] : nil
                     Speaker.shared.speak(
-                        objectName: labels[mainObject.id],
+                        objectName: spokenName,
                         depth: mainObject.depth.round(nearest: 0.5)
                     )
                 }
+                lastMainObjectChange = MainObjectChange(object: mainObject, time: Date())
             }
         }
 
@@ -121,4 +124,18 @@ public class StreamingCompletionHandler: Subscriber {
             return previous != nil
         }
     }
+
+    static func shouldAnnounceName(object: MLObject) -> Bool {
+        return object.id != lastMainObjectChange?.object?.id ||
+            abs(lastMainObjectChange?.time.timeIntervalSinceNow ?? 0) > debouncePeriod
+    }
+}
+
+// MARK: - MainObjectChange
+
+struct MainObjectChange {
+    /// The current main object. May be `nil` if no main object is found.
+    var object: MLObject?
+    /// The time when this change occurred.
+    var time: Date
 }

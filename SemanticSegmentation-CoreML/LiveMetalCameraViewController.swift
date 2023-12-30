@@ -258,7 +258,7 @@ class LiveMetalCameraViewController: UIViewController {
             Swift.print("Live-Objects Verbal Mode On")
         } else {
             liveViewVerbalModeActive = 0
-            lastMainObject = nil
+            lastMainObjectChange = MainObjectChange(object: nil, time: Date())
             Swift.print("Live-Objects Verbal Mode Off")
         }
     }

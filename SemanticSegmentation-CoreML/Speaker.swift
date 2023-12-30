@@ -70,7 +70,7 @@ class Speaker {
     ///   - posValue: The number corresponding to the object's horizontal position.
     ///   - depth: The distance to the object, in meters.
     public func speak(
-        objectName: String,
+        objectName: String? = nil,
         verticalPosition: Float? = nil,
         horizontalPosition: Float? = nil,
         depth: Float? = nil,
