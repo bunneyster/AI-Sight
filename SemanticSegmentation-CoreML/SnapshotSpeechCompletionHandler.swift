@@ -36,7 +36,7 @@ class SnapshotSpeechCompletionHandler: Subscriber {
                     objectName: labels[object.id],
                     verticalPosition: vertical,
                     horizontalPosition: horizontal,
-                    depth: object.depth.round(nearest: 0.5),
+                    depth: object.depth.round(nearest: 0.1),
                     interrupt: false
                 )
             }
