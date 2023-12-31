@@ -91,6 +91,7 @@ class Speaker {
             synthesizer.stopSpeaking(at: .immediate)
         }
         let utterance = AVSpeechUtterance(string: String(text))
+        utterance.prefersAssistiveTechnologySettings = true
         utterance.rate = 0.5 // slows down speaking speed
         utterance.pitchMultiplier = 1.3
         utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
