@@ -37,13 +37,56 @@ public class MetalRenderingDevice {
         return rpd
     }
 
-    func makeRenderVertexBuffer(_ origin: CGPoint = .zero, size: CGSize) -> MTLBuffer? {
+    func makeRenderVertexBuffer(
+        _ origin: CGPoint = .zero,
+        size: CGSize,
+        rotation: MetalVideoView.Rotation = MetalVideoView.Rotation.rotate0Degrees
+    )
+        -> MTLBuffer?
+    {
         let w = size.width, h = size.height
+        var textureCoords: [CGPoint]
+        switch rotation {
+        case .rotate0Degrees:
+            textureCoords = [
+                CGPoint(x: 0.0, y: 0.0),
+                CGPoint(x: 1.0, y: 0.0),
+                CGPoint(x: 0.0, y: 1.0),
+                CGPoint(x: 1.0, y: 1.0),
+            ]
+        case .rotate90Degrees:
+            textureCoords = [
+                CGPoint(x: 0.0, y: 1.0),
+                CGPoint(x: 0.0, y: 0.0),
+                CGPoint(x: 1.0, y: 1.0),
+                CGPoint(x: 1.0, y: 0.0),
+            ]
+        case .rotate180Degrees:
+            textureCoords = [
+                CGPoint(x: 1.0, y: 1.0),
+                CGPoint(x: 0.0, y: 1.0),
+                CGPoint(x: 1.0, y: 0.0),
+                CGPoint(x: 0.0, y: 0.0),
+            ]
+        case .rotate270Degrees:
+            textureCoords = [
+                CGPoint(x: 1.0, y: 0.0),
+                CGPoint(x: 1.0, y: 1.0),
+                CGPoint(x: 0.0, y: 0.0),
+                CGPoint(x: 0.0, y: 1.0),
+            ]
+        }
         let vertices = [
-            Vertex(position: CGPoint(x: origin.x , y: origin.y), textCoord: CGPoint(x: 0, y: 0)),
-            Vertex(position: CGPoint(x: origin.x + w , y: origin.y), textCoord: CGPoint(x: 1, y: 0)),
-            Vertex(position: CGPoint(x: origin.x + 0 , y: origin.y + h), textCoord: CGPoint(x: 0, y: 1)),
-            Vertex(position: CGPoint(x: origin.x + w , y: origin.y + h), textCoord: CGPoint(x: 1, y: 1)),
+            Vertex(position: CGPoint(x: origin.x, y: origin.y), textCoord: textureCoords[0]),
+            Vertex(position: CGPoint(x: origin.x + w, y: origin.y), textCoord: textureCoords[1]),
+            Vertex(
+                position: CGPoint(x: origin.x + 0, y: origin.y + h),
+                textCoord: textureCoords[2]
+            ),
+            Vertex(
+                position: CGPoint(x: origin.x + w, y: origin.y + h),
+                textCoord: textureCoords[3]
+            ),
         ]
         return makeRenderVertexBuffer(vertices)
     }

@@ -7,6 +7,7 @@
 
 import Foundation
 import MetalKit
+import AVFoundation
 
 public class MetalVideoView: MTKView {
     public var currentTexture: Texture? {
@@ -74,6 +75,43 @@ public class MetalVideoView: MTKView {
             commandEncoder?.endEncoding()
             commandBuffer?.present(currentDrawable)
             commandBuffer?.commit()
+        }
+    }
+
+    public enum Rotation: Int {
+        case rotate0Degrees
+        case rotate90Degrees
+        case rotate180Degrees
+        case rotate270Degrees
+
+        init?(videoOrientation: AVCaptureVideoOrientation) {
+            switch videoOrientation {
+            case .portrait:
+                self = .rotate0Degrees
+            case .portraitUpsideDown:
+                self = .rotate180Degrees
+            case .landscapeRight:
+                self = .rotate90Degrees
+            case .landscapeLeft:
+                self = .rotate270Degrees
+            @unknown default:
+                fatalError("Unknown orientation.")
+            }
+        }
+
+        init?(photoOrientation: CGImagePropertyOrientation) {
+            switch photoOrientation {
+            case .up:
+                self = .rotate0Degrees
+            case .down:
+                self = .rotate180Degrees
+            case .right:
+                self = .rotate90Degrees
+            case .left:
+                self = .rotate270Degrees
+            @unknown default:
+                fatalError("Unknown orientation.")
+            }
         }
     }
 }

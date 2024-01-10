@@ -294,10 +294,15 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
     func photoCapture(
         _: VideoCapture,
         didCapturePhotoPixelBuffer pixelBuffer: CVPixelBuffer,
-        didCapturePhotoDepthData depthData: AVDepthData
+        didCapturePhotoDepthData depthData: AVDepthData,
+        didCapturePhotoOrientation orientation: UInt32
     ) {
         dataProcessingQueue.async { [weak self] in
-            self?.predictPhoto(pixelBuffer: pixelBuffer, depthData: depthData)
+            self?.predictPhoto(
+                pixelBuffer: pixelBuffer,
+                depthData: depthData,
+                orientation: orientation
+            )
         }
     }
 
@@ -317,15 +322,25 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
 
             // vision framework configures the input size of image following our model's input
             // configuration automatically
-            let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
+            let handler = VNImageRequestHandler(
+                cvPixelBuffer: pixelBuffer,
+                orientation: .right,
+                options: [:]
+            )
             try? handler.perform([request])
         } else {
             fatalError()
         }
     }
 
-    func predictPhoto(pixelBuffer: CVPixelBuffer, depthData: AVDepthData) {
-        if let visionModel = visionModel {
+    func predictPhoto(
+        pixelBuffer: CVPixelBuffer,
+        depthData: AVDepthData,
+        orientation: UInt32
+    ) {
+        if let visionModel = visionModel,
+           let orientationValue = CGImagePropertyOrientation(rawValue: orientation)
+        {
             let request = VNCoreMLRequest(
                 model: visionModel,
                 completionHandler: buildVNRequestCompletionHandler(
@@ -342,7 +357,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
             // configuration automatically
             let handler = VNImageRequestHandler(
                 cvPixelBuffer: pixelBuffer,
-                orientation: .right,
+                orientation: orientationValue,
                 options: [:]
             )
             try? handler.perform([request])

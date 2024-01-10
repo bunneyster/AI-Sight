@@ -166,7 +166,8 @@ extension LiveImageViewController: VideoCaptureDelegate {
     func photoCapture(
         _: VideoCapture,
         didCapturePhotoPixelBuffer _: CVPixelBuffer,
-        didCapturePhotoDepthData _: AVDepthData
+        didCapturePhotoDepthData _: AVDepthData,
+        didCapturePhotoOrientation _: UInt32
     ) {}
 }
 

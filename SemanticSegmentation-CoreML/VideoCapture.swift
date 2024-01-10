@@ -24,7 +24,8 @@ public protocol VideoCaptureDelegate: AnyObject {
     func photoCapture(
         _ capture: VideoCapture,
         didCapturePhotoPixelBuffer: CVPixelBuffer,
-        didCapturePhotoDepthData: AVDepthData
+        didCapturePhotoDepthData: AVDepthData,
+        didCapturePhotoOrientation: UInt32
     )
 }
 
@@ -166,10 +167,6 @@ public class VideoCapture: NSObject {
             depthConnection?.videoOrientation = .portrait
         }
 
-        // We want the buffers to be in portrait orientation otherwise they are
-        // rotated by 90 degrees. Need to set this _after_ addOutput()!
-        videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
-
         outputSynchronizer = AVCaptureDataOutputSynchronizer(dataOutputs: [
             videoDataOutput,
             depthDataOutput,
@@ -179,11 +176,6 @@ public class VideoCapture: NSObject {
         if captureSession.canAddOutput(photoOutput) {
             captureSession.addOutput(photoOutput)
             let photoConnection = photoOutput.connection(with: .video)
-            if #available(iOS 17.0, *) {
-                photoConnection?.videoRotationAngle = 90
-            } else {
-                photoOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
-            }
             photoOutput.isDepthDataDeliveryEnabled = true
         }
 
@@ -264,7 +256,10 @@ extension VideoCapture: AVCapturePhotoCaptureDelegate {
         error _: Error?
     ) {
         guard let pixelBuffer = photo.pixelBuffer,
-              let depthData = photo.depthData else { return }
+              let depthData = photo.depthData,
+              let orientation = photo
+              .metadata[String(kCGImagePropertyOrientation)] as? UInt32
+        else { return }
 
         stop()
 
@@ -274,7 +269,8 @@ extension VideoCapture: AVCapturePhotoCaptureDelegate {
             delegate?.photoCapture(
                 self,
                 didCapturePhotoPixelBuffer: pixelBuffer,
-                didCapturePhotoDepthData: depthData
+                didCapturePhotoDepthData: depthData,
+                didCapturePhotoOrientation: orientation
             )
         }
     }
