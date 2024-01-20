@@ -11,7 +11,7 @@ import XCTest
 
 final class ObjectFrequencyRecorderTest: XCTestCase {
     func testFilter() throws {
-        let recorder = ObjectFrequencyRecorder(frameCount: 3, minFrequency: 3)
+        let recorder = ObjectFrequencyRecorder(minFrequency: 3, frameCount: 3)
 
         let frame1 = [
             MLObject(id: 1, center: IntPoint(x: 1, y: 1), depth: 1, size: 10),

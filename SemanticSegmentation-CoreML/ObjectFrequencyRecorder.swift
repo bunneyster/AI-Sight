@@ -12,12 +12,12 @@ import Foundation
 class ObjectFrequencyRecorder {
     // MARK: Lifecycle
 
-    init(frameCount: Int, minFrequency: Int) {
+    init(minFrequency: Int, frameCount: Int) {
         precondition(minFrequency <= frameCount)
-        self.frameCount = frameCount
         self.minFrequency = minFrequency
-        self.frames = [[Int]]()
+        self.frameCount = frameCount
         self.frequencies = [Int: Int]()
+        self.frames = [[Int]]()
     }
 
     // MARK: Public

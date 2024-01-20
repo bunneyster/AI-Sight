@@ -72,7 +72,7 @@ public class StreamingCompletionHandler: Subscriber {
 
     // MARK: Internal
 
-    let objectFrequencyRecorder = ObjectFrequencyRecorder(frameCount: 3, minFrequency: 3)
+    let objectFrequencyRecorder = ObjectFrequencyRecorder(minFrequency: 4, frameCount: 6)
 
     static func computeMainObject(
         objects: [MLObject],
