@@ -1,5 +1,5 @@
 //
-//  SnapshotSpeechCompletionHandler.swift
+//  SnapshotCompletionHandler.swift
 //  SemanticSegmentation-CoreML
 //
 //  Created by Staphany Park on 12/21/23.
@@ -11,7 +11,7 @@ import Combine
 import Foundation
 import Vision
 
-class SnapshotSpeechCompletionHandler: Subscriber {
+class SnapshotCompletionHandler: Subscriber {
     typealias Input = CapturedData
 
     typealias Failure = Never

@@ -63,31 +63,12 @@ let objectIdToSound = [
     20: "breath", // TV
 ]
 
-/// Intervals of 28728
-let snapshotMusicModePixelOffsets = [
-    2056,
-    30784,
-    59512,
-    88240,
-    116_968,
-    145_696,
-    174_424,
-    203_152,
-    231_880,
-    260_608,
-]
-
 let liveMusicModePixelOffset = 131_332
 
-var liveViewModeActive: Bool = false
-
-var liveViewModeColumns: Int = 1
-
-var liveViewVerbalModeActive: Int = 1
+var announcerModeActive: Int = 1
 
 enum CaptureMode {
-    case snapshotMusic
-    case snapshotSpeech
+    case snapshot
     case streaming
 }
 var captureMode = CaptureMode.streaming
@@ -110,9 +91,7 @@ class LiveMetalCameraViewController: UIViewController {
     var fpsLabel: UILabel!
 
     @IBOutlet
-    var SpeechModeButton: UIButton!
-    @IBOutlet
-    var MusicModeButton: UIButton!
+    var CameraButton: UIButton!
 
     var cameraTextureGenerater = CameraTextureGenerater()
     var multitargetSegmentationTextureGenerater = MultitargetSegmentationTextureGenerater()
@@ -154,8 +133,7 @@ class LiveMetalCameraViewController: UIViewController {
     )
 
     let streamingPublisher = PassthroughSubject<CapturedData, Never>()
-    let snapshotMusicPublisher = PassthroughSubject<CapturedData, Never>()
-    let snapshotSpeechPublisher = PassthroughSubject<CapturedData, Never>()
+    let snapshotPublisher = PassthroughSubject<CapturedData, Never>()
 
     // MARK: - Vision Properties
 
@@ -221,58 +199,26 @@ class LiveMetalCameraViewController: UIViewController {
         streamingPublisher
             .throttle(for: 0.2, scheduler: compositionQueue, latest: true)
             .subscribe(StreamingCompletionHandler())
-        snapshotMusicPublisher
+        snapshotPublisher
             .throttle(for: 0.5, scheduler: compositionQueue, latest: true)
-            .subscribe(SnapshotMusicCompletionHandler())
-        snapshotSpeechPublisher
-            .throttle(for: 0.5, scheduler: compositionQueue, latest: true)
-            .subscribe(SnapshotSpeechCompletionHandler())
+            .subscribe(SnapshotCompletionHandler())
     }
 
     @IBAction
-    func LiveMusicColumnsOn(_: Any) {
-        if liveViewModeColumns == 0 {
-            liveViewModeColumns = 1
-            Swift.print("Live-View Columns Mode On")
+    func toggleAnnouncer(_: Any) {
+        if announcerModeActive == 0 {
+            announcerModeActive = 1
+            Swift.print("Announcer Mode On")
         } else {
-            liveViewModeColumns = 0
-            Swift.print("Live-View Columns Mode Off")
-        }
-    }
-
-    @IBAction
-    func LiveMusicSwitchOn(_: Any) {
-        if liveViewModeActive == false {
-            liveViewModeActive = true
-            Swift.print("Live-View Mode On")
-        } else {
-            liveViewModeActive = false
-            Swift.print("Live-View Mode Off")
-        }
-    }
-
-    @IBAction
-    func LiveVerbalSwitchOn(_: Any) {
-        if liveViewVerbalModeActive == 0 {
-            liveViewVerbalModeActive = 1
-            Swift.print("Live-Objects Verbal Mode On")
-        } else {
-            liveViewVerbalModeActive = 0
+            announcerModeActive = 0
             lastMainObjectChange = MainObjectChange(object: nil, time: Date())
-            Swift.print("Live-Objects Verbal Mode Off")
+            Swift.print("Announcer Mode Off")
         }
     }
 
     @IBAction
-    func musicModeV2ButtonTapped(_: Any) {
-        captureMode = CaptureMode.snapshotMusic
-        Speaker.shared.stop()
-        videoCapture.capturePhoto()
-    }
-
-    @IBAction
-    func speechModeButtonTapped(_: Any) {
-        captureMode = CaptureMode.snapshotSpeech
+    func takePhoto(_: Any) {
+        captureMode = CaptureMode.snapshot
         Speaker.shared.stop()
         videoCapture.capturePhoto()
     }
@@ -414,13 +360,8 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                     videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
                     depthData: depthData
                 )
-                switch captureMode {
-                case .snapshotMusic:
-                    self.snapshotMusicPublisher.send(capturedData)
-                case .snapshotSpeech:
-                    self.snapshotSpeechPublisher.send(capturedData)
-                case .streaming:
-                    break
+                if captureMode == .snapshot {
+                    self.snapshotPublisher.send(capturedData)
                 }
                 captureMode = CaptureMode.streaming
             }

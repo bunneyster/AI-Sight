@@ -28,7 +28,7 @@ public class StreamingCompletionHandler: Subscriber {
     public typealias Failure = Never
 
     public func receive(_ input: CapturedData) -> Subscribers.Demand {
-        if liveViewVerbalModeActive == 1 {
+        if announcerModeActive == 1 {
             let rawObjects = input.extractObjects()
             Logger()
                 .debug("raw:\n\(rawObjects.map { "\($0)" }.joined(separator: "\n"))")
@@ -59,16 +59,6 @@ public class StreamingCompletionHandler: Subscriber {
                 }
                 lastMainObjectChange = MainObjectChange(object: mainObject, time: Date())
             }
-        }
-
-        if liveViewModeActive == true {
-            let depthPoints = DepthHelper.computeDepthPoints(depthData: input.depthData)
-            let melody = SoundHelper.composeLiveMusic(
-                segmentationMap: input.segmentationMap,
-                depthPoints: depthPoints
-            )
-
-            SoundHelper.playMusic(melody: melody)
         }
 
         return .unlimited

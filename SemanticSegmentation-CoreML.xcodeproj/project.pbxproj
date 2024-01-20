@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		411AF2F92B3504DA007E44EA /* StreamingCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */; };
-		411AF2FB2B350B78007E44EA /* SnapshotMusicCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2FA2B350B78007E44EA /* SnapshotMusicCompletionHandler.swift */; };
-		411AF2FD2B350DFC007E44EA /* SnapshotSpeechCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2FC2B350DFC007E44EA /* SnapshotSpeechCompletionHandler.swift */; };
+		411AF2FD2B350DFC007E44EA /* SnapshotCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */; };
 		4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */; };
 		4120E92A2B1FF8FD006CA565 /* MLObjectTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */; };
 		4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */; };
@@ -272,8 +271,7 @@
 
 /* Begin PBXFileReference section */
 		411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingCompletionHandler.swift; sourceTree = "<group>"; };
-		411AF2FA2B350B78007E44EA /* SnapshotMusicCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotMusicCompletionHandler.swift; sourceTree = "<group>"; };
-		411AF2FC2B350DFC007E44EA /* SnapshotSpeechCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotSpeechCompletionHandler.swift; sourceTree = "<group>"; };
+		411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotCompletionHandler.swift; sourceTree = "<group>"; };
 		4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorder.swift; sourceTree = "<group>"; };
 		4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObjectTest.swift; sourceTree = "<group>"; };
 		4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorderTest.swift; sourceTree = "<group>"; };
@@ -804,8 +802,7 @@
 				71BBE06122E3400E00E74F11 /* Measure.swift */,
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
 				411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */,
-				411AF2FA2B350B78007E44EA /* SnapshotMusicCompletionHandler.swift */,
-				411AF2FC2B350DFC007E44EA /* SnapshotSpeechCompletionHandler.swift */,
+				411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */,
 				41FA53E42B3BD17D000A2B32 /* CapturedData.swift */,
 				4195BE1B2B16A8A5009FE885 /* Note.swift */,
 				4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */,
@@ -1204,7 +1201,6 @@
 				C4BB0DA925619C0400354C08 /* LiveMetalCameraViewController.swift in Sources */,
 				4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */,
 				4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */,
-				411AF2FB2B350B78007E44EA /* SnapshotMusicCompletionHandler.swift in Sources */,
 				C4BB0D9C256196ED00354C08 /* Texture.swift in Sources */,
 				4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */,
 				71BBE05622E33BEB00E74F11 /* DeepLabV3.mlmodel in Sources */,
@@ -1217,7 +1213,7 @@
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
-				411AF2FD2B350DFC007E44EA /* SnapshotSpeechCompletionHandler.swift in Sources */,
+				411AF2FD2B350DFC007E44EA /* SnapshotCompletionHandler.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,
 				71BBE05F22E33F8D00E74F11 /* DrawingSegmentationView.swift in Sources */,
 				419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */,

@@ -11,60 +11,6 @@ import Vision
 import XCTest
 
 final class SoundHelperTest: XCTestCase {
-    func testMode_empty() throws {
-        let data = [Int]()
-        let result = SoundHelper.mode(data)
-        XCTAssertEqual(result, 0)
-    }
-
-    func testMode_allBackground() throws {
-        let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        let result = SoundHelper.mode(data)
-        XCTAssertEqual(result, 0)
-    }
-
-    func testMode_below5Percent() throws {
-        let data = [Int](1...21)
-        let result = SoundHelper.mode(data)
-        XCTAssertEqual(result, 0)
-    }
-
-    func testMode_noMode() throws {
-        let data1 = [7, 2, 8, 5, 9, 3, 1, 4, 0, 6]
-        let result1 = SoundHelper.mode(data1)
-        XCTAssertEqual(result1, 9)
-
-        // Illustrates that although the result is consistent for a given input, it does
-        // not follow a predictable ordering.
-        let data2 = [70, 20, 80, 50, 90, 30, 10, 40, 0, 60]
-        let result2 = SoundHelper.mode(data2)
-        XCTAssertEqual(result2, 70)
-    }
-
-    func testMode_singleModeNoBackground() throws {
-        let data = [3, 3, 5, 5, 5, 5, 5, 2, 2, 2]
-        let result = SoundHelper.mode(data)
-        XCTAssertEqual(result, 5)
-    }
-
-    func testMode_singleModeWithMoreFrequentBackground() throws {
-        let data = [0, 0, 5, 5, 5, 5, 0, 0, 0, 0]
-        let result = SoundHelper.mode(data)
-        XCTAssertEqual(result, 5)
-    }
-
-    func testMode_multipleModes() throws {
-        let data1 = [3, 3, 2, 2, 2, 6, 6, 6, 5, 5]
-        let result1 = SoundHelper.mode(data1)
-        XCTAssertEqual(result1, 6)
-
-        // Illustrates that although the result is consistent for a given input, it does
-        // not follow a predictable ordering.
-        let data2 = [30, 30, 20, 20, 20, 60, 60, 60, 50, 50]
-        let result2 = SoundHelper.mode(data2)
-        XCTAssertEqual(result2, 20)
-    }
-
     func testGetObjectAndPitchMultiplier_1x1Segment() throws {
         // Cat occupies 1x1 area in center of 3x3 image
         let result = SoundHelper.getObjectAndPitchMultiplier(
