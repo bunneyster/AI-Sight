@@ -185,9 +185,10 @@ class LiveMetalCameraViewController: UIViewController {
         videoCapture.delegate = self
         videoCapture.fps = 50
         videoCapture.setUp(sessionPreset: .hd1280x720) { success in
-
             if success {
-                // 초기설정이 끝나면 라이브 비디오를 시작할 수 있음
+                // A hack to "warm up" the speech synthesizer before starting the AVCaptureSession,
+                // to prevent frames getting dropped the first time an utterance is declared.
+                Speaker.shared.speak(text: " ")
                 self.videoCapture.start()
             }
         }

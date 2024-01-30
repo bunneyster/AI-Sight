@@ -90,7 +90,7 @@ class Speaker {
         if interrupt {
             synthesizer.stopSpeaking(at: .immediate)
         }
-        let utterance = AVSpeechUtterance(string: String(text))
+        let utterance = AVSpeechUtterance(string: text)
         utterance.prefersAssistiveTechnologySettings = true
         utterance.rate = 0.5 // slows down speaking speed
         utterance.pitchMultiplier = 1.3
