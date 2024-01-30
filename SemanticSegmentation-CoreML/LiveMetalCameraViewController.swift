@@ -67,10 +67,13 @@ let liveMusicModePixelOffset = 131_332
 
 var announcerModeActive: Int = 1
 
+// MARK: - CaptureMode
+
 enum CaptureMode {
     case snapshot
     case streaming
 }
+
 var captureMode = CaptureMode.streaming
 
 // MARK: - LiveMetalCameraViewController
@@ -225,7 +228,7 @@ class LiveMetalCameraViewController: UIViewController {
     }
 }
 
-// MARK: - LiveMetalCameraViewController + VideoCaptureDelegate
+// MARK: VideoCaptureDelegate
 
 extension LiveMetalCameraViewController: VideoCaptureDelegate {
     func videoCapture(

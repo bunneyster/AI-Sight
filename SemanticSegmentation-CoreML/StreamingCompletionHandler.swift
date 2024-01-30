@@ -30,14 +30,8 @@ public class StreamingCompletionHandler: Subscriber {
     public func receive(_ input: CapturedData) -> Subscribers.Demand {
         if announcerModeActive == 1 {
             let rawObjects = input.extractObjects()
-            Logger()
-                .debug("raw:\n\(rawObjects.map { "\($0)" }.joined(separator: "\n"))")
             let filteredObjects = objectFrequencyRecorder
                 .filter(objects: rawObjects)
-            Logger()
-                .debug(
-                    "filtered:\n\(filteredObjects.map { "\($0)" }.joined(separator: "\n"))"
-                )
             let mainObject = StreamingCompletionHandler.computeMainObject(
                 objects: filteredObjects,
                 minSize: 13000,
