@@ -119,14 +119,14 @@ class LiveMetalCameraViewController: UIViewController {
     let numberOfLabels =
         21 // <#if you changed the segmentationModel, you have to change the numberOfLabels#>
 
-    let dataProcessingQueue = DispatchQueue(
-        label: "DataProcessingQueue",
+    let coreMLRequestQueue = DispatchQueue(
+        label: "CoreMLRequestQueue",
         attributes: [],
         autoreleaseFrequency: .workItem,
         target: .global()
     )
-    let compositionQueue = DispatchQueue(
-        label: "CompositionQueue",
+    let dataPublisherQueue = DispatchQueue(
+        label: "DataPublisherQueue",
         attributes: [],
         autoreleaseFrequency: .workItem,
         target: .global()
@@ -198,10 +198,10 @@ class LiveMetalCameraViewController: UIViewController {
 
     func setUpNotifications() {
         streamingPublisher
-            .throttle(for: 0.2, scheduler: compositionQueue, latest: true)
+            .throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
             .subscribe(StreamingCompletionHandler())
         snapshotPublisher
-            .throttle(for: 0.5, scheduler: compositionQueue, latest: true)
+            .throttle(for: 0.5, scheduler: dataPublisherQueue, latest: true)
             .subscribe(SnapshotCompletionHandler())
     }
 
@@ -233,7 +233,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
         didCaptureVideoPixelBuffer pixelBuffer: CVPixelBuffer,
         didCaptureVideoDepthData depthData: AVDepthData
     ) {
-        dataProcessingQueue.async { [weak self] in
+        coreMLRequestQueue.async { [weak self] in
             self?.predictVideo(pixelBuffer: pixelBuffer, depthData: depthData)
         }
     }
@@ -244,7 +244,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
         didCapturePhotoDepthData depthData: AVDepthData,
         didCapturePhotoOrientation orientation: UInt32
     ) {
-        dataProcessingQueue.async { [weak self] in
+        coreMLRequestQueue.async { [weak self] in
             self?.predictPhoto(
                 pixelBuffer: pixelBuffer,
                 depthData: depthData,
@@ -340,7 +340,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                 )
                 self.streamingPublisher.send(capturedData)
             }
-            compositionQueue.async(execute: completionHandler)
+            dataPublisherQueue.async(execute: completionHandler)
 
             render(pixelBuffer: pixelBuffer, segmentationMap: segmentationMap)
         }
@@ -366,10 +366,10 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                 }
                 captureMode = CaptureMode.streaming
             }
-            completionHandler.notify(queue: compositionQueue) {
+            completionHandler.notify(queue: dataPublisherQueue) {
                 self.videoCapture.start()
             }
-            compositionQueue.async(execute: completionHandler)
+            dataPublisherQueue.async(execute: completionHandler)
 
             render(pixelBuffer: pixelBuffer, segmentationMap: segmentationMap)
         }
