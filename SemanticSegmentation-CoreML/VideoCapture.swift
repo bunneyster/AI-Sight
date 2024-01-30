@@ -175,7 +175,6 @@ public class VideoCapture: NSObject {
 
         if captureSession.canAddOutput(photoOutput) {
             captureSession.addOutput(photoOutput)
-            let photoConnection = photoOutput.connection(with: .video)
             photoOutput.isDepthDataDeliveryEnabled = true
         }
 
