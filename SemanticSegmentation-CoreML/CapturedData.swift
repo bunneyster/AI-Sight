@@ -10,21 +10,7 @@ import AVFoundation
 import Foundation
 import Vision
 
-public class CapturedData {
-    // MARK: Lifecycle
-
-    init(
-        segmentationMap: MLMultiArray,
-        videoBufferHeight: Int,
-        videoBufferWidth: Int,
-        depthData: AVDepthData
-    ) {
-        self.segmentationMap = segmentationMap
-        self.videoBufferHeight = videoBufferHeight
-        self.videoBufferWidth = videoBufferWidth
-        self.depthData = depthData
-    }
-
+public struct CapturedData {
     // MARK: Public
 
     public func extractObjects() -> [MLObject] {
