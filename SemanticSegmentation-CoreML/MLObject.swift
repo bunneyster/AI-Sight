@@ -48,7 +48,7 @@ public class MLObject {
         let normalizedDistance = 1 - Float(distanceSquared) /
             Float(modelDimensions.maxCenterDistanceSquared)
         let normalizedSize = Float(size) / Float(modelDimensions.size)
-        let curvedSize = exp(-pow(normalizedSize - 0.7, 2) / (2 * pow(0.3, 2)))
+        let curvedSize = exp(-pow(normalizedSize - 0.4, 2) / (2 * pow(0.3, 2)))
 
         return normalizedDistance * curvedSize
     }
