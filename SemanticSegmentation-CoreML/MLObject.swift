@@ -50,7 +50,10 @@ public class MLObject {
         let normalizedSize = Float(size) / Float(modelDimensions.size)
         let curvedSize = exp(-pow(normalizedSize - 0.4, 2) / (2 * pow(0.3, 2)))
 
-        return normalizedDistance * curvedSize
+        let distanceFactor = Float(0.85)
+        let sizeFactor = Float(0.15)
+        let score = distanceFactor * normalizedDistance + sizeFactor * curvedSize
+        return score
     }
 }
 
