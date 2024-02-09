@@ -13,28 +13,28 @@ final class MLObjectTest: XCTestCase {
     let testDimensions = ModelDimensions(height: 10, width: 10)
 
     func testRelevanceScore_optimalParameters() throws {
-        let object = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 3, size: 70)
+        let object = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 3, size: 40)
         XCTAssertEqual(object.relevanceScore(modelDimensions: testDimensions), 1)
     }
 
     func testRelevanceScore_minSize() throws {
         let object = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 3, size: 1)
-        XCTAssertEqual(object.relevanceScore(modelDimensions: testDimensions), 0.1, accuracy: 0.05)
+        XCTAssertEqual(object.relevanceScore(modelDimensions: testDimensions), 0.91, accuracy: 0.05)
     }
 
     func testRelevanceScore_maxSize() throws {
         let object = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 3, size: 100)
-        XCTAssertEqual(object.relevanceScore(modelDimensions: testDimensions), 0.6, accuracy: 0.05)
+        XCTAssertEqual(object.relevanceScore(modelDimensions: testDimensions), 0.87, accuracy: 0.05)
     }
 
     func testRelevanceScore_variousLocations() throws {
-        let object1 = MLObject(id: 1, center: IntPoint(x: 0, y: 0), depth: 3, size: 70)
-        let object2 = MLObject(id: 1, center: IntPoint(x: 9, y: 9), depth: 3, size: 70)
-        let object3 = MLObject(id: 1, center: IntPoint(x: 8, y: 1), depth: 3, size: 70)
-        let object4 = MLObject(id: 1, center: IntPoint(x: 2, y: 7), depth: 3, size: 70)
-        XCTAssertEqual(object1.relevanceScore(modelDimensions: testDimensions), 0.0, accuracy: 0.05)
-        XCTAssertEqual(object2.relevanceScore(modelDimensions: testDimensions), 0.4, accuracy: 0.05)
-        XCTAssertEqual(object3.relevanceScore(modelDimensions: testDimensions), 0.5, accuracy: 0.05)
-        XCTAssertEqual(object4.relevanceScore(modelDimensions: testDimensions), 0.7, accuracy: 0.05)
+        let object1 = MLObject(id: 1, center: IntPoint(x: 0, y: 0), depth: 3, size: 40)
+        let object2 = MLObject(id: 1, center: IntPoint(x: 9, y: 9), depth: 3, size: 40)
+        let object3 = MLObject(id: 1, center: IntPoint(x: 8, y: 1), depth: 3, size: 40)
+        let object4 = MLObject(id: 1, center: IntPoint(x: 2, y: 7), depth: 3, size: 40)
+        XCTAssertEqual(object1.relevanceScore(modelDimensions: testDimensions), 0.2, accuracy: 0.05)
+        XCTAssertEqual(object2.relevanceScore(modelDimensions: testDimensions), 0.5, accuracy: 0.05)
+        XCTAssertEqual(object3.relevanceScore(modelDimensions: testDimensions), 0.6, accuracy: 0.05)
+        XCTAssertEqual(object4.relevanceScore(modelDimensions: testDimensions), 0.8, accuracy: 0.05)
     }
 }

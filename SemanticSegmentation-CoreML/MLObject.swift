@@ -39,7 +39,7 @@ public class MLObject {
     ///
     /// The factors that determine an object's score:
     ///   - proximity to the center of the frame (i.e. closer = higher score)
-    ///   - the object's size (i.e. larger = higher score)
+    ///   - the object's size (i.e. closer to 40% of the frame = higher score)
     func relevanceScore(modelDimensions: ModelDimensions) -> Float {
         let xDiff = modelDimensions.centerX - center.x
         let yDiff = modelDimensions.centerY - center.y
@@ -50,7 +50,10 @@ public class MLObject {
         let normalizedSize = Float(size) / Float(modelDimensions.size)
         let curvedSize = exp(-pow(normalizedSize - 0.4, 2) / (2 * pow(0.3, 2)))
 
-        return normalizedDistance * curvedSize
+        let positionFactor = Float(0.85)
+        let sizeFactor = Float(0.15)
+        let score = positionFactor * normalizedDistance + sizeFactor * curvedSize
+        return score
     }
 }
 
