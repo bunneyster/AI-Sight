@@ -51,14 +51,14 @@ class Speaker {
         }
     }
 
-    /// Returns a phrase describing the given number as a distance in meters.
+    /// Returns a phrase describing the given number as a distance with 0.1 precision in meters.
     ///
     /// - Parameters:
-    ///   - depth: A non-negative multiple of 0.5.
+    ///   - depth: A depth measurement, in meters.
     public static func depthPosition(depth: Float?) -> String? {
         guard let depth = depth else { return nil }
 
-        return "\(depth) meters"
+        return String(format: "%.1f meters", depth)
     }
 
     /// Speaks the phrase "[object name] + [vertical position] + [horizontal position] +
