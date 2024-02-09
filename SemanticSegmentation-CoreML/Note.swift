@@ -15,12 +15,14 @@ struct Note {
 
     init(file: AVAudioFile, pan: Float = 0.0, volume: Float = 0.0) {
         self.file = file
-        node.pan = pan
-        node.volume = volume
+        self.pan = pan
+        self.volume = volume
     }
 
     // MARK: Internal
 
-    var node: AVAudioPlayerNode = .init()
     var file: AVAudioFile
+    var pan: Float
+    var volume: Float
+    var node: AVAudioPlayerNode = .init()
 }

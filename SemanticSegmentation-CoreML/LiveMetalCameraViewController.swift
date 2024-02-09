@@ -63,20 +63,6 @@ let objectIdToSound = [
     20: "breath", // TV
 ]
 
-/// Intervals of 28728
-let snapshotMusicModePixelOffsets = [
-    2056,
-    30784,
-    59512,
-    88240,
-    116_968,
-    145_696,
-    174_424,
-    203_152,
-    231_880,
-    260_608,
-]
-
 let liveMusicModePixelOffset = 131_332
 
 var liveViewModeActive: Bool = false

@@ -11,15 +11,30 @@ import Combine
 import Foundation
 import Vision
 
+/// Intervals of 28728
+let snapshotMusicModePixelOffsets = [
+    2056,
+    30784,
+    59512,
+    88240,
+    116_968,
+    145_696,
+    174_424,
+    203_152,
+    231_880,
+    260_608,
+]
+
+// MARK: - SnapshotMusicCompletionHandler
+
 class SnapshotMusicCompletionHandler: Subscriber {
     typealias Input = CapturedData
 
     typealias Failure = Never
 
     func receive(_ input: CapturedData) -> Subscribers.Demand {
-        var melody: [Note] = []
-
         for column in 0..<10 {
+            var melody: [Note] = []
             let pan = -0.9 + Float(column) * 0.2 // [-0.9, 0.9] in increments of 0.2
             let fileDrums = try! AVAudioFile(
                 forReading: Bundle.main.url(forResource: "drum", withExtension: "wav")!
@@ -45,27 +60,7 @@ class SnapshotMusicCompletionHandler: Subscriber {
                 ))
             }
 
-            let engine = AVAudioEngine()
-            for note in melody {
-                engine.attach(note.node)
-                engine.connect(
-                    note.node,
-                    to: engine.mainMixerNode,
-                    format: note.file.processingFormat
-                )
-                note.node.scheduleFile(note.file, at: nil, completionHandler: nil)
-            }
-
-            engine.prepare()
-            try! engine.start()
-
-            for note in melody {
-                note.node.play()
-                usleep(1000)
-            }
-
-            melody = []
-            usleep(500_000)
+            SoundHelper.playMusic(melody: melody)
         }
 
         return .unlimited

@@ -110,12 +110,17 @@ class SoundHelper {
                 atRate: note.file.processingFormat.sampleRate
             )
             note.node.scheduleFile(note.file, at: delayTime, completionHandler: nil)
+            // Must set node volume before starting the engine.
+            note.node.volume = note.volume
         }
 
         liveEngine.prepare()
         try! liveEngine.start()
 
         for note in melody {
+            // Must set node pan after starting the engine; setting it before seems to prevent
+            // proper configuration at any point thereafter.
+            note.node.pan = note.pan
             note.node.play()
         }
         usleep(500_000)
