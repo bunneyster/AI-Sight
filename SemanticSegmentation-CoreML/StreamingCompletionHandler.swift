@@ -34,7 +34,7 @@ public class StreamingCompletionHandler: Subscriber {
                 .filter(objects: rawObjects)
             let mainObject = StreamingCompletionHandler.computeMainObject(
                 objects: filteredObjects,
-                minSize: 13000,
+                minSize: 4000,
                 maxDepth: 5.0, // maximum range of iPhone LiDAR sensor is ~5 meters
                 modelDimensions: ModelDimensions.deepLabV3
             )
