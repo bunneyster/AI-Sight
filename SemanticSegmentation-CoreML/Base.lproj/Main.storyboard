@@ -180,10 +180,22 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u08-Da-cyH">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u08-Da-cyH" userLabel="Announcer Switch">
                                 <rect key="frame" x="350" y="65" width="51" height="31"/>
                                 <connections>
                                     <action selector="toggleAnnouncer:" destination="uso-ud-VWq" eventType="valueChanged" id="3Qs-xl-wGg"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scanner" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Ji-sx-ZAf">
+                                <rect key="frame" x="15" y="107" width="320" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ogc-vy-zJg" userLabel="Scanner Switch">
+                                <rect key="frame" x="350" y="110" width="51" height="31"/>
+                                <connections>
+                                    <action selector="toggleScanner:" destination="uso-ud-VWq" eventType="valueChanged" id="DwI-GA-wQx"/>
                                 </connections>
                             </switch>
                         </subviews>
@@ -193,12 +205,17 @@
                             <constraint firstItem="jI5-DE-WCD" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="2" id="0vQ-0x-faH"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="jI5-DE-WCD" secondAttribute="trailing" id="4mM-Rd-x23"/>
                             <constraint firstItem="OWV-YF-nut" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="15" id="4vR-IW-qRI"/>
+                            <constraint firstItem="3Ji-sx-ZAf" firstAttribute="top" secondItem="OWV-YF-nut" secondAttribute="bottom" constant="8" symbolic="YES" id="CYR-X1-aeR"/>
+                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="Ogc-vy-zJg" secondAttribute="trailing" constant="15" id="Ez1-e7-neT"/>
                             <constraint firstItem="u08-Da-cyH" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="17" id="MXQ-Wn-vK5"/>
                             <constraint firstItem="jI5-DE-WCD" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" id="TO8-zS-mBB"/>
                             <constraint firstItem="mGH-mt-VE2" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="cu5-ss-xR8"/>
+                            <constraint firstItem="Ogc-vy-zJg" firstAttribute="leading" secondItem="3Ji-sx-ZAf" secondAttribute="trailing" constant="15" id="dXV-qq-4lg"/>
                             <constraint firstItem="u08-Da-cyH" firstAttribute="leading" secondItem="OWV-YF-nut" secondAttribute="trailing" constant="15" id="edC-Z5-6hU"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="bottom" secondItem="jI5-DE-WCD" secondAttribute="bottom" id="ehq-0u-Is5"/>
+                            <constraint firstItem="3Ji-sx-ZAf" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="fSY-Eo-aIQ"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="u08-Da-cyH" secondAttribute="trailing" constant="15" id="hf4-SZ-cTS"/>
+                            <constraint firstItem="Ogc-vy-zJg" firstAttribute="top" secondItem="u08-Da-cyH" secondAttribute="bottom" constant="14" id="kNh-zg-YKZ"/>
                             <constraint firstItem="OWV-YF-nut" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="pIB-yz-IQt"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="mGH-mt-VE2" secondAttribute="trailing" constant="15" id="rwC-Qv-r3V"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="bottom" secondItem="mGH-mt-VE2" secondAttribute="bottom" constant="13" id="uRH-16-Av8"/>

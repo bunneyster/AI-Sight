@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		411AF2F92B3504DA007E44EA /* StreamingCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */; };
-		411AF2FD2B350DFC007E44EA /* SnapshotCompletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */; };
+		410182532B96486B005B2F5E /* beat0.wav in Resources */ = {isa = PBXBuildFile; fileRef = 410182502B96486B005B2F5E /* beat0.wav */; };
+		410182542B96486B005B2F5E /* beat1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 410182512B96486B005B2F5E /* beat1.wav */; };
+		410182552B96486B005B2F5E /* beat2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 410182522B96486B005B2F5E /* beat2.wav */; };
+		4101825A2B96633C005B2F5E /* MathHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410182592B96633C005B2F5E /* MathHelperTest.swift */; };
+		411AF2F92B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2F82B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift */; };
+		411AF2FD2B350DFC007E44EA /* AllObjectsAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411AF2FC2B350DFC007E44EA /* AllObjectsAnnouncer.swift */; };
 		4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */; };
 		4120E92A2B1FF8FD006CA565 /* MLObjectTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */; };
 		4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */; };
@@ -219,6 +223,9 @@
 		41831BF12B851A00006AE883 /* 18trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5C928AC1860004BD0AE /* 18trumpet.wav */; };
 		41831BF22B851A00006AE883 /* 19trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B61C28AC1865004BD0AE /* 19trumpet.wav */; };
 		41831BF32B851A00006AE883 /* 20trumpet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 46E5B5D728AC1861004BD0AE /* 20trumpet.wav */; };
+		41831BF52B8573DC006AE883 /* StreamingScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF42B8573DC006AE883 /* StreamingScanner.swift */; };
+		41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF62B8917B7006AE883 /* MathHelper.swift */; };
+		41831BF92B891B33006AE883 /* Frequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF82B891B33006AE883 /* Frequency.swift */; };
 		418E5A362AC400A900D0813E /* SoundHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* SoundHelperTest.swift */; };
 		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
 		4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1B2B16A8A5009FE885 /* Note.swift */; };
@@ -227,7 +234,7 @@
 		4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE212B16AAE2009FE885 /* DepthHelper.swift */; };
 		4195BE242B16AC49009FE885 /* MLMultiArrayHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */; };
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
-		41C767012B3C41B500F67AE3 /* StreamingCompletionHandlerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C767002B3C41B500F67AE3 /* StreamingCompletionHandlerTest.swift */; };
+		41C767012B3C41B500F67AE3 /* AnnouncerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C767002B3C41B500F67AE3 /* AnnouncerTest.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
 		41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DDEF6C2AF09068001A75B0 /* Speaker.swift */; };
 		41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FA53E42B3BD17D000A2B32 /* CapturedData.swift */; };
@@ -270,8 +277,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingCompletionHandler.swift; sourceTree = "<group>"; };
-		411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotCompletionHandler.swift; sourceTree = "<group>"; };
+		410182502B96486B005B2F5E /* beat0.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beat0.wav; sourceTree = "<group>"; };
+		410182512B96486B005B2F5E /* beat1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beat1.wav; sourceTree = "<group>"; };
+		410182522B96486B005B2F5E /* beat2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beat2.wav; sourceTree = "<group>"; };
+		410182592B96633C005B2F5E /* MathHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathHelperTest.swift; sourceTree = "<group>"; };
+		411AF2F82B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingMainObjectAnnouncer.swift; sourceTree = "<group>"; };
+		411AF2FC2B350DFC007E44EA /* AllObjectsAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllObjectsAnnouncer.swift; sourceTree = "<group>"; };
 		4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorder.swift; sourceTree = "<group>"; };
 		4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObjectTest.swift; sourceTree = "<group>"; };
 		4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorderTest.swift; sourceTree = "<group>"; };
@@ -299,6 +310,9 @@
 		41831B122B85189C006AE883 /* 3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 3.wav; sourceTree = "<group>"; };
 		41831B132B85189C006AE883 /* 17.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 17.wav; sourceTree = "<group>"; };
 		41831B142B85189C006AE883 /* 19.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 19.wav; sourceTree = "<group>"; };
+		41831BF42B8573DC006AE883 /* StreamingScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScanner.swift; sourceTree = "<group>"; };
+		41831BF62B8917B7006AE883 /* MathHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathHelper.swift; sourceTree = "<group>"; };
+		41831BF82B891B33006AE883 /* Frequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frequency.swift; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418E5A352AC400A900D0813E /* SoundHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelperTest.swift; sourceTree = "<group>"; };
 		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
@@ -308,7 +322,7 @@
 		4195BE212B16AAE2009FE885 /* DepthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthHelper.swift; sourceTree = "<group>"; };
 		4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArrayHelperTest.swift; sourceTree = "<group>"; };
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
-		41C767002B3C41B500F67AE3 /* StreamingCompletionHandlerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingCompletionHandlerTest.swift; sourceTree = "<group>"; };
+		41C767002B3C41B500F67AE3 /* AnnouncerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncerTest.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41DD1A9F2AD47665004572F8 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drum.wav; sourceTree = "<group>"; };
 		41DD1AA12AD476C8004572F8 /* 2bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2bird.wav; sourceTree = "<group>"; };
@@ -546,11 +560,12 @@
 		418E5A2D2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */ = {
 			isa = PBXGroup;
 			children = (
-				41C767002B3C41B500F67AE3 /* StreamingCompletionHandlerTest.swift */,
+				41C767002B3C41B500F67AE3 /* AnnouncerTest.swift */,
 				418E5A352AC400A900D0813E /* SoundHelperTest.swift */,
 				4195BE232B16AC49009FE885 /* MLMultiArrayHelperTest.swift */,
 				4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */,
 				4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */,
+				410182592B96633C005B2F5E /* MathHelperTest.swift */,
 				4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */,
 			);
 			path = "SemanticSegmentation-CoreMLTests";
@@ -559,6 +574,9 @@
 		46EBF9862899D21E0030C0E7 /* AudioFiles */ = {
 			isa = PBXGroup;
 			children = (
+				410182502B96486B005B2F5E /* beat0.wav */,
+				410182512B96486B005B2F5E /* beat1.wav */,
+				410182522B96486B005B2F5E /* beat2.wav */,
 				41DD1A9F2AD47665004572F8 /* drum.wav */,
 				46EBF358289CA7E9006E778B /* Shutter.mp3 */,
 				41831B0F2B85189C006AE883 /* 0.wav */,
@@ -801,16 +819,19 @@
 				4195BE212B16AAE2009FE885 /* DepthHelper.swift */,
 				71BBE06122E3400E00E74F11 /* Measure.swift */,
 				71BBE06022E3400E00E74F11 /* VideoCapture.swift */,
-				411AF2F82B3504DA007E44EA /* StreamingCompletionHandler.swift */,
-				411AF2FC2B350DFC007E44EA /* SnapshotCompletionHandler.swift */,
+				411AF2FC2B350DFC007E44EA /* AllObjectsAnnouncer.swift */,
+				411AF2F82B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift */,
+				41831BF42B8573DC006AE883 /* StreamingScanner.swift */,
 				41FA53E42B3BD17D000A2B32 /* CapturedData.swift */,
 				4195BE1B2B16A8A5009FE885 /* Note.swift */,
 				4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */,
+				41831BF82B891B33006AE883 /* Frequency.swift */,
 				41DDEF6C2AF09068001A75B0 /* Speaker.swift */,
 				4195BE192B158DB8009FE885 /* MLObject.swift */,
 				4159AF302B0DA871000C52D3 /* ModelDimensions.swift */,
 				4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */,
 				4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */,
+				41831BF62B8917B7006AE883 /* MathHelper.swift */,
 				4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */,
 				C4BB0D90256192F100354C08 /* MetalCamera */,
 				71BBE05D22E33CEA00E74F11 /* mlmodel */,
@@ -954,6 +975,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				410182532B96486B005B2F5E /* beat0.wav in Resources */,
+				410182552B96486B005B2F5E /* beat2.wav in Resources */,
+				410182542B96486B005B2F5E /* beat1.wav in Resources */,
 				41831B292B8519FF006AE883 /* drum.wav in Resources */,
 				41831B2A2B8519FF006AE883 /* Shutter.mp3 in Resources */,
 				41831B2B2B8519FF006AE883 /* 0.wav in Resources */,
@@ -1171,7 +1195,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				418E5A362AC400A900D0813E /* SoundHelperTest.swift in Sources */,
-				41C767012B3C41B500F67AE3 /* StreamingCompletionHandlerTest.swift in Sources */,
+				41C767012B3C41B500F67AE3 /* AnnouncerTest.swift in Sources */,
+				4101825A2B96633C005B2F5E /* MathHelperTest.swift in Sources */,
 				4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */,
 				4195BE242B16AC49009FE885 /* MLMultiArrayHelperTest.swift in Sources */,
 				4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */,
@@ -1188,15 +1213,17 @@
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
 				4195BE202B16AA6A009FE885 /* MLMultiArrayHelper.swift in Sources */,
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
+				41831BF52B8573DC006AE883 /* StreamingScanner.swift in Sources */,
 				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
+				41831BF92B891B33006AE883 /* Frequency.swift in Sources */,
 				4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */,
 				71BBE05A22E33BF300E74F11 /* DeepLabV3Int8LUT.mlmodel in Sources */,
 				71BBE06322E3400E00E74F11 /* Measure.swift in Sources */,
 				C4BB0DA625619AA400354C08 /* MetalVideoView.swift in Sources */,
 				71BBE05822E33BEF00E74F11 /* DeepLabV3FP16.mlmodel in Sources */,
 				C4DDEF4925FB779D000CF6A5 /* MultitargetSegmentationTextureGenerater.swift in Sources */,
-				411AF2F92B3504DA007E44EA /* StreamingCompletionHandler.swift in Sources */,
+				411AF2F92B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift in Sources */,
 				71BBE06722E3446300E74F11 /* SegmentationResultMLMultiArray.swift in Sources */,
 				C4BB0DA925619C0400354C08 /* LiveMetalCameraViewController.swift in Sources */,
 				4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */,
@@ -1213,7 +1240,8 @@
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
-				411AF2FD2B350DFC007E44EA /* SnapshotCompletionHandler.swift in Sources */,
+				41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */,
+				411AF2FD2B350DFC007E44EA /* AllObjectsAnnouncer.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,
 				71BBE05F22E33F8D00E74F11 /* DrawingSegmentationView.swift in Sources */,
 				419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */,

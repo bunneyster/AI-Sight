@@ -43,4 +43,25 @@ class SoundHelper {
 
         return (labels[k], multiplier, xValue, size)
     }
+
+    /// Generates the frequencies comprising a major pentatonic scale starting from the given pitch.
+    ///
+    /// - Parameters:
+    ///   - fundamental: The base pitch that determines the key of the scale.
+    ///   - count: The number of tones to generate.
+    /// - Returns: The list of frequencies corresponding to the requested pentatonic scale, in
+    /// increasing order.
+    public static func buildMajorPentatonicScale(fundamental: Double, count: Int) -> [Double] {
+        var result: [Double] = []
+        for i in 0..<count {
+            let multiple = pow(2, Double(i / 5)) * pentatonicRatios[i % 5]
+            result.append(fundamental * multiple)
+        }
+        return result
+    }
+
+    // MARK: Internal
+
+    /// The ratios between consecutive notes in a major pentatonic scale.
+    static let pentatonicRatios: [Double] = [1, 1.125, 1.265625, 1.5, 1.6875]
 }

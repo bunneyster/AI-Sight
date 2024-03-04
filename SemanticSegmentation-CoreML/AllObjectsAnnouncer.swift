@@ -1,5 +1,5 @@
 //
-//  SnapshotCompletionHandler.swift
+//  AllObjectsAnnouncer.swift
 //  SemanticSegmentation-CoreML
 //
 //  Created by Staphany Park on 12/21/23.
@@ -11,17 +11,18 @@ import Combine
 import Foundation
 import Vision
 
-class SnapshotCompletionHandler: Subscriber {
-    typealias Input = CapturedData
-
-    typealias Failure = Never
-
+/// Announces all the objects observed in a frame, ordered by position.
+class AllObjectsAnnouncer {
     let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
 
-    func receive(_ input: CapturedData) -> Subscribers.Demand {
+    /// Announces all the objects enumerated in the given data.
+    ///
+    /// - Parameters:
+    ///   - data: The `CapturedData` collected from a video/depth frame.
+    func process(_ data: CapturedData) {
         usleep(1_500_000)
 
-        let objects = input.extractObjects().sorted(by: { $0.center < $1.center })
+        let objects = data.extractObjects().sorted(by: { $0.center < $1.center })
             .filter { !ignoredObjects.contains(labels[$0.id]) }
         if objects.isEmpty {
             Speaker.shared.speak(text: "No objects identified")
@@ -43,13 +44,5 @@ class SnapshotCompletionHandler: Subscriber {
         }
 
         usleep(1_000_000)
-
-        return .unlimited
     }
-
-    func receive(subscription: Subscription) {
-        subscription.request(.unlimited)
-    }
-
-    func receive(completion _: Subscribers.Completion<Never>) {}
 }

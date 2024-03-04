@@ -1,5 +1,5 @@
 //
-//  StreamingCompletionHandlerTest.swift
+//  AnnouncerTest.swift
 //  SemanticSegmentation-CoreMLTests
 //
 //  Created by Staphany Park on 12/27/23.
@@ -9,7 +9,7 @@
 @testable import SemanticSegmentation_CoreML
 import XCTest
 
-final class StreamingCompletionHandlerTest: XCTestCase {
+final class AnnouncerTest: XCTestCase {
     func testComputeMainObject() throws {
         let objects = [
             MLObject(id: 1, center: IntPoint(x: 1, y: 1), depth: 1, size: 30),
@@ -17,7 +17,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
             MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 1, size: 30),
         ]
 
-        let result = StreamingCompletionHandler.computeMainObject(
+        let result = StreamingMainObjectAnnouncer.computeMainObject(
             objects: objects,
             minSize: 20,
             maxDepth: 5,
@@ -33,7 +33,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
             MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 1, size: 10),
         ]
 
-        let result = StreamingCompletionHandler.computeMainObject(
+        let result = StreamingMainObjectAnnouncer.computeMainObject(
             objects: objects,
             minSize: 20,
             maxDepth: 5,
@@ -49,7 +49,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
             MLObject(id: 3, center: IntPoint(x: 9, y: 9), depth: 9, size: 30),
         ]
 
-        let result = StreamingCompletionHandler.computeMainObject(
+        let result = StreamingMainObjectAnnouncer.computeMainObject(
             objects: objects,
             minSize: 10,
             maxDepth: 5,
@@ -59,7 +59,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
     }
 
     func testComputeMainObject_noObjects() throws {
-        let result = StreamingCompletionHandler.computeMainObject(
+        let result = StreamingMainObjectAnnouncer.computeMainObject(
             objects: [],
             minSize: 20,
             maxDepth: 5,
@@ -72,7 +72,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
         let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )
@@ -83,7 +83,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
         let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.94, size: 10)
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )
@@ -94,7 +94,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
         let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.95, size: 10)
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )
@@ -105,7 +105,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
         let current = MLObject(id: 2, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )
@@ -116,7 +116,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous: MLObject? = nil
         let current = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.5, size: 10)
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )
@@ -127,7 +127,7 @@ final class StreamingCompletionHandlerTest: XCTestCase {
         let previous = MLObject(id: 1, center: IntPoint(x: 5, y: 5), depth: 0.7, size: 10)
         let current: MLObject? = nil
 
-        let result = StreamingCompletionHandler.mainObjectChanged(
+        let result = StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: previous,
             current: current
         )

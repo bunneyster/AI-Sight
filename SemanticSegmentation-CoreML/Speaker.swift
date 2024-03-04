@@ -88,7 +88,7 @@ class Speaker {
     /// Speaks the given text.
     public func speak(text: String, interrupt: Bool = true) {
         if interrupt {
-            synthesizer.stopSpeaking(at: .immediate)
+            stop()
         }
         let utterance = AVSpeechUtterance(string: text)
         utterance.prefersAssistiveTechnologySettings = true

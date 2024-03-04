@@ -66,6 +66,7 @@ let objectIdToSound = [
 let liveMusicModePixelOffset = 131_332
 
 var announcerModeActive: Int = 1
+var scannerModeActive: Int = 0
 
 // MARK: - CaptureMode
 
@@ -135,8 +136,9 @@ class LiveMetalCameraViewController: UIViewController {
         target: .global()
     )
 
-    let streamingPublisher = PassthroughSubject<CapturedData, Never>()
-    let snapshotPublisher = PassthroughSubject<CapturedData, Never>()
+    let dataPublisher = PassthroughSubject<CapturedData, Never>()
+    let announcer = StreamingMainObjectAnnouncer()
+    let scanner = StreamingScanner()
 
     // MARK: - Vision Properties
 
@@ -200,23 +202,40 @@ class LiveMetalCameraViewController: UIViewController {
     // MARK: - Setup notifications
 
     func setUpNotifications() {
-        streamingPublisher
-            .throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-            .subscribe(StreamingCompletionHandler())
-        snapshotPublisher
-            .throttle(for: 0.5, scheduler: dataPublisherQueue, latest: true)
-            .subscribe(SnapshotCompletionHandler())
+        if announcerModeActive == 1 {
+            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+                .subscribe(announcer)
+        }
+        if scannerModeActive == 1 {
+            dataPublisher.share().subscribe(scanner)
+        }
     }
 
     @IBAction
     func toggleAnnouncer(_: Any) {
         if announcerModeActive == 0 {
             announcerModeActive = 1
+            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+                .subscribe(announcer)
             Swift.print("Announcer Mode On")
         } else {
             announcerModeActive = 0
+            announcer.cancel()
             lastMainObjectChange = MainObjectChange(object: nil, time: Date())
             Swift.print("Announcer Mode Off")
+        }
+    }
+
+    @IBAction
+    func toggleScanner(_: Any) {
+        if scannerModeActive == 0 {
+            scannerModeActive = 1
+            dataPublisher.share().subscribe(scanner)
+            Swift.print("Scanner Mode On")
+        } else {
+            scannerModeActive = 0
+            scanner.cancel()
+            Swift.print("Scanner Mode Off")
         }
     }
 
@@ -341,7 +360,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                     videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
                     depthData: depthData
                 )
-                self.streamingPublisher.send(capturedData)
+                self.dataPublisher.send(capturedData)
             }
             dataPublisherQueue.async(execute: completionHandler)
 
@@ -365,7 +384,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                     depthData: depthData
                 )
                 if captureMode == .snapshot {
-                    self.snapshotPublisher.send(capturedData)
+                    AllObjectsAnnouncer().process(capturedData)
                 }
                 captureMode = CaptureMode.streaming
             }
