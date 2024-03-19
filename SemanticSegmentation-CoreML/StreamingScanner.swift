@@ -17,7 +17,9 @@ import OSLog
 ///
 /// Like the vOICe, the scanner continuously moves left and right. When a new frame is received, the
 /// scanner picks up where it left off in the previous frame, such that the capture stream always
-/// sounds seamless.
+/// sounds seamless. For each vertical slice, a subset of evenly distributed pixels are selected and
+/// a tone is played for each pixel; the depth controls the volume and the vertical position
+/// controls the pitch.
 public class StreamingScanner {
     // MARK: Lifecycle
 
@@ -37,8 +39,6 @@ public class StreamingScanner {
         }
         self.leftTapPlayer = buildPlayer(forResource: "beat0")
         self.rightTapPlayer = buildPlayer(forResource: "beat1")
-        leftTapPlayer.volume = 0
-        rightTapPlayer.volume = 0
         leftTapPlayer.prepareToPlay()
         rightTapPlayer.prepareToPlay()
     }
@@ -115,17 +115,14 @@ public class StreamingScanner {
             let depthIndex = depthMapY * Float(depthWidth) + depthMapX
             let depth = floatBuffer[Int(depthIndex)]
 
-            let volume = id > 0 ? (minVolume * depth + maxVolume * volumeCurve) /
-                (depth + volumeCurve) : minVolume
-            node.volume = volume
-
-            node.pan = pan
-            if id > 0 {
-                Logger()
-                    .debug(
-                        "[\(xCoord), \(yCoord)]: id=\(id), depth=\(depth), volume=\(volume), pan=\(pan)"
-                    )
+            if depth > 0 {
+                node.volume = computeVolume(id: id, depth: depth)
             }
+            node.pan = pan
+            Logger()
+                .debug(
+                    "[\(xCoord), \(yCoord)]: id=\(id), depth=\(depth), volume=\(node.volume), pan=\(pan)"
+                )
         }
     }
 
@@ -175,6 +172,11 @@ public class StreamingScanner {
     var rightTapPlayer: AVAudioPlayer!
     /// Whether the scanner should be running.
     var isRunning = false
+
+    func computeVolume(id: Int, depth: Float) -> Float {
+        let volume = (minVolume * depth + maxVolume * volumeCurve) / (depth + volumeCurve)
+        return id > 0 ? volume : 0
+    }
 
     /// Builds an audio node that plays a sine wave signal at the given frequency.
     func buildSourceNode(frequency: Double) -> AVAudioSourceNode {
