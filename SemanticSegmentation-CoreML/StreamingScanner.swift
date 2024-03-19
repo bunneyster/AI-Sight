@@ -100,19 +100,19 @@ public class StreamingScanner {
         let videoHeight = (copyData?.videoBufferHeight)!
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
-        let xOffset = (videoWidth - segmentationWidth) / 2
-        let yOffset = (videoHeight - segmentationHeight) / 2
-        let scaleX = videoWidth / depthWidth
-        let scaleY = videoHeight / depthHeight
+        let videoXOffset = (videoWidth - segmentationWidth) / 2
+        let videoYOffset = (videoHeight - segmentationHeight) / 2
+        let scaleX = Float(videoWidth) / Float(depthWidth)
+        let scaleY = Float(videoHeight) / Float(depthHeight)
 
         for (row, node) in sourceNodes.reversed().enumerated() {
             let yCoord = Int(MathHelper.partition(end: 513, by: numRows, i: Float(row)))
             let coords = [yCoord, xCoord] as [NSNumber]
             let id = copyData?.segmentationMap[coords].intValue ?? 0
 
-            let depthMapX = (xCoord + xOffset) / scaleX
-            let depthMapY = (yCoord + yOffset) / scaleY
-            let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
+            let depthMapX = Float(xCoord + videoXOffset) / scaleX
+            let depthMapY = Float(yCoord + videoYOffset) / scaleY
+            let depthIndex = depthMapY * Float(depthWidth) + depthMapX
             let depth = floatBuffer[Int(depthIndex)]
 
             let volume = id > 0 ? (minVolume * depth + maxVolume * volumeCurve) /
@@ -127,8 +127,6 @@ public class StreamingScanner {
                     )
             }
         }
-
-        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
     }
 
     public func tap(player: AVAudioPlayer, pan: Float) {

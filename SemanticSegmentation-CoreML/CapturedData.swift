@@ -36,8 +36,8 @@ public struct CapturedData {
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
         let xOffset = (videoWidth - segmentationWidth) / 2
         let yOffset = (videoHeight - segmentationHeight) / 2
-        let scaleX = videoWidth / depthWidth
-        let scaleY = videoHeight / depthHeight
+        let scaleX = Float(videoWidth) / Float(depthWidth)
+        let scaleY = Float(videoHeight) / Float(depthHeight)
 
         for row in 0..<segmentationHeight {
             for col in 0..<segmentationWidth {
@@ -47,9 +47,9 @@ public struct CapturedData {
                     continue
                 }
 
-                let depthMapX = (col + xOffset) / scaleX
-                let depthMapY = (row + yOffset) / scaleY
-                let depthIndex = depthMapY * (segmentationWidth / scaleX) + depthMapX
+                let depthMapX = Float(col + xOffset) / scaleX
+                let depthMapY = Float(row + yOffset) / scaleY
+                let depthIndex = depthMapY * Float(depthWidth) + depthMapX
                 let depth = floatBuffer[Int(depthIndex)]
                 if let object = objects[id] {
                     object.center.x += col

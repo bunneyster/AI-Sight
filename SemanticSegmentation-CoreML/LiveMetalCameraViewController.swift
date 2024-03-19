@@ -317,7 +317,7 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
                         request:pixelBuffer:depthData:
                     ),
                     pixelBuffer: pixelBuffer,
-                    depthData: depthData
+                    depthData: depthData.applyingExifOrientation(orientationValue)
                 )
             )
             request.imageCropAndScaleOption = .centerCrop
@@ -354,10 +354,11 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
            let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
             let completionHandler = DispatchWorkItem {
+                // Dimensions are flipped because default camera orientation is landscape.
                 let capturedData = CapturedData(
                     segmentationMap: segmentationMap,
-                    videoBufferHeight: CVPixelBufferGetHeight(pixelBuffer),
-                    videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
+                    videoBufferHeight: CVPixelBufferGetWidth(pixelBuffer),
+                    videoBufferWidth: CVPixelBufferGetHeight(pixelBuffer),
                     depthData: depthData
                 )
                 self.dataPublisher.send(capturedData)
@@ -377,10 +378,11 @@ extension LiveMetalCameraViewController: VideoCaptureDelegate {
            let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
             let completionHandler = DispatchWorkItem {
+                // Dimensions are flipped because default camera orientation is landscape.
                 let capturedData = CapturedData(
                     segmentationMap: segmentationMap,
-                    videoBufferHeight: CVPixelBufferGetHeight(pixelBuffer),
-                    videoBufferWidth: CVPixelBufferGetWidth(pixelBuffer),
+                    videoBufferHeight: CVPixelBufferGetWidth(pixelBuffer),
+                    videoBufferWidth: CVPixelBufferGetHeight(pixelBuffer),
                     depthData: depthData
                 )
                 if captureMode == .snapshot {
