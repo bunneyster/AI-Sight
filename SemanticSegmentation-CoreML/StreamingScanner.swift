@@ -157,6 +157,10 @@ public class StreamingScanner {
     let minVolume: Float = 0.0005
     /// The steepness of the distance-volume curve (lower = steeper, higher = flatter).
     let volumeCurve: Float = 0.1
+    /// The closest distinguishable distance in meters, i.e. all closer distances are treated as 0.
+    let minDepth: Float = 0.5
+    /// The farthest distinguishable distance in meters, i.e. all greater distances are ignored.
+    let maxDepth: Float = 4
 
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
@@ -174,8 +178,14 @@ public class StreamingScanner {
     var isRunning = false
 
     func computeVolume(id: Int, depth: Float) -> Float {
-        let volume = (minVolume * depth + maxVolume * volumeCurve) / (depth + volumeCurve)
-        return id > 0 ? volume : 0
+        if depth < minDepth {
+            return includeBackground == 1 || id > 0 ? maxVolume : 0
+        } else if depth < maxDepth {
+            let volume = (minVolume * depth + maxVolume * volumeCurve) / (depth + volumeCurve)
+            return includeBackground == 1 || id > 0 ? volume : 0
+        } else {
+            return (includeDistantObjects == 1) && (id > 0) ? minVolume : 0
+        }
     }
 
     /// Builds an audio node that plays a sine wave signal at the given frequency.

@@ -67,6 +67,8 @@ let liveMusicModePixelOffset = 131_332
 
 var announcerModeActive: Int = 1
 var scannerModeActive: Int = 0
+var includeBackground: Int = 0
+var includeDistantObjects: Int = 0
 
 // MARK: - CaptureMode
 
@@ -93,6 +95,14 @@ class LiveMetalCameraViewController: UIViewController {
     var etimeLabel: UILabel!
     @IBOutlet
     var fpsLabel: UILabel!
+    @IBOutlet
+    var includeBackgroundLabel: UILabel!
+    @IBOutlet
+    var includeBackgroundSwitch: UISwitch!
+    @IBOutlet
+    var includeDistantObjectsLabel: UILabel!
+    @IBOutlet
+    var includeDistantObjectsSwitch: UISwitch!
 
     @IBOutlet
     var CameraButton: UIButton!
@@ -229,13 +239,43 @@ class LiveMetalCameraViewController: UIViewController {
     @IBAction
     func toggleScanner(_: Any) {
         if scannerModeActive == 0 {
+            includeBackgroundLabel.isEnabled = true
+            includeBackgroundSwitch.isEnabled = true
+            includeDistantObjectsLabel.isEnabled = true
+            includeDistantObjectsSwitch.isEnabled = true
             scannerModeActive = 1
             dataPublisher.share().subscribe(scanner)
             Swift.print("Scanner Mode On")
         } else {
+            includeBackgroundLabel.isEnabled = false
+            includeBackgroundSwitch.isEnabled = false
+            includeDistantObjectsLabel.isEnabled = false
+            includeDistantObjectsSwitch.isEnabled = false
             scannerModeActive = 0
             scanner.cancel()
             Swift.print("Scanner Mode Off")
+        }
+    }
+
+    @IBAction
+    func toggleIncludeBackground(_: Any) {
+        if includeBackground == 0 {
+            includeBackground = 1
+            Swift.print("Include background enabled")
+        } else {
+            includeBackground = 0
+            Swift.print("Include background disabled")
+        }
+    }
+
+    @IBAction
+    func toggleIncludeDistantObjects(_: Any) {
+        if includeDistantObjects == 0 {
+            includeDistantObjects = 1
+            Swift.print("Include distant objects enabled")
+        } else {
+            includeDistantObjects = 0
+            Swift.print("Include distant objects disabled")
         }
     }
 
