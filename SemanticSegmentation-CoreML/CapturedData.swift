@@ -15,6 +15,7 @@ public struct CapturedData {
 
     public func extractObjects() -> [MLObject] {
         var objects = [Int: MLObject]()
+        var depths = [Int: [Float]]()
 
         guard let segmentationHeight = segmentationMap.shape[0] as? Int,
               let segmentationWidth = segmentationMap.shape[1] as? Int
@@ -30,6 +31,8 @@ public struct CapturedData {
             CVPixelBufferGetBaseAddress(depthBuffer),
             to: UnsafeMutablePointer<Float32>.self
         )
+        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
         let videoWidth = videoBufferWidth
         let videoHeight = videoBufferHeight
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
@@ -51,25 +54,31 @@ public struct CapturedData {
                 let depthMapY = Float(row + yOffset) / scaleY
                 let depthIndex = depthMapY * Float(depthWidth) + depthMapX
                 let depth = floatBuffer[Int(depthIndex)]
+                if depth > 0 {
+                    depths[id, default: []].append(depth)
+                }
                 if let object = objects[id] {
                     object.center.x += col
                     object.center.y += row
-                    if depth > 0 {
-                        object.depth = object.depth == 0 ? depth : min(object.depth, depth)
-                    }
                     object.size += 1
                 } else {
                     objects[id] = MLObject(
                         id: id,
                         center: IntPoint(x: row, y: col),
-                        depth: depth,
+                        depth: 0,
                         size: 1
                     )
                 }
             }
         }
 
-        CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        for (id, values) in depths {
+            if let object = objects[id] {
+                let sortedValues = values.sorted()
+                let tenthPercentile = sortedValues[Int(Double(values.count - 1) * 0.1)]
+                object.depth = tenthPercentile
+            }
+        }
 
         for (id, object) in objects {
             let size = object.size
