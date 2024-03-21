@@ -259,11 +259,13 @@
                     <tabBarItem key="tabBarItem" title="GPU Live" image="memorychip" catalog="system" id="sPp-wC-0rq"/>
                     <connections>
                         <outlet property="CameraButton" destination="mGH-mt-VE2" id="sCL-sD-9ED"/>
+                        <outlet property="announcerSwitch" destination="u08-Da-cyH" id="vQ0-bS-i81"/>
                         <outlet property="includeBackgroundLabel" destination="1YG-RG-nGi" id="j9G-DL-8Ao"/>
                         <outlet property="includeBackgroundSwitch" destination="DWs-B0-3H9" id="Twh-qt-Uk6"/>
                         <outlet property="includeDistantObjectsLabel" destination="01Q-fz-llF" id="nqN-Cw-Oos"/>
                         <outlet property="includeDistantObjectsSwitch" destination="wXJ-ae-sqA" id="wkR-ga-FUi"/>
                         <outlet property="metalVideoPreview" destination="jI5-DE-WCD" id="vOH-hS-bZx"/>
+                        <outlet property="scannerSwitch" destination="Ogc-vy-zJg" id="YYw-FT-EeQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0a6-Ns-dFL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -65,11 +65,6 @@ let objectIdToSound = [
 
 let liveMusicModePixelOffset = 131_332
 
-var announcerModeActive: Int = 1
-var scannerModeActive: Int = 0
-var includeBackground: Int = 0
-var includeDistantObjects: Int = 0
-
 // MARK: - CaptureMode
 
 enum CaptureMode {
@@ -95,6 +90,10 @@ class LiveMetalCameraViewController: UIViewController {
     var etimeLabel: UILabel!
     @IBOutlet
     var fpsLabel: UILabel!
+    @IBOutlet
+    var announcerSwitch: UISwitch!
+    @IBOutlet
+    var scannerSwitch: UISwitch!
     @IBOutlet
     var includeBackgroundLabel: UILabel!
     @IBOutlet
@@ -165,7 +164,7 @@ class LiveMetalCameraViewController: UIViewController {
 
         setUpModel()
         setUpCamera()
-        setUpNotifications()
+        setUpUserPreferences()
     }
 
     override func didReceiveMemoryWarning() { // override
@@ -209,74 +208,62 @@ class LiveMetalCameraViewController: UIViewController {
         }
     }
 
-    // MARK: - Setup notifications
+    // MARK: - Setup user preferences
 
-    func setUpNotifications() {
-        if announcerModeActive == 1 {
+    func setUpUserPreferences() {
+        announcerSwitch.isOn = UserDefaults.standard.bool(forKey: "announcer")
+        scannerSwitch.isOn = UserDefaults.standard.bool(forKey: "scanner")
+        includeBackgroundLabel.isEnabled = scannerSwitch.isOn
+        includeBackgroundSwitch.isEnabled = scannerSwitch.isOn
+        includeBackgroundSwitch.isOn = UserDefaults.standard.bool(forKey: "includeBackground")
+        includeDistantObjectsLabel.isEnabled = scannerSwitch.isOn
+        includeDistantObjectsSwitch.isEnabled = scannerSwitch.isOn
+        includeDistantObjectsSwitch.isOn = UserDefaults.standard
+            .bool(forKey: "includeDistantObjects")
+
+        if announcerSwitch.isOn {
             dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
                 .subscribe(announcer)
         }
-        if scannerModeActive == 1 {
+        if scannerSwitch.isOn {
             dataPublisher.share().subscribe(scanner)
         }
     }
 
     @IBAction
-    func toggleAnnouncer(_: Any) {
-        if announcerModeActive == 0 {
-            announcerModeActive = 1
+    func toggleAnnouncer(_ sender: UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: "announcer")
+        if sender.isOn {
             dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
                 .subscribe(announcer)
-            Swift.print("Announcer Mode On")
         } else {
-            announcerModeActive = 0
             announcer.cancel()
             lastMainObjectChange = MainObjectChange(object: nil, time: Date())
-            Swift.print("Announcer Mode Off")
         }
     }
 
     @IBAction
-    func toggleScanner(_: Any) {
-        if scannerModeActive == 0 {
-            includeBackgroundLabel.isEnabled = true
-            includeBackgroundSwitch.isEnabled = true
-            includeDistantObjectsLabel.isEnabled = true
-            includeDistantObjectsSwitch.isEnabled = true
-            scannerModeActive = 1
+    func toggleScanner(_ sender: UISwitch) {
+        includeBackgroundLabel.isEnabled = sender.isOn
+        includeBackgroundSwitch.isEnabled = sender.isOn
+        includeDistantObjectsLabel.isEnabled = sender.isOn
+        includeDistantObjectsSwitch.isEnabled = sender.isOn
+        UserDefaults.standard.set(sender.isOn, forKey: "scanner")
+        if sender.isOn {
             dataPublisher.share().subscribe(scanner)
-            Swift.print("Scanner Mode On")
         } else {
-            includeBackgroundLabel.isEnabled = false
-            includeBackgroundSwitch.isEnabled = false
-            includeDistantObjectsLabel.isEnabled = false
-            includeDistantObjectsSwitch.isEnabled = false
-            scannerModeActive = 0
             scanner.cancel()
-            Swift.print("Scanner Mode Off")
         }
     }
 
     @IBAction
-    func toggleIncludeBackground(_: Any) {
-        if includeBackground == 0 {
-            includeBackground = 1
-            Swift.print("Include background enabled")
-        } else {
-            includeBackground = 0
-            Swift.print("Include background disabled")
-        }
+    func toggleIncludeBackground(_ sender: UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: "includeBackground")
     }
 
     @IBAction
-    func toggleIncludeDistantObjects(_: Any) {
-        if includeDistantObjects == 0 {
-            includeDistantObjects = 1
-            Swift.print("Include distant objects enabled")
-        } else {
-            includeDistantObjects = 0
-            Swift.print("Include distant objects disabled")
-        }
+    func toggleIncludeDistantObjects(_ sender: UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: "includeDistantObjects")
     }
 
     @IBAction

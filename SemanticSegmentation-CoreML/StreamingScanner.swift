@@ -179,12 +179,15 @@ public class StreamingScanner {
 
     func computeVolume(id: Int, depth: Float) -> Float {
         if depth < minDepth {
-            return includeBackground == 1 || id > 0 ? maxVolume : minVolume
+            return UserDefaults.standard
+                .bool(forKey: "includeBackground") || id > 0 ? maxVolume : minVolume
         } else if depth < maxDepth {
             let volume = (minVolume * depth + maxVolume * volumeCurve) / (depth + volumeCurve)
-            return includeBackground == 1 || id > 0 ? volume : minVolume
+            return UserDefaults.standard
+                .bool(forKey: "includeBackground") || id > 0 ? volume : minVolume
         } else {
-            return (includeDistantObjects == 1) && (id > 0) ? minVolume : minVolume
+            return UserDefaults.standard
+                .bool(forKey: "includeDistantObjects") && (id > 0) ? minVolume : minVolume
         }
     }
 
