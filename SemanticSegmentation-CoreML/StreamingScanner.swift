@@ -38,7 +38,7 @@ public class StreamingScanner {
             engine.connect(node, to: engine.mainMixerNode, format: inputFormat)
         }
         self.leftTapPlayer = buildPlayer(forResource: "beat0")
-        self.rightTapPlayer = buildPlayer(forResource: "beat1")
+        self.rightTapPlayer = buildPlayer(forResource: "beat3")
         leftTapPlayer.prepareToPlay()
         rightTapPlayer.prepareToPlay()
     }
