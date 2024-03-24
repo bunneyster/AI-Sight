@@ -25,20 +25,20 @@ public class StreamingScanner {
 
     init() {
         let inputFormat = engine.outputNode.inputFormat(forBus: 0)
-        self.sampleRate = Float(inputFormat.sampleRate)
+        self.sampleRate = inputFormat.sampleRate
         let scale = SoundHelper.buildMajorPentatonicScale(
             fundamental: pythagoreanFrequencies[.g3]!,
             count: Int(numRows)
         )
         for row in 0..<Int(numRows) {
-            let node = buildSourceNode(frequency: scale[row])
+            let node = SoundHelper.buildSourceNode(frequency: scale[row], sampleRate: sampleRate)
             node.volume = 0
             sourceNodes.append(node)
             engine.attach(node)
             engine.connect(node, to: engine.mainMixerNode, format: inputFormat)
         }
-        self.leftTapPlayer = buildPlayer(forResource: "beat0")
-        self.rightTapPlayer = buildPlayer(forResource: "beat3")
+        self.leftTapPlayer = SoundHelper.buildPlayer(forResource: "beat0")
+        self.rightTapPlayer = SoundHelper.buildPlayer(forResource: "beat3")
         leftTapPlayer.prepareToPlay()
         rightTapPlayer.prepareToPlay()
     }
@@ -167,7 +167,7 @@ public class StreamingScanner {
     /// The original captured data object received from the data publisher.
     var sourceData: CapturedData?
     /// The sample rate of the pure tones.
-    var sampleRate: Float
+    var sampleRate: Double
     /// The pure tone audio nodes, from high pitch (frame top) to low pitch (frame bottom).
     var sourceNodes = [AVAudioSourceNode]()
     /// The audio player that plays the tap sound when the scanner reaches the left of the frame.
@@ -188,35 +188,6 @@ public class StreamingScanner {
         } else {
             return UserDefaults.standard
                 .bool(forKey: "includeDistantObjects") && (id > 0) ? minVolume : minVolume
-        }
-    }
-
-    /// Builds an audio node that plays a sine wave signal at the given frequency.
-    func buildSourceNode(frequency: Double) -> AVAudioSourceNode {
-        var phase: Double = 0
-        let phaseIncrement = (2 * Double.pi / Double(sampleRate)) * frequency
-        return AVAudioSourceNode { _, _, frameCount, audioBufferList -> OSStatus in
-            let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
-            for frame in 0..<Int(frameCount) {
-                let value = sin(phase)
-                phase += phaseIncrement
-                for buffer in ablPointer {
-                    let buf: UnsafeMutableBufferPointer<Float> = UnsafeMutableBufferPointer(buffer)
-                    buf[frame] = Float(value)
-                }
-            }
-            return noErr
-        }
-    }
-
-    /// Builds an audio player that plays the WAV file with the given name.
-    func buildPlayer(forResource: String) -> AVAudioPlayer {
-        do {
-            let url = Bundle.main.url(forResource: forResource, withExtension: "wav")
-            return try AVAudioPlayer(contentsOf: url!)
-        } catch {
-            Logger().error("Failed to load audio file: \(error)")
-            return AVAudioPlayer()
         }
     }
 }

@@ -8,6 +8,7 @@
 
 import AVFoundation
 import Foundation
+import OSLog
 import Vision
 
 class SoundHelper {
@@ -58,6 +59,35 @@ class SoundHelper {
             result.append(fundamental * multiple)
         }
         return result
+    }
+
+    /// Builds an audio node that plays a sine wave signal at the given frequency and sample rate..
+    public static func buildSourceNode(frequency: Double, sampleRate: Double) -> AVAudioSourceNode {
+        var phase: Double = 0
+        let phaseIncrement = (2 * Double.pi / sampleRate) * frequency
+        return AVAudioSourceNode { _, _, frameCount, audioBufferList -> OSStatus in
+            let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
+            for frame in 0..<Int(frameCount) {
+                let value = sin(phase)
+                phase += phaseIncrement
+                for buffer in ablPointer {
+                    let buf: UnsafeMutableBufferPointer<Float> = UnsafeMutableBufferPointer(buffer)
+                    buf[frame] = Float(value)
+                }
+            }
+            return noErr
+        }
+    }
+
+    /// Builds an audio player that plays the WAV file with the given name.
+    public static func buildPlayer(forResource: String) -> AVAudioPlayer {
+        do {
+            let url = Bundle.main.url(forResource: forResource, withExtension: "wav")
+            return try AVAudioPlayer(contentsOf: url!)
+        } catch {
+            Logger().error("Failed to load audio file: \(error)")
+            return AVAudioPlayer()
+        }
     }
 
     // MARK: Internal
