@@ -150,7 +150,7 @@ public class StreamingScanner {
     /// How long to play a single vertical slice, in seconds.
     let beatDuration = 0.075
     /// The volume of the left/right taps.
-    let tapVolume: Float = 0.7
+    let tapVolume: Float = 1.0
     /// The maximum volume of a pure tone.
     let maxVolume: Float = 0.12
     /// The minimum volume of a pure tone.
@@ -160,7 +160,7 @@ public class StreamingScanner {
     /// The closest distinguishable distance in meters, i.e. all closer distances are treated as 0.
     let minDepth: Float = 0.5
     /// The farthest distinguishable distance in meters, i.e. all greater distances are ignored.
-    let maxDepth: Float = 4
+    let maxDepth: Float = 2.5
 
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
