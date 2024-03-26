@@ -116,7 +116,7 @@ public class StreamingScanner {
             let depth = floatBuffer[Int(depthIndex)]
 
             if depth > 0 {
-                node.volume = computeVolume(id: id, depth: depth)
+                node.volume = computeVolume(id: id, depth: depth, yCoord: yCoord)
             }
             node.pan = pan
             Logger()
@@ -156,9 +156,9 @@ public class StreamingScanner {
     /// The minimum volume of a pure tone.
     let minVolume: Float = 0.0005
     /// The steepness of the distance-volume curve (lower = steeper, higher = flatter).
-    let volumeCurve: Float = 0.1
+    let volumeCurve: Float = 0.4
     /// The closest distinguishable distance in meters, i.e. all closer distances are treated as 0.
-    let minDepth: Float = 0.5
+    let minDepth: Float = 1
     /// The farthest distinguishable distance in meters, i.e. all greater distances are ignored.
     let maxDepth: Float = 2.5
 
@@ -177,12 +177,14 @@ public class StreamingScanner {
     /// Whether the scanner should be running.
     var isRunning = false
 
-    func computeVolume(id: Int, depth: Float) -> Float {
+    func computeVolume(id: Int, depth: Float, yCoord: Int) -> Float {
         if depth < minDepth {
             return UserDefaults.standard
                 .bool(forKey: "includeBackground") || id > 0 ? maxVolume : minVolume
         } else if depth < maxDepth {
-            let volume = (minVolume * depth + maxVolume * volumeCurve) / (depth + volumeCurve)
+            let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
+            let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
+                ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
             return UserDefaults.standard
                 .bool(forKey: "includeBackground") || id > 0 ? volume : minVolume
         } else {
