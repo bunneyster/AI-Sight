@@ -135,7 +135,7 @@ class StreamingProximitySensor {
         } else if depth < depthThresholds[3] {
             return 1
         } else {
-            return 0
+            return 0.5
         }
     }
 
@@ -146,10 +146,8 @@ class StreamingProximitySensor {
             return "4"
         } else if depth < depthThresholds[2] {
             return "7"
-        } else if depth < depthThresholds[3] {
-            return "10"
         } else {
-            return nil
+            return "10"
         }
     }
 
