@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "announcer": true,
             "scanner": false,
             "includeBackground": false,
-            "includeDistantObjects": false
+            "includeDistantObjects": false,
+            "objectProximity": "None"
         ])
         return true
     }

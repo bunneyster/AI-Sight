@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="UIMenu" message="Requires Xcode 11 or later." minToolsVersion="11.0" requiredIntegratedClassName="UICommandDiff"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -157,7 +158,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mtkView contentMode="scaleAspectFit" colorPixelFormat="BGRA8Unorm" depthStencilPixelFormat="Depth32Float" translatesAutoresizingMaskIntoConstraints="NO" id="jI5-DE-WCD" customClass="MetalVideoView" customModule="SemanticSegmentation_CoreML" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="414" height="763"/>
+                                <rect key="frame" x="0.0" y="272.5" width="414" height="447.5"/>
                             </mtkView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGH-mt-VE2" userLabel="Camera Button" colorLabel="IBBuiltInLabel-Green">
                                 <rect key="frame" x="15" y="740" width="384" height="60"/>
@@ -222,12 +223,57 @@
                                     <action selector="toggleIncludeDistantObjects:" destination="uso-ud-VWq" eventType="valueChanged" id="Nnd-9w-oeQ"/>
                                 </connections>
                             </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Object Proximity" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCY-0y-ypk" userLabel="Object Proximity Label">
+                                <rect key="frame" x="15" y="221" width="183.5" height="31.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" changesSelectionAsPrimaryAction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uTR-Qb-lvP" userLabel="Object Proximity Button">
+                                <rect key="frame" x="213.5" y="219.5" width="185.5" height="34.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <menu key="menu" id="QGa-9u-brQ">
+                                    <menuOptions key="menuOptions" singleSelection="YES"/>
+                                    <children>
+                                        <command title="None" id="y6x-cg-B5P">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="8dg-kl-aSg"/>
+                                            </connections>
+                                        </command>
+                                        <command title="People" id="DGo-6b-7yb">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="CM5-m7-tvZ"/>
+                                            </connections>
+                                        </command>
+                                        <command title="Vehicles" id="lsU-m0-dac" userLabel="Vehicles">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="j7F-aM-hSJ"/>
+                                            </connections>
+                                        </command>
+                                        <command title="Seating" id="U2Z-E0-nHV" userLabel="Seating">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="R8Y-Rm-HYA"/>
+                                            </connections>
+                                        </command>
+                                        <command title="Animals" id="A7J-Rw-2JE" userLabel="Animals">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="vOj-j1-PLq"/>
+                                            </connections>
+                                        </command>
+                                    </children>
+                                </menu>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="26"/>
+                                </buttonConfiguration>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZRo-26-PEe"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="jI5-DE-WCD" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="2" id="0vQ-0x-faH"/>
                             <constraint firstItem="01Q-fz-llF" firstAttribute="top" secondItem="1YG-RG-nGi" secondAttribute="bottom" constant="8" symbolic="YES" id="1G0-5h-UBT"/>
+                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="uTR-Qb-lvP" secondAttribute="trailing" constant="15" id="3jm-a8-Rcd"/>
+                            <constraint firstItem="uTR-Qb-lvP" firstAttribute="leading" secondItem="rCY-0y-ypk" secondAttribute="trailing" constant="15" id="4LM-fT-kQg"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="jI5-DE-WCD" secondAttribute="trailing" id="4mM-Rd-x23"/>
                             <constraint firstItem="OWV-YF-nut" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="15" id="4vR-IW-qRI"/>
                             <constraint firstItem="wXJ-ae-sqA" firstAttribute="leading" secondItem="01Q-fz-llF" secondAttribute="trailing" constant="15" id="Azh-j3-8ny"/>
@@ -239,20 +285,23 @@
                             <constraint firstItem="u08-Da-cyH" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="17" id="MXQ-Wn-vK5"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="DWs-B0-3H9" secondAttribute="trailing" constant="15" id="Ow4-1n-Vvy"/>
                             <constraint firstItem="jI5-DE-WCD" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" id="TO8-zS-mBB"/>
+                            <constraint firstItem="rCY-0y-ypk" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="WdB-j2-Sxb"/>
+                            <constraint firstItem="rCY-0y-ypk" firstAttribute="top" secondItem="01Q-fz-llF" secondAttribute="bottom" constant="8" symbolic="YES" id="aNp-r8-z3B"/>
                             <constraint firstItem="mGH-mt-VE2" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="cu5-ss-xR8"/>
                             <constraint firstItem="Ogc-vy-zJg" firstAttribute="leading" secondItem="3Ji-sx-ZAf" secondAttribute="trailing" constant="15" id="dXV-qq-4lg"/>
                             <constraint firstItem="u08-Da-cyH" firstAttribute="leading" secondItem="OWV-YF-nut" secondAttribute="trailing" constant="15" id="edC-Z5-6hU"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="bottom" secondItem="jI5-DE-WCD" secondAttribute="bottom" id="ehq-0u-Is5"/>
                             <constraint firstItem="wXJ-ae-sqA" firstAttribute="centerY" secondItem="01Q-fz-llF" secondAttribute="centerY" id="eu0-UM-G17"/>
                             <constraint firstItem="3Ji-sx-ZAf" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="fSY-Eo-aIQ"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="DWs-B0-3H9" secondAttribute="trailing" constant="15" id="gq8-P2-LRB"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="u08-Da-cyH" secondAttribute="trailing" constant="15" id="hf4-SZ-cTS"/>
+                            <constraint firstItem="jI5-DE-WCD" firstAttribute="top" secondItem="rCY-0y-ypk" secondAttribute="bottom" constant="20" id="kNL-Fa-BgF"/>
                             <constraint firstItem="OWV-YF-nut" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="pIB-yz-IQt"/>
                             <constraint firstItem="DWs-B0-3H9" firstAttribute="leading" secondItem="1YG-RG-nGi" secondAttribute="trailing" constant="15" id="q8Y-CM-AZ4"/>
                             <constraint firstItem="DWs-B0-3H9" firstAttribute="centerY" secondItem="1YG-RG-nGi" secondAttribute="centerY" id="qha-bu-j5I"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="mGH-mt-VE2" secondAttribute="trailing" constant="15" id="rwC-Qv-r3V"/>
+                            <constraint firstItem="uTR-Qb-lvP" firstAttribute="centerY" secondItem="rCY-0y-ypk" secondAttribute="centerY" id="slQ-0L-5H2"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="bottom" secondItem="mGH-mt-VE2" secondAttribute="bottom" constant="13" id="uRH-16-Av8"/>
                             <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="wXJ-ae-sqA" secondAttribute="trailing" constant="15" id="xEw-yt-0az"/>
+                            <constraint firstItem="mGH-mt-VE2" firstAttribute="top" secondItem="jI5-DE-WCD" secondAttribute="bottom" constant="20" id="ydG-iW-Esh"/>
                             <constraint firstItem="01Q-fz-llF" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="zmf-nT-bdP"/>
                         </constraints>
                     </view>
@@ -265,6 +314,7 @@
                         <outlet property="includeDistantObjectsLabel" destination="01Q-fz-llF" id="nqN-Cw-Oos"/>
                         <outlet property="includeDistantObjectsSwitch" destination="wXJ-ae-sqA" id="wkR-ga-FUi"/>
                         <outlet property="metalVideoPreview" destination="jI5-DE-WCD" id="vOH-hS-bZx"/>
+                        <outlet property="objectProximityButton" destination="uTR-Qb-lvP" id="Fqt-pO-lXH"/>
                         <outlet property="scannerSwitch" destination="Ogc-vy-zJg" id="YYw-FT-EeQ"/>
                     </connections>
                 </viewController>

@@ -102,6 +102,8 @@ class LiveMetalCameraViewController: UIViewController {
     var includeDistantObjectsLabel: UILabel!
     @IBOutlet
     var includeDistantObjectsSwitch: UISwitch!
+    @IBOutlet
+    var objectProximityButton: UIButton!
 
     @IBOutlet
     var CameraButton: UIButton!
@@ -148,6 +150,7 @@ class LiveMetalCameraViewController: UIViewController {
     let dataPublisher = PassthroughSubject<CapturedData, Never>()
     let announcer = StreamingMainObjectAnnouncer()
     let scanner = StreamingScanner()
+    let proximitySensor = StreamingProximitySensor()
 
     // MARK: - Vision Properties
 
@@ -220,6 +223,10 @@ class LiveMetalCameraViewController: UIViewController {
         includeDistantObjectsSwitch.isEnabled = scannerSwitch.isOn
         includeDistantObjectsSwitch.isOn = UserDefaults.standard
             .bool(forKey: "includeDistantObjects")
+        objectProximityButton.setTitle(
+            UserDefaults.standard.string(forKey: "objectProximity"),
+            for: .normal
+        )
 
         if announcerSwitch.isOn {
             dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
@@ -227,6 +234,10 @@ class LiveMetalCameraViewController: UIViewController {
         }
         if scannerSwitch.isOn {
             dataPublisher.share().subscribe(scanner)
+        }
+        if objectProximityButton.currentTitle != "None" {
+            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+                .subscribe(proximitySensor)
         }
     }
 
@@ -264,6 +275,17 @@ class LiveMetalCameraViewController: UIViewController {
     @IBAction
     func toggleIncludeDistantObjects(_ sender: UISwitch) {
         UserDefaults.standard.set(sender.isOn, forKey: "includeDistantObjects")
+    }
+
+    @IBAction
+    func selectObjectProximity(_ sender: UICommand) {
+        UserDefaults.standard.set(sender.title, forKey: "objectProximity")
+        if sender.title != "None" {
+            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+                .subscribe(proximitySensor)
+        } else {
+            proximitySensor.cancel()
+        }
     }
 
     @IBAction
