@@ -17,7 +17,7 @@ class StreamingProximitySensor {
     // MARK: Lifecycle
 
     init() {
-        mixer.outputVolume = 1
+        mixer.outputVolume = volume
         engine.attach(mixer)
         engine.connect(
             mixer,
@@ -25,7 +25,7 @@ class StreamingProximitySensor {
             format: engine.mainMixerNode.inputFormat(forBus: 0)
         )
         for player in players {
-            player.volume = 1
+            player.volume = volume
             engine.attach(player)
             engine.connect(player, to: mixer, format: engine.mainMixerNode.inputFormat(forBus: 0))
         }
@@ -62,21 +62,11 @@ class StreamingProximitySensor {
         "Seating": "breath",
         "Animals": "cat",
     ]
-    let depthToFilePitch = [
-        1: "1",
-        2: "4",
-        3: "7",
-        4: "10",
-    ]
-    let depthToBPS = [
-        1: 8.0,
-        2: 4.0,
-        3: 2.0,
-        4: 1.0,
-    ]
+    let depthThresholds: [Float] = [0.75, 1.25, 1.75, 2.5]
     let engine = AVAudioEngine()
     let mixer = AVAudioMixerNode()
     let players = (0..<8).map { _ in AVAudioPlayerNode() }
+    let volume: Float = 0.5
     var isRunning = false
     var nextPlayerIndex = 0
     /// The subscription for captured data streamed from the video/depth data publisher.
@@ -99,9 +89,9 @@ class StreamingProximitySensor {
             .min { a, b in a.depth < b.depth }
         Logger().debug("closest object: \(String(describing: closestSelectedObject))")
         if let object = closestSelectedObject,
-           let fileName = getFileName(object: object, category: objectCategory),
-           let bps = depthToBPS[Int(ceil(object.depth))]
+           let fileName = getFileName(object: object, category: objectCategory)
         {
+            let bps = getBPS(depth: object.depth)
             pan = Float(object.center.x) * 2 / 513 - 1
             if bps != lastBPS || fileName != lastFileName {
                 lastBPS = bps
@@ -131,8 +121,36 @@ class StreamingProximitySensor {
 
     func getFileName(object: MLObject, category: String) -> String? {
         guard let timbre = objectCategoryTimbres[category] else { return nil }
-        guard let pitch = depthToFilePitch[Int(ceil(object.depth))] else { return nil }
+        guard let pitch = getPitch(depth: object.depth) else { return nil }
         return pitch + timbre
+    }
+
+    func getBPS(depth: Float) -> Double {
+        if depth < depthThresholds[0] {
+            return 8
+        } else if depth < depthThresholds[1] {
+            return 4
+        } else if depth < depthThresholds[2] {
+            return 2
+        } else if depth < depthThresholds[3] {
+            return 1
+        } else {
+            return 0
+        }
+    }
+
+    func getPitch(depth: Float) -> String? {
+        if depth < depthThresholds[0] {
+            return "1"
+        } else if depth < depthThresholds[1] {
+            return "4"
+        } else if depth < depthThresholds[2] {
+            return "7"
+        } else if depth < depthThresholds[3] {
+            return "10"
+        } else {
+            return nil
+        }
     }
 
     func scheduleBeats(bps: Double, fileName: String) {
