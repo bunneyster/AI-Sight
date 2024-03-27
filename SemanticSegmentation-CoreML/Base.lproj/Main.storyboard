@@ -260,6 +260,21 @@
                                                 <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="vOj-j1-PLq"/>
                                             </connections>
                                         </command>
+                                        <command title="Bottles" id="6Qe-pS-Ryj">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="0gh-my-RzA"/>
+                                            </connections>
+                                        </command>
+                                        <command title="TVs" id="YcS-Ia-bCc" userLabel="TVs">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="P2E-YT-Q3q"/>
+                                            </connections>
+                                        </command>
+                                        <command title="Tables" id="Pl0-Bn-faH" userLabel="Tables">
+                                            <connections>
+                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="Rh8-Cq-YaK"/>
+                                            </connections>
+                                        </command>
                                     </children>
                                 </menu>
                                 <state key="normal" title="Button"/>

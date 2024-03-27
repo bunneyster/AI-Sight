@@ -55,12 +55,18 @@ class StreamingProximitySensor {
         "Vehicles": [1, 2, 4, 6, 7, 14, 19],
         "Seating": [9, 18],
         "Animals": [3, 8, 10, 12, 13, 17],
+        "Bottles": [5],
+        "TVs": [20],
+        "Tables": [11],
     ]
     let objectCategoryTimbres = [
         "People": "piano",
         "Vehicles": "trumpet",
-        "Seating": "breath",
+        "Seating": "chair",
         "Animals": "cat",
+        "Bottles": "bottle",
+        "TVs": "breath",
+        "Tables": "chair",
     ]
     let depthThresholds: [Float] = [0.75, 1.25, 1.75, 2.5]
     let engine = AVAudioEngine()
