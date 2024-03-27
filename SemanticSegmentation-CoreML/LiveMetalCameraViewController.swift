@@ -223,10 +223,12 @@ class LiveMetalCameraViewController: UIViewController {
         includeDistantObjectsSwitch.isEnabled = scannerSwitch.isOn
         includeDistantObjectsSwitch.isOn = UserDefaults.standard
             .bool(forKey: "includeDistantObjects")
-        objectProximityButton.setTitle(
-            UserDefaults.standard.string(forKey: "objectProximity"),
-            for: .normal
-        )
+        let proximityDefault = UserDefaults.standard.string(forKey: "objectProximity")
+        if let menuItem = objectProximityButton.menu?.children
+            .first(where: { $0.title == proximityDefault }) as? UICommand
+        {
+            menuItem.state = .on
+        }
 
         if announcerSwitch.isOn {
             dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
@@ -235,7 +237,7 @@ class LiveMetalCameraViewController: UIViewController {
         if scannerSwitch.isOn {
             dataPublisher.share().subscribe(scanner)
         }
-        if objectProximityButton.currentTitle != "None" {
+        if objectProximityButton.menu?.title != "None" {
             dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
                 .subscribe(proximitySensor)
         }
