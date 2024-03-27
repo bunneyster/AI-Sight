@@ -77,6 +77,7 @@ class StreamingProximitySensor {
     var lastBPS: Double?
     var pan: Float?
     var timer: Timer?
+    var fileCache = [String: AVAudioFile]()
 
     func processFrame() {
         let copyData = sourceData
@@ -153,12 +154,17 @@ class StreamingProximitySensor {
 
     func scheduleBeats(bps: Double, fileName: String) {
         timer = Timer.scheduledTimer(withTimeInterval: 1 / bps, repeats: true) { [self] _ in
-            let file = try! AVAudioFile(forReading: Bundle.main.url(
-                forResource: fileName,
-                withExtension: "wav"
-            )!)
+            let file = {
+                if fileCache[fileName] == nil {
+                    fileCache[fileName] = try! AVAudioFile(forReading: Bundle.main.url(
+                        forResource: fileName,
+                        withExtension: "wav"
+                    )!)
+                }
+                return fileCache[fileName]
+            }()
             let player = players[nextPlayerIndex]
-            player.scheduleFile(file, at: nil)
+            player.scheduleFile(file!, at: nil)
             player.pan = pan!
             player.play()
             Logger().debug("\(fileName).wav, bps = \(bps), pan = \(player.pan)")
