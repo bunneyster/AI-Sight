@@ -71,17 +71,14 @@ class StreamingProximitySensor {
     var nextPlayerIndex = 0
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
-    /// The original captured data object received from the data publisher.
-    var sourceData: CapturedData?
     var lastFileName: String?
     var lastBPS: Double?
     var pan: Float?
     var timer: Timer?
     var fileCache = [String: AVAudioFile]()
 
-    func processFrame() {
-        let copyData = sourceData
-        let objects = copyData?.extractObjects() ?? [MLObject]()
+    func processFrame(_ data: CapturedData) {
+        let objects = data.extractObjects()
         guard let objectCategory = UserDefaults.standard.string(forKey: "objectProximity") else {
             fatalError()
         }
@@ -99,15 +96,7 @@ class StreamingProximitySensor {
                 lastFileName = fileName
                 timer?.invalidate()
                 DispatchQueue.main.async { [self] in
-                    if isRunning {
-                        scheduleBeats(bps: bps, fileName: fileName)
-                    } else {
-                        for player in players {
-                            player.stop()
-                            player.reset()
-                        }
-                        engine.stop()
-                    }
+                    scheduleBeats(bps: bps, fileName: fileName)
                 }
             }
         } else {
@@ -154,21 +143,29 @@ class StreamingProximitySensor {
 
     func scheduleBeats(bps: Double, fileName: String) {
         timer = Timer.scheduledTimer(withTimeInterval: 1 / bps, repeats: true) { [self] _ in
-            let file = {
-                if fileCache[fileName] == nil {
-                    fileCache[fileName] = try! AVAudioFile(forReading: Bundle.main.url(
-                        forResource: fileName,
-                        withExtension: "wav"
-                    )!)
+            if isRunning {
+                let file = {
+                    if fileCache[fileName] == nil {
+                        fileCache[fileName] = try! AVAudioFile(forReading: Bundle.main.url(
+                            forResource: fileName,
+                            withExtension: "wav"
+                        )!)
+                    }
+                    return fileCache[fileName]
+                }()
+                let player = players[nextPlayerIndex]
+                player.scheduleFile(file!, at: nil)
+                player.pan = pan!
+                player.play()
+                Logger().debug("\(fileName).wav, bps = \(bps), pan = \(player.pan)")
+                nextPlayerIndex = (nextPlayerIndex + 1) % players.count
+            } else {
+                for player in players {
+                    player.stop()
+                    player.reset()
                 }
-                return fileCache[fileName]
-            }()
-            let player = players[nextPlayerIndex]
-            player.scheduleFile(file!, at: nil)
-            player.pan = pan!
-            player.play()
-            Logger().debug("\(fileName).wav, bps = \(bps), pan = \(player.pan)")
-            nextPlayerIndex = (nextPlayerIndex + 1) % players.count
+                engine.stop()
+            }
         }
     }
 }
@@ -181,8 +178,7 @@ extension StreamingProximitySensor: Subscriber {
     typealias Failure = Never
 
     func receive(_ input: CapturedData) -> Subscribers.Demand {
-        sourceData = input
-        processFrame()
+        processFrame(input)
         return .unlimited
     }
 
