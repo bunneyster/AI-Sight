@@ -77,6 +77,8 @@ var captureMode = CaptureMode.streaming
 // MARK: - LiveMetalCameraViewController
 
 class LiveMetalCameraViewController: UIViewController {
+    // MARK: Internal
+
     // MARK: - UI Properties
 
     @IBOutlet
@@ -148,9 +150,9 @@ class LiveMetalCameraViewController: UIViewController {
     )
 
     let dataPublisher = PassthroughSubject<CapturedData, Never>()
-    let announcer = StreamingMainObjectAnnouncer()
-    let scanner = StreamingScanner()
-    let proximitySensor = StreamingProximitySensor()
+    var announcer: StreamingMainObjectAnnouncer?
+    var scanner: StreamingScanner?
+    var proximitySensor: StreamingProximitySensor?
 
     // MARK: - Vision Properties
 
@@ -165,6 +167,10 @@ class LiveMetalCameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        announcer = StreamingMainObjectAnnouncer()
+        scanner = StreamingScanner()
+        proximitySensor = StreamingProximitySensor()
+
         setUpModel()
         setUpCamera()
         setUpUserPreferences()
@@ -178,11 +184,31 @@ class LiveMetalCameraViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) { // override
         super.viewWillAppear(animated)
         videoCapture.start()
+        setUpUserPreferences()
+        if UserDefaults.standard.bool(forKey: "announcer") {
+            startAnnouncer()
+        }
+        if UserDefaults.standard.bool(forKey: "scanner") {
+            scanner?.refreshUserDefaults()
+            startScanner()
+        }
+        if UserDefaults.standard.string(forKey: "objectProximity") != "None" {
+            startObjectProximity()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) { // override
         super.viewWillDisappear(animated)
         videoCapture.stop()
+        if announcerSwitch.isOn {
+            shutDownAnnouncer()
+        }
+        if scannerSwitch.isOn {
+            shutDownScanner()
+        }
+        if objectProximityButton.menu?.title != "None" {
+            shutDownObjectProximity()
+        }
     }
 
     // MARK: - Setup Core ML
@@ -229,29 +255,15 @@ class LiveMetalCameraViewController: UIViewController {
         {
             menuItem.state = .on
         }
-
-        if announcerSwitch.isOn {
-            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-                .subscribe(announcer)
-        }
-        if scannerSwitch.isOn {
-            dataPublisher.share().subscribe(scanner)
-        }
-        if objectProximityButton.menu?.title != "None" {
-            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-                .subscribe(proximitySensor)
-        }
     }
 
     @IBAction
     func toggleAnnouncer(_ sender: UISwitch) {
         UserDefaults.standard.set(sender.isOn, forKey: "announcer")
         if sender.isOn {
-            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-                .subscribe(announcer)
+            startAnnouncer()
         } else {
-            announcer.cancel()
-            lastMainObjectChange = MainObjectChange(object: nil, time: Date())
+            shutDownAnnouncer()
         }
     }
 
@@ -263,9 +275,9 @@ class LiveMetalCameraViewController: UIViewController {
         includeDistantObjectsSwitch.isEnabled = sender.isOn
         UserDefaults.standard.set(sender.isOn, forKey: "scanner")
         if sender.isOn {
-            dataPublisher.share().subscribe(scanner)
+            startScanner()
         } else {
-            scanner.cancel()
+            shutDownScanner()
         }
     }
 
@@ -283,10 +295,9 @@ class LiveMetalCameraViewController: UIViewController {
     func selectObjectProximity(_ sender: UICommand) {
         UserDefaults.standard.set(sender.title, forKey: "objectProximity")
         if sender.title != "None" {
-            dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-                .subscribe(proximitySensor)
+            startObjectProximity()
         } else {
-            proximitySensor.cancel()
+            shutDownObjectProximity()
         }
     }
 
@@ -295,6 +306,41 @@ class LiveMetalCameraViewController: UIViewController {
         captureMode = CaptureMode.snapshot
         Speaker.shared.stop()
         videoCapture.capturePhoto()
+    }
+
+    // MARK: Private
+
+    private func startAnnouncer() {
+        guard let announcer = announcer else { fatalError() }
+        dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+            .subscribe(announcer)
+    }
+
+    private func shutDownAnnouncer() {
+        guard let announcer = announcer else { fatalError() }
+        announcer.cancel()
+        lastMainObjectChange = MainObjectChange(object: nil, time: Date())
+    }
+
+    private func startScanner() {
+        guard let scanner = scanner else { fatalError() }
+        dataPublisher.share().subscribe(scanner)
+    }
+
+    private func shutDownScanner() {
+        guard let scanner = scanner else { fatalError() }
+        scanner.cancel()
+    }
+
+    private func startObjectProximity() {
+        guard let proximitySensor = proximitySensor else { fatalError() }
+        dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
+            .subscribe(proximitySensor)
+    }
+
+    private func shutDownObjectProximity() {
+        guard let proximitySensor = proximitySensor else { fatalError() }
+        proximitySensor.cancel()
     }
 }
 

@@ -19,9 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.register(defaults: [
             "announcer": true,
             "scanner": false,
+            "scannerNumRows": Float(20),
+            "scannerNumColumns": Float(20),
             "includeBackground": false,
             "includeDistantObjects": false,
-            "objectProximity": "None"
+            "objectProximity": "None",
+            "useVoiceOverSettings": false,
         ])
         return true
     }

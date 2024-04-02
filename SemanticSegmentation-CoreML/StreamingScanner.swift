@@ -26,11 +26,12 @@ public class StreamingScanner {
     init() {
         let inputFormat = engine.outputNode.inputFormat(forBus: 0)
         self.sampleRate = inputFormat.sampleRate
+        let maxRows = 20
         let scale = SoundHelper.buildMajorPentatonicScale(
             fundamental: pythagoreanFrequencies[.g3]!,
-            count: Int(numRows)
+            count: Int(maxRows)
         )
-        for row in 0..<Int(numRows) {
+        for row in 0..<maxRows {
             let node = SoundHelper.buildSourceNode(frequency: scale[row], sampleRate: sampleRate)
             node.volume = 0
             sourceNodes.append(node)
@@ -44,6 +45,11 @@ public class StreamingScanner {
     }
 
     // MARK: Public
+
+    public func refreshUserDefaults() {
+        numColumns = UserDefaults.standard.float(forKey: "scannerNumColumns")
+        numRows = UserDefaults.standard.float(forKey: "scannerNumRows")
+    }
 
     /// Starts scanning the current frame, if available.
     public func start() {
@@ -105,7 +111,7 @@ public class StreamingScanner {
         let scaleX = Float(videoWidth) / Float(depthWidth)
         let scaleY = Float(videoHeight) / Float(depthHeight)
 
-        for (row, node) in sourceNodes.reversed().enumerated() {
+        for (row, node) in sourceNodes[0..<Int(numRows)].reversed().enumerated() {
             let yCoord = Int(MathHelper.partition(end: 513, by: numRows, i: Float(row)))
             let coords = [yCoord, xCoord] as [NSNumber]
             let id = copyData?.segmentationMap[coords].intValue ?? 0
@@ -141,10 +147,6 @@ public class StreamingScanner {
 
     // MARK: Internal
 
-    /// The number of vertical slices to process.
-    let numColumns: Float = 20
-    /// The number of data points / pure tones to consider in each vertical slice.
-    let numRows: Float = 20
     /// The audio engine running all of the pure tones.
     let engine = AVAudioEngine()
     /// How long to play a single vertical slice, in seconds.
@@ -162,6 +164,10 @@ public class StreamingScanner {
     /// The farthest distinguishable distance in meters, i.e. all greater distances are ignored.
     let maxDepth: Float = 2.5
 
+    /// The number of vertical slices to process.
+    var numColumns: Float = UserDefaults.standard.float(forKey: "scannerNumColumns")
+    /// The number of data points / pure tones to consider in each vertical slice.
+    var numRows: Float = UserDefaults.standard.float(forKey: "scannerNumRows")
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
     /// The original captured data object received from the data publisher.

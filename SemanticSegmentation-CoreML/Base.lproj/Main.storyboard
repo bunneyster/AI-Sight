@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uso-ud-VWq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="OKs-u2-zxf">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -99,7 +99,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1048" y="-510"/>
+            <point key="canvasLocation" x="1048" y="827"/>
         </scene>
         <!--Still Image View Controller-->
         <scene sceneID="IS1-oH-MuW">
@@ -147,9 +147,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X55-TQ-ROt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1813" y="806"/>
+            <point key="canvasLocation" x="1858" y="1513"/>
         </scene>
-        <!--GPU Live-->
+        <!--Player-->
         <scene sceneID="5c9-lY-u7Z">
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="uso-ud-VWq" customClass="LiveMetalCameraViewController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
@@ -320,7 +320,7 @@
                             <constraint firstItem="01Q-fz-llF" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="zmf-nT-bdP"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="GPU Live" image="memorychip" catalog="system" id="sPp-wC-0rq"/>
+                    <tabBarItem key="tabBarItem" title="Player" image="music.note.tv" catalog="system" id="sPp-wC-0rq"/>
                     <connections>
                         <outlet property="CameraButton" destination="mGH-mt-VE2" id="sCL-sD-9ED"/>
                         <outlet property="announcerSwitch" destination="u08-Da-cyH" id="vQ0-bS-i81"/>
@@ -335,7 +335,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0a6-Ns-dFL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1047.8260869565217" y="151.33928571428569"/>
+            <point key="canvasLocation" x="1048" y="-568"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="caK-0V-iKQ">
@@ -349,15 +349,13 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="i8C-c5-qYh" kind="relationship" relationship="viewControllers" id="90f-l7-yLE"/>
                         <segue destination="uso-ud-VWq" kind="relationship" relationship="viewControllers" id="VPy-Xe-Qw8"/>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="0lQ-nP-qr8"/>
-                        <segue destination="XeG-xj-c5B" kind="relationship" relationship="viewControllers" id="VEF-Gl-ANX"/>
+                        <segue destination="e8o-TX-ama" kind="relationship" relationship="viewControllers" id="WRC-p3-BFh"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wKr-1F-xNj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-57" y="474"/>
+            <point key="canvasLocation" x="106" y="-232"/>
         </scene>
         <!--Still Image-->
         <scene sceneID="Rnx-nh-ynt">
@@ -376,7 +374,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e9f-PD-ngD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1047.8260869565217" y="805.58035714285711"/>
+            <point key="canvasLocation" x="1048" y="1513"/>
         </scene>
         <!--Apps-->
         <scene sceneID="FZv-NB-zLI">
@@ -395,7 +393,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7qb-ne-2Fu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1048" y="1479"/>
+            <point key="canvasLocation" x="1048" y="2216"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="vcO-mZ-dZz">
@@ -440,7 +438,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c34-Iu-rki" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1812" y="1491"/>
+            <point key="canvasLocation" x="1859" y="2216"/>
         </scene>
         <!--Tracking Face and Segmenting-->
         <scene sceneID="nNY-jl-xHy">
@@ -463,10 +461,10 @@
                                 </constraints>
                             </mtkView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2QB-Dj-Mnp">
-                                <rect key="frame" x="2" y="329" width="410" height="482"/>
+                                <rect key="frame" x="2" y="329" width="410" height="531"/>
                                 <subviews>
                                     <mtkView contentMode="scaleToFill" colorPixelFormat="BGRA8Unorm" depthStencilPixelFormat="Depth32Float" translatesAutoresizingMaskIntoConstraints="NO" id="Zhn-Xr-KF1" customClass="MetalVideoView" customModule="SemanticSegmentation_CoreML" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="36" width="410" height="410"/>
+                                        <rect key="frame" x="0.0" y="60.5" width="410" height="410"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Zhn-Xr-KF1" secondAttribute="height" id="mFK-VG-B0l"/>
                                         </constraints>
@@ -504,13 +502,49 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fSH-FO-tsi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2586.9565217391305" y="1490.625"/>
+            <point key="canvasLocation" x="2639" y="2216"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="vrX-fz-lUc">
+            <objects>
+                <viewController id="xr3-hU-szg" customClass="SettingsViewController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="tzO-Ge-z56">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="T1U-Vc-ELw"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="yBw-t7-gdX"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iOJ-G0-FWq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1957.9710144927537" y="134.59821428571428"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="GlJ-aa-ZAP">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="e8o-TX-ama" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Settings" image="gearshape" catalog="system" id="sp8-j9-T0q"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="Q4Y-sz-XYx">
+                        <rect key="frame" x="0.0" y="48" width="414" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="xr3-hU-szg" kind="relationship" relationship="rootViewController" id="dll-gn-DLV"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Npb-7d-2hf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1047.8260869565217" y="134.59821428571428"/>
         </scene>
     </scenes>
     <resources>
         <image name="camera" catalog="system" width="128" height="93"/>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
         <image name="list.bullet.rectangle" catalog="system" width="128" height="93"/>
-        <image name="memorychip" catalog="system" width="128" height="96"/>
+        <image name="music.note.tv" catalog="system" width="128" height="95"/>
         <image name="photo" catalog="system" width="128" height="93"/>
         <image name="photo.on.rectangle.fill" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
