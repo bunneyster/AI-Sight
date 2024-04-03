@@ -19,8 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.register(defaults: [
             "announcer": true,
             "scanner": false,
-            "scannerNumRows": Float(20),
-            "scannerNumColumns": Float(20),
+            "scannerNumRows": 20,
+            "scannerNumColumns": 20,
             "includeBackground": false,
             "includeDistantObjects": false,
             "objectProximity": "None",

@@ -504,21 +504,15 @@
             </objects>
             <point key="canvasLocation" x="2639" y="2216"/>
         </scene>
-        <!--Settings View Controller-->
-        <scene sceneID="vrX-fz-lUc">
+        <!--Settings Hosting Controller-->
+        <scene sceneID="6zJ-oa-PEr">
             <objects>
-                <viewController id="xr3-hU-szg" customClass="SettingsViewController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="tzO-Ge-z56">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="T1U-Vc-ELw"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="yBw-t7-gdX"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iOJ-G0-FWq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <hostingController id="YgW-jA-zmu" customClass="SettingsHostingController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="vyO-Mc-wPS"/>
+                </hostingController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wjq-gc-kIr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1957.9710144927537" y="134.59821428571428"/>
+            <point key="canvasLocation" x="2025" y="135"/>
         </scene>
         <!--Settings-->
         <scene sceneID="GlJ-aa-ZAP">
@@ -532,7 +526,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="xr3-hU-szg" kind="relationship" relationship="rootViewController" id="dll-gn-DLV"/>
+                        <segue destination="YgW-jA-zmu" kind="relationship" relationship="rootViewController" id="Xor-5s-DgM"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Npb-7d-2hf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

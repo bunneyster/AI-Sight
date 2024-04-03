@@ -237,9 +237,7 @@
 		419F7A722ABBBF9F006FF359 /* HeatmapPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */; };
 		41C767012B3C41B500F67AE3 /* AnnouncerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C767002B3C41B500F67AE3 /* AnnouncerTest.swift */; };
 		41C9EE492AAF9F4F00C7F727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */; };
-		41CA41B12BBA3B3400E8E990 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CA41B02BBA3B3400E8E990 /* SettingsViewController.swift */; };
-		41CA41B32BBA50B300E8E990 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CA41B22BBA50B300E8E990 /* SwitchTableViewCell.swift */; };
-		41CC728B2BBBC5090037BA56 /* StepperTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC728A2BBBC5090037BA56 /* StepperTableViewCell.swift */; };
+		41CC728D2BBCC33A0037BA56 /* SettingsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */; };
 		41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DDEF6C2AF09068001A75B0 /* Speaker.swift */; };
 		41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FA53E42B3BD17D000A2B32 /* CapturedData.swift */; };
 		71BBE04422E33B2500E74F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BBE04322E33B2500E74F11 /* AppDelegate.swift */; };
@@ -330,9 +328,7 @@
 		419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatmapPostProcessor.swift; sourceTree = "<group>"; };
 		41C767002B3C41B500F67AE3 /* AnnouncerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncerTest.swift; sourceTree = "<group>"; };
 		41C9EE482AAF9F4F00C7F727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		41CA41B02BBA3B3400E8E990 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		41CA41B22BBA50B300E8E990 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
-		41CC728A2BBBC5090037BA56 /* StepperTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperTableViewCell.swift; sourceTree = "<group>"; };
+		41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHostingController.swift; sourceTree = "<group>"; };
 		41DD1A9F2AD47665004572F8 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drum.wav; sourceTree = "<group>"; };
 		41DD1AA12AD476C8004572F8 /* 2bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2bird.wav; sourceTree = "<group>"; };
 		41DD1AA22AD476C8004572F8 /* 15bird.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 15bird.wav; sourceTree = "<group>"; };
@@ -823,9 +819,7 @@
 				C4BB0DA825619C0400354C08 /* LiveMetalCameraViewController.swift */,
 				71BBE05B22E33C6C00E74F11 /* StillImageViewController.swift */,
 				C4CA644F2603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift */,
-				41CA41B02BBA3B3400E8E990 /* SettingsViewController.swift */,
-				41CA41B22BBA50B300E8E990 /* SwitchTableViewCell.swift */,
-				41CC728A2BBBC5090037BA56 /* StepperTableViewCell.swift */,
+				41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */,
 				71BBE05E22E33F8D00E74F11 /* DrawingSegmentationView.swift */,
 				71BBE06622E3446300E74F11 /* SegmentationResultMLMultiArray.swift */,
 				4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */,
@@ -1225,11 +1219,10 @@
 				C4BB0DB52561A47900354C08 /* Shaders.metal in Sources */,
 				4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */,
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
+				41CC728D2BBCC33A0037BA56 /* SettingsHostingController.swift in Sources */,
 				4195BE202B16AA6A009FE885 /* MLMultiArrayHelper.swift in Sources */,
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
 				41831BF52B8573DC006AE883 /* StreamingScanner.swift in Sources */,
-				41CA41B32BBA50B300E8E990 /* SwitchTableViewCell.swift in Sources */,
-				41CC728B2BBBC5090037BA56 /* StepperTableViewCell.swift in Sources */,
 				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
 				41831BF92B891B33006AE883 /* Frequency.swift in Sources */,
@@ -1257,7 +1250,6 @@
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
-				41CA41B12BBA3B3400E8E990 /* SettingsViewController.swift in Sources */,
 				41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */,
 				411AF2FD2B350DFC007E44EA /* AllObjectsAnnouncer.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,

@@ -47,8 +47,8 @@ public class StreamingScanner {
     // MARK: Public
 
     public func refreshUserDefaults() {
-        numColumns = UserDefaults.standard.float(forKey: "scannerNumColumns")
-        numRows = UserDefaults.standard.float(forKey: "scannerNumRows")
+        numColumns = Float(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
+        numRows = Float(UserDefaults.standard.integer(forKey: "scannerNumRows"))
     }
 
     /// Starts scanning the current frame, if available.
@@ -165,9 +165,9 @@ public class StreamingScanner {
     let maxDepth: Float = 2.5
 
     /// The number of vertical slices to process.
-    var numColumns: Float = UserDefaults.standard.float(forKey: "scannerNumColumns")
+    var numColumns: Float = Float(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
     /// The number of data points / pure tones to consider in each vertical slice.
-    var numRows: Float = UserDefaults.standard.float(forKey: "scannerNumRows")
+    var numRows: Float = Float(UserDefaults.standard.integer(forKey: "scannerNumRows"))
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
     /// The original captured data object received from the data publisher.
