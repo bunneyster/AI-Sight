@@ -24,6 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "includeBackground": false,
             "includeDistantObjects": false,
             "objectProximity": "None",
+            "objectProximityThreshold1": Float(0.75),
+            "objectProximityThreshold2": Float(1.25),
+            "objectProximityThreshold3": Float(1.75),
+            "objectProximityThreshold4": Float(2.5),
             "useVoiceOverSettings": false,
         ])
         return true

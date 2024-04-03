@@ -33,6 +33,13 @@ class StreamingProximitySensor {
 
     // MARK: Public
 
+    public func refreshUserDefaults() {
+        depthThreshold1 = UserDefaults.standard.float(forKey: "objectProximityThreshold1")
+        depthThreshold2 = UserDefaults.standard.float(forKey: "objectProximityThreshold2")
+        depthThreshold3 = UserDefaults.standard.float(forKey: "objectProximityThreshold3")
+        depthThreshold4 = UserDefaults.standard.float(forKey: "objectProximityThreshold4")
+    }
+
     public func start() {
         engine.prepare()
         do {
@@ -68,7 +75,10 @@ class StreamingProximitySensor {
         "TVs": "breath",
         "Tables": "chair",
     ]
-    let depthThresholds: [Float] = [0.75, 1.25, 1.75, 2.5]
+    var depthThreshold1: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold1")
+    var depthThreshold2: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold2")
+    var depthThreshold3: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold3")
+    var depthThreshold4: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold4")
     let engine = AVAudioEngine()
     let mixer = AVAudioMixerNode()
     let players = (0..<8).map { _ in AVAudioPlayerNode() }
@@ -122,13 +132,13 @@ class StreamingProximitySensor {
     }
 
     func getBPS(depth: Float) -> Double {
-        if depth < depthThresholds[0] {
+        if depth < depthThreshold1 {
             return 8
-        } else if depth < depthThresholds[1] {
+        } else if depth < depthThreshold2 {
             return 4
-        } else if depth < depthThresholds[2] {
+        } else if depth < depthThreshold3 {
             return 2
-        } else if depth < depthThresholds[3] {
+        } else if depth < depthThreshold4 {
             return 1
         } else {
             return 0.5
@@ -136,11 +146,11 @@ class StreamingProximitySensor {
     }
 
     func getPitch(depth: Float) -> String? {
-        if depth < depthThresholds[0] {
+        if depth < depthThreshold1 {
             return "1"
-        } else if depth < depthThresholds[1] {
+        } else if depth < depthThreshold2 {
             return "4"
-        } else if depth < depthThresholds[2] {
+        } else if depth < depthThreshold3 {
             return "7"
         } else {
             return "10"

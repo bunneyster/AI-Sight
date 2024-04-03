@@ -150,9 +150,9 @@ class LiveMetalCameraViewController: UIViewController {
     )
 
     let dataPublisher = PassthroughSubject<CapturedData, Never>()
-    var announcer: StreamingMainObjectAnnouncer?
-    var scanner: StreamingScanner?
-    var proximitySensor: StreamingProximitySensor?
+    let announcer = StreamingMainObjectAnnouncer()
+    let scanner = StreamingScanner()
+    let proximitySensor = StreamingProximitySensor()
 
     // MARK: - Vision Properties
 
@@ -167,13 +167,8 @@ class LiveMetalCameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        announcer = StreamingMainObjectAnnouncer()
-        scanner = StreamingScanner()
-        proximitySensor = StreamingProximitySensor()
-
         setUpModel()
         setUpCamera()
-        setUpUserPreferences()
     }
 
     override func didReceiveMemoryWarning() { // override
@@ -185,11 +180,14 @@ class LiveMetalCameraViewController: UIViewController {
         super.viewWillAppear(animated)
         videoCapture.start()
         setUpUserPreferences()
+
+        scanner.refreshUserDefaults()
+        proximitySensor.refreshUserDefaults()
+
         if UserDefaults.standard.bool(forKey: "announcer") {
             startAnnouncer()
         }
         if UserDefaults.standard.bool(forKey: "scanner") {
-            scanner?.refreshUserDefaults()
             startScanner()
         }
         if UserDefaults.standard.string(forKey: "objectProximity") != "None" {
@@ -311,35 +309,29 @@ class LiveMetalCameraViewController: UIViewController {
     // MARK: Private
 
     private func startAnnouncer() {
-        guard let announcer = announcer else { fatalError() }
         dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
             .subscribe(announcer)
     }
 
     private func shutDownAnnouncer() {
-        guard let announcer = announcer else { fatalError() }
         announcer.cancel()
         lastMainObjectChange = MainObjectChange(object: nil, time: Date())
     }
 
     private func startScanner() {
-        guard let scanner = scanner else { fatalError() }
         dataPublisher.share().subscribe(scanner)
     }
 
     private func shutDownScanner() {
-        guard let scanner = scanner else { fatalError() }
         scanner.cancel()
     }
 
     private func startObjectProximity() {
-        guard let proximitySensor = proximitySensor else { fatalError() }
         dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
             .subscribe(proximitySensor)
     }
 
     private func shutDownObjectProximity() {
-        guard let proximitySensor = proximitySensor else { fatalError() }
         proximitySensor.cancel()
     }
 }
