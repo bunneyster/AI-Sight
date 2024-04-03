@@ -94,7 +94,7 @@ class StreamingProximitySensor {
     var fileCache = [String: AVAudioFile]()
 
     func processFrame(_ data: CapturedData) {
-        let objects = data.extractObjects()
+        let objects = data.extractObjects(downsampleFactor: 4)
         guard let objectCategory = UserDefaults.standard.string(forKey: "objectProximity") else {
             fatalError()
         }

@@ -22,7 +22,7 @@ public class StreamingMainObjectAnnouncer {
     // MARK: Public
 
     public func process(_ data: CapturedData) {
-        let rawObjects = data.extractObjects()
+        let rawObjects = data.extractObjects(downsampleFactor: 4)
         let filteredObjects = objectFrequencyRecorder
             .filter(objects: rawObjects)
         let mainObject = StreamingMainObjectAnnouncer.computeMainObject(

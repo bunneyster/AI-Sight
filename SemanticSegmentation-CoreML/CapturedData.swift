@@ -13,7 +13,7 @@ import Vision
 public struct CapturedData {
     // MARK: Public
 
-    public func extractObjects() -> [MLObject] {
+    public func extractObjects(downsampleFactor: Int = 1) -> [MLObject] {
         var objects = [Int: MLObject]()
         var depths = [Int: [Float]]()
 
@@ -42,8 +42,10 @@ public struct CapturedData {
         let scaleX = Float(videoWidth) / Float(depthWidth)
         let scaleY = Float(videoHeight) / Float(depthHeight)
 
-        for row in 0..<segmentationHeight {
-            for col in 0..<segmentationWidth {
+        for r in 0..<segmentationHeight / downsampleFactor {
+            for c in 0..<segmentationWidth / downsampleFactor {
+                let row = r * downsampleFactor
+                let col = c * downsampleFactor
                 let coords = [row, col] as [NSNumber]
                 let id = segmentationMap[coords].intValue
                 if id == 0 {
@@ -84,6 +86,7 @@ public struct CapturedData {
             let size = object.size
             objects[id]?.center.x /= size
             objects[id]?.center.y /= size
+            object.size *= downsampleFactor * downsampleFactor
         }
 
         return Array(objects.values)
