@@ -228,6 +228,9 @@
 		41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF62B8917B7006AE883 /* MathHelper.swift */; };
 		41831BF92B891B33006AE883 /* Frequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF82B891B33006AE883 /* Frequency.swift */; };
 		418E5A362AC400A900D0813E /* SoundHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* SoundHelperTest.swift */; };
+		4194F7482BBF5391001FA305 /* ProximityModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7472BBF5391001FA305 /* ProximityModeSection.swift */; };
+		4194F74A2BBF5450001FA305 /* ScannerModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7492BBF5450001FA305 /* ScannerModeSection.swift */; };
+		4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74B2BBF549A001FA305 /* GeneralSection.swift */; };
 		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
 		4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1B2B16A8A5009FE885 /* Note.swift */; };
 		4195BE1E2B16A9AC009FE885 /* SoundHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */; };
@@ -319,6 +322,9 @@
 		41831BF82B891B33006AE883 /* Frequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frequency.swift; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418E5A352AC400A900D0813E /* SoundHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelperTest.swift; sourceTree = "<group>"; };
+		4194F7472BBF5391001FA305 /* ProximityModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximityModeSection.swift; sourceTree = "<group>"; };
+		4194F7492BBF5450001FA305 /* ScannerModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerModeSection.swift; sourceTree = "<group>"; };
+		4194F74B2BBF549A001FA305 /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
 		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
 		4195BE1B2B16A8A5009FE885 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelper.swift; sourceTree = "<group>"; };
@@ -820,6 +826,9 @@
 				71BBE05B22E33C6C00E74F11 /* StillImageViewController.swift */,
 				C4CA644F2603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift */,
 				41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */,
+				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
+				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
+				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
 				71BBE05E22E33F8D00E74F11 /* DrawingSegmentationView.swift */,
 				71BBE06622E3446300E74F11 /* SegmentationResultMLMultiArray.swift */,
 				4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */,
@@ -1218,11 +1227,13 @@
 			files = (
 				C4BB0DB52561A47900354C08 /* Shaders.metal in Sources */,
 				4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */,
+				4194F7482BBF5391001FA305 /* ProximityModeSection.swift in Sources */,
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
 				41CC728D2BBCC33A0037BA56 /* SettingsHostingController.swift in Sources */,
 				4195BE202B16AA6A009FE885 /* MLMultiArrayHelper.swift in Sources */,
 				71BBE06222E3400E00E74F11 /* VideoCapture.swift in Sources */,
 				41831BF52B8573DC006AE883 /* StreamingScanner.swift in Sources */,
+				4194F74A2BBF5450001FA305 /* ScannerModeSection.swift in Sources */,
 				41DDEF6D2AF09068001A75B0 /* Speaker.swift in Sources */,
 				C4CA64542603D254002D6C70 /* CroppedTextureGenerater.swift in Sources */,
 				41831BF92B891B33006AE883 /* Frequency.swift in Sources */,
@@ -1247,6 +1258,7 @@
 				C4DDEF7525FBCBC8000CF6A5 /* FaceParsing.mlmodel in Sources */,
 				C4BB0D96256195F800354C08 /* Maths.swift in Sources */,
 				4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */,
+				4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */,
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
