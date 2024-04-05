@@ -16,6 +16,7 @@
 		4120E9282B1FC797006CA565 /* ObjectFrequencyRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */; };
 		4120E92A2B1FF8FD006CA565 /* MLObjectTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */; };
 		4120E92C2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */; };
+		414E92472BC0492C0005D783 /* MinObjectSizePercentageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 414E92462BC0492C0005D783 /* MinObjectSizePercentageSection.swift */; };
 		4159AF2D2B0D9D80000C52D3 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */; };
 		4159AF2F2B0D9E56000C52D3 /* Float+ExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */; };
 		4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF302B0DA871000C52D3 /* ModelDimensions.swift */; };
@@ -293,6 +294,7 @@
 		4120E9272B1FC797006CA565 /* ObjectFrequencyRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorder.swift; sourceTree = "<group>"; };
 		4120E9292B1FF8FD006CA565 /* MLObjectTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObjectTest.swift; sourceTree = "<group>"; };
 		4120E92B2B20D174006CA565 /* ObjectFrequencyRecorderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFrequencyRecorderTest.swift; sourceTree = "<group>"; };
+		414E92462BC0492C0005D783 /* MinObjectSizePercentageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinObjectSizePercentageSection.swift; sourceTree = "<group>"; };
 		4159AF2C2B0D9D80000C52D3 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
 		4159AF2E2B0D9E56000C52D3 /* Float+ExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+ExtensionsTest.swift"; sourceTree = "<group>"; };
 		4159AF302B0DA871000C52D3 /* ModelDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDimensions.swift; sourceTree = "<group>"; };
@@ -577,6 +579,7 @@
 			children = (
 				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
 				4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */,
+				414E92462BC0492C0005D783 /* MinObjectSizePercentageSection.swift */,
 				4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */,
 				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
 				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
@@ -1276,6 +1279,7 @@
 				4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */,
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
+				414E92472BC0492C0005D783 /* MinObjectSizePercentageSection.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
 				4194F74E2BBF54EF001FA305 /* ObjectPropertiesSection.swift in Sources */,
 				41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */,
