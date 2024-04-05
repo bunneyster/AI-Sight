@@ -32,7 +32,7 @@ struct SettingsView: View {
         Form {
             GeneralSection()
 
-            ObjectIdentificationSection()
+            ObjectPropertiesSection()
 
             ObjectDepthSection()
 

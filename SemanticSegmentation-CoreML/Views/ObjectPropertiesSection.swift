@@ -1,5 +1,5 @@
 //
-//  ObjectIdentificationSection.swift
+//  ObjectPropertiesSection.swift
 //  SemanticSegmentation-CoreML
 //
 //  Created by Staphany Park on 4/4/24.
@@ -8,12 +8,12 @@
 
 import SwiftUI
 
-struct ObjectIdentificationSection: View {
+struct ObjectPropertiesSection: View {
     @AppStorage("minObjectSizePercentage")
     var minObjectSizePercentage: Double = 0.01
 
     var body: some View {
-        Section(header: Text("Object Identification")) {
+        Section(header: Text("Object Properties")) {
             NavigationLink {
                 Form {
                     Section(
@@ -46,7 +46,7 @@ struct ObjectIdentificationSection: View {
                         }
                     }
                 }
-                .navigationTitle("Object Identification")
+                .navigationTitle("Object Properties")
                 .navigationBarTitleDisplayMode(.inline)
             } label: {
                 HStack {
@@ -61,5 +61,5 @@ struct ObjectIdentificationSection: View {
 }
 
 #Preview {
-    ObjectIdentificationSection()
+    ObjectPropertiesSection()
 }
