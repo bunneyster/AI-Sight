@@ -77,8 +77,12 @@ public struct CapturedData {
         for (id, values) in depths {
             if let object = objects[id] {
                 let sortedValues = values.sorted()
-                let tenthPercentile = sortedValues[Int(Double(values.count - 1) * 0.1)]
-                object.depth = tenthPercentile
+                let percentileValue =
+                    sortedValues[Int(
+                        Double(values.count - 1) * UserDefaults.standard
+                            .double(forKey: "objectDepthPercentile")
+                    )]
+                object.depth = percentileValue
             }
         }
 

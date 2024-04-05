@@ -34,6 +34,8 @@ struct SettingsView: View {
 
             ObjectIdentificationSection()
 
+            ObjectDepthSection()
+
             ScannerModeSection()
 
             ProximityModeSection()
