@@ -231,6 +231,7 @@
 		4194F7482BBF5391001FA305 /* ProximityModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7472BBF5391001FA305 /* ProximityModeSection.swift */; };
 		4194F74A2BBF5450001FA305 /* ScannerModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7492BBF5450001FA305 /* ScannerModeSection.swift */; };
 		4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74B2BBF549A001FA305 /* GeneralSection.swift */; };
+		4194F74E2BBF54EF001FA305 /* ObjectIdentificationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74D2BBF54EF001FA305 /* ObjectIdentificationSection.swift */; };
 		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
 		4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1B2B16A8A5009FE885 /* Note.swift */; };
 		4195BE1E2B16A9AC009FE885 /* SoundHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */; };
@@ -325,6 +326,7 @@
 		4194F7472BBF5391001FA305 /* ProximityModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximityModeSection.swift; sourceTree = "<group>"; };
 		4194F7492BBF5450001FA305 /* ScannerModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerModeSection.swift; sourceTree = "<group>"; };
 		4194F74B2BBF549A001FA305 /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
+		4194F74D2BBF54EF001FA305 /* ObjectIdentificationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectIdentificationSection.swift; sourceTree = "<group>"; };
 		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
 		4195BE1B2B16A8A5009FE885 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelper.swift; sourceTree = "<group>"; };
@@ -827,6 +829,7 @@
 				C4CA644F2603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift */,
 				41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */,
 				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
+				4194F74D2BBF54EF001FA305 /* ObjectIdentificationSection.swift */,
 				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
 				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
 				71BBE05E22E33F8D00E74F11 /* DrawingSegmentationView.swift */,
@@ -1262,6 +1265,7 @@
 				C4BB0D92256195AE00354C08 /* MetalRenderingDevice.swift in Sources */,
 				71BBE04622E33B2500E74F11 /* LiveImageViewController.swift in Sources */,
 				41FA53E52B3BD17D000A2B32 /* CapturedData.swift in Sources */,
+				4194F74E2BBF54EF001FA305 /* ObjectIdentificationSection.swift in Sources */,
 				41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */,
 				411AF2FD2B350DFC007E44EA /* AllObjectsAnnouncer.swift in Sources */,
 				C4BB0D99256196A300354C08 /* CameraTextureGenerater.swift in Sources */,

@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "objectProximityThreshold3": Float(1.75),
             "objectProximityThreshold4": Float(2.5),
             "useVoiceOverSettings": false,
+            "minObjectSizePercentage": 0.01,
         ])
         return true
     }

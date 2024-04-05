@@ -32,6 +32,8 @@ struct SettingsView: View {
         Form {
             GeneralSection()
 
+            ObjectIdentificationSection()
+
             ScannerModeSection()
 
             ProximityModeSection()

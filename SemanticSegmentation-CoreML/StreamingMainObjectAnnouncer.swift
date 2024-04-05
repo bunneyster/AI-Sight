@@ -25,9 +25,11 @@ public class StreamingMainObjectAnnouncer {
         let rawObjects = data.extractObjects(downsampleFactor: 4)
         let filteredObjects = objectFrequencyRecorder
             .filter(objects: rawObjects)
+        let minPixels = Double(ModelDimensions.deepLabV3.size) * UserDefaults.standard
+            .double(forKey: "minObjectSizePercentage")
         let mainObject = StreamingMainObjectAnnouncer.computeMainObject(
             objects: filteredObjects,
-            minSize: 2000,
+            minSize: Int(round(minPixels)),
             maxDepth: 5.0, // maximum range of iPhone LiDAR sensor is ~5 meters
             modelDimensions: ModelDimensions.deepLabV3
         )
