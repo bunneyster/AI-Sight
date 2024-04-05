@@ -572,6 +572,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		414E92452BC043E70005D783 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
+				4194F74D2BBF54EF001FA305 /* ObjectIdentificationSection.swift */,
+				4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */,
+				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
+				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		418E5A2D2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -821,6 +833,7 @@
 		71BBE04222E33B2500E74F11 /* SemanticSegmentation-CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				414E92452BC043E70005D783 /* Views */,
 				419F7A712ABBBF9F006FF359 /* HeatmapPostProcessor.swift */,
 				46EBF9862899D21E0030C0E7 /* AudioFiles */,
 				71BBE04722E33B2500E74F11 /* Main.storyboard */,
@@ -830,11 +843,6 @@
 				71BBE05B22E33C6C00E74F11 /* StillImageViewController.swift */,
 				C4CA644F2603CB36002D6C70 /* LiveFaceDetectionAndFaceParsingViewController.swift */,
 				41CC728C2BBCC33A0037BA56 /* SettingsHostingController.swift */,
-				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
-				4194F74D2BBF54EF001FA305 /* ObjectIdentificationSection.swift */,
-				4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */,
-				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
-				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
 				71BBE05E22E33F8D00E74F11 /* DrawingSegmentationView.swift */,
 				71BBE06622E3446300E74F11 /* SegmentationResultMLMultiArray.swift */,
 				4195BE1F2B16AA6A009FE885 /* MLMultiArrayHelper.swift */,
