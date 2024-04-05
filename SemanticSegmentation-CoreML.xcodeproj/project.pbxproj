@@ -233,7 +233,7 @@
 		4194F74A2BBF5450001FA305 /* ScannerModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7492BBF5450001FA305 /* ScannerModeSection.swift */; };
 		4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74B2BBF549A001FA305 /* GeneralSection.swift */; };
 		4194F74E2BBF54EF001FA305 /* ObjectPropertiesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */; };
-		4194F7502BBF8782001FA305 /* ObjectDepthSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */; };
+		4194F7502BBF8782001FA305 /* DepthComputationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74F2BBF8782001FA305 /* DepthComputationSection.swift */; };
 		4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE192B158DB8009FE885 /* MLObject.swift */; };
 		4195BE1C2B16A8A5009FE885 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1B2B16A8A5009FE885 /* Note.swift */; };
 		4195BE1E2B16A9AC009FE885 /* SoundHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */; };
@@ -330,7 +330,7 @@
 		4194F7492BBF5450001FA305 /* ScannerModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerModeSection.swift; sourceTree = "<group>"; };
 		4194F74B2BBF549A001FA305 /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
 		4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPropertiesSection.swift; sourceTree = "<group>"; };
-		4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDepthSection.swift; sourceTree = "<group>"; };
+		4194F74F2BBF8782001FA305 /* DepthComputationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthComputationSection.swift; sourceTree = "<group>"; };
 		4195BE192B158DB8009FE885 /* MLObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLObject.swift; sourceTree = "<group>"; };
 		4195BE1B2B16A8A5009FE885 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelper.swift; sourceTree = "<group>"; };
@@ -580,7 +580,7 @@
 				4194F74B2BBF549A001FA305 /* GeneralSection.swift */,
 				4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */,
 				414E92462BC0492C0005D783 /* MinObjectSizePercentageSection.swift */,
-				4194F74F2BBF8782001FA305 /* ObjectDepthSection.swift */,
+				4194F74F2BBF8782001FA305 /* DepthComputationSection.swift */,
 				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
 				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
 			);
@@ -1256,7 +1256,7 @@
 				41831BF92B891B33006AE883 /* Frequency.swift in Sources */,
 				4195BE1A2B158DB8009FE885 /* MLObject.swift in Sources */,
 				71BBE05A22E33BF300E74F11 /* DeepLabV3Int8LUT.mlmodel in Sources */,
-				4194F7502BBF8782001FA305 /* ObjectDepthSection.swift in Sources */,
+				4194F7502BBF8782001FA305 /* DepthComputationSection.swift in Sources */,
 				71BBE06322E3400E00E74F11 /* Measure.swift in Sources */,
 				C4BB0DA625619AA400354C08 /* MetalVideoView.swift in Sources */,
 				71BBE05822E33BEF00E74F11 /* DeepLabV3FP16.mlmodel in Sources */,

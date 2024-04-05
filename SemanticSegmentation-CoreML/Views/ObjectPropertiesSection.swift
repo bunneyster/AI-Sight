@@ -11,6 +11,8 @@ import SwiftUI
 struct ObjectPropertiesSection: View {
     @AppStorage("minObjectSizePercentage")
     var minObjectSizePercentage: Double = 0.01
+    @AppStorage("objectDepthPercentile")
+    var objectDepthPercentile: Double = 0.1
 
     var body: some View {
         Section(header: Text("Object Properties")) {
@@ -27,6 +29,21 @@ struct ObjectPropertiesSection: View {
                     Text("Minimum object size")
                     Spacer()
                     Text("\(Int(round(minObjectSizePercentage * 100)))%")
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            NavigationLink {
+                Form {
+                    DepthComputationSection(objectDepthPercentile: $objectDepthPercentile)
+                }
+                .navigationTitle("Depth Computation")
+                .navigationBarTitleDisplayMode(.inline)
+            } label: {
+                HStack {
+                    Text("Depth computation")
+                    Spacer()
+                    Text("\(Int(round(objectDepthPercentile * 100)))th percentile")
                         .foregroundStyle(.secondary)
                 }
             }
