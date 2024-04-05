@@ -15,7 +15,7 @@ struct GeneralSection: View {
     var body: some View {
         Section(
             header: Text("General"),
-            footer: Text("Uses the device VoiceOver settings when VoiceOver is enabled.")
+            footer: Text("Use the device VoiceOver settings when VoiceOver is enabled.")
         ) {
             Toggle("Use VoiceOver settings", isOn: $useVoiceOverSettings)
         }
