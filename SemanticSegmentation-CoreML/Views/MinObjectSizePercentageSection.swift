@@ -13,12 +13,7 @@ struct MinObjectSizePercentageSection: View {
     var minObjectSizePercentage: Double
 
     var body: some View {
-        Section(
-            header: Text("Minimum Object Size"),
-            footer: Text(
-                "Objects that occupy a lesser percentage of the screen will be ignored."
-            )
-        ) {
+        Section {
             VStack {
                 Group {
                     Text("\(Int(round(minObjectSizePercentage * 100)))%")
@@ -41,6 +36,10 @@ struct MinObjectSizePercentageSection: View {
                     value: Text("\(Int(round(minObjectSizePercentage * 100)))%")
                 )
             }
+        } footer: {
+            Text(
+                "Objects that occupy a lesser percentage of the screen will be ignored."
+            )
         }
     }
 }

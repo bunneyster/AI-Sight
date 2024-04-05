@@ -22,7 +22,7 @@ struct ObjectPropertiesSection: View {
                         minObjectSizePercentage: $minObjectSizePercentage
                     )
                 }
-                .navigationTitle("Object Properties")
+                .navigationTitle("Minimum Object Size")
                 .navigationBarTitleDisplayMode(.inline)
             } label: {
                 HStack {
