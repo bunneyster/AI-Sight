@@ -18,8 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         UserDefaults.standard.register(defaults: [
             "announcer": true,
-            "announcerDistanceInterval": 0.5,
-            "announcerDistanceMargin": 0.2,
+            "announcerDepthInterval": 0.5,
+            "announcerDepthMargin": 0.2,
             "scanner": false,
             "scannerNumRows": 20,
             "scannerNumColumns": 20,

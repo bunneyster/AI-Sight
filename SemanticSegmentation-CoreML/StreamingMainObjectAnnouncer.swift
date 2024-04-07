@@ -46,7 +46,7 @@ public class StreamingMainObjectAnnouncer {
                     depth: mainObject.depth
                         .round(nearest: Float(
                             UserDefaults.standard
-                                .double(forKey: "announcerDistanceInterval")
+                                .double(forKey: "announcerDepthInterval")
                         ))
                 )
             }
@@ -113,11 +113,11 @@ public class StreamingMainObjectAnnouncer {
                     of: previous.depth,
                     nearest: Float(
                         UserDefaults.standard
-                            .double(forKey: "announcerDistanceInterval")
+                            .double(forKey: "announcerDepthInterval")
                     ),
                     tolerance: Float(
                         UserDefaults.standard
-                            .double(forKey: "announcerDistanceMargin")
+                            .double(forKey: "announcerDepthMargin")
                     )
                 )
             } else {

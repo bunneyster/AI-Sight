@@ -9,19 +9,19 @@
 import SwiftUI
 
 struct AnnouncerModeSection: View {
-    @AppStorage("announcerDistanceInterval")
-    var announcerDistanceInterval: Double = 0.5
-    @AppStorage("announcerDistanceMargin")
-    var announcerDistanceMargin: Double = 0.2
+    @AppStorage("announcerDepthInterval")
+    var announcerDepthInterval: Double = 0.5
+    @AppStorage("announcerDepthMargin")
+    var announcerDepthMargin: Double = 0.2
 
     var body: some View {
         Section {
-            Picker("Distance interval", selection: $announcerDistanceInterval) {
+            Picker("Depth interval", selection: $announcerDepthInterval) {
                 ForEach([0.25, 0.5, 1.0], id: \.self) { interval in
                     Text(String(format: "%0.2f", interval))
                 }
             }
-            Picker("Distance margin", selection: $announcerDistanceMargin) {
+            Picker("Depth margin", selection: $announcerDepthMargin) {
                 ForEach(Array(stride(from: 0, through: 0.8, by: 0.1)), id: \.self) { margin in
                     Text(String(format: "%0.1f", margin))
                 }
