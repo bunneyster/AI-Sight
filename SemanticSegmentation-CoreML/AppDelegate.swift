@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.register(defaults: [
             "announcer": true,
             "announcerDistanceInterval": 0.5,
+            "announcerDistanceMargin": 0.2,
             "scanner": false,
             "scannerNumRows": 20,
             "scannerNumColumns": 20,

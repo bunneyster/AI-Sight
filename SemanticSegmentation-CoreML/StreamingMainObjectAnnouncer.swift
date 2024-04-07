@@ -115,7 +115,10 @@ public class StreamingMainObjectAnnouncer {
                         UserDefaults.standard
                             .double(forKey: "announcerDistanceInterval")
                     ),
-                    tolerance: 0.2
+                    tolerance: Float(
+                        UserDefaults.standard
+                            .double(forKey: "announcerDistanceMargin")
+                    )
                 )
             } else {
                 return true
