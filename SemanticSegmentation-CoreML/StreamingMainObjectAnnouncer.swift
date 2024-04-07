@@ -30,7 +30,7 @@ public class StreamingMainObjectAnnouncer {
         let mainObject = StreamingMainObjectAnnouncer.computeMainObject(
             objects: filteredObjects,
             minSize: Int(round(minPixels)),
-            maxDepth: 5.0, // maximum range of iPhone LiDAR sensor is ~5 meters
+            maxDepth: Float(UserDefaults.standard.double(forKey: "announcerMaxDepth")),
             modelDimensions: ModelDimensions.deepLabV3
         )
         Logger().debug("main object: \(String(describing: mainObject))")

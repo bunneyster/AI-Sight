@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         UserDefaults.standard.register(defaults: [
             "announcer": true,
+            "announcerMaxDepth": 5.0,
             "announcerDepthInterval": 0.5,
             "announcerDepthMargin": 0.2,
             "scanner": false,
