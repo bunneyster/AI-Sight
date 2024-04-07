@@ -43,7 +43,11 @@ public class StreamingMainObjectAnnouncer {
                     .shouldAnnounceName(object: mainObject) ? labels[mainObject.id] : nil
                 Speaker.shared.speak(
                     objectName: spokenName,
-                    depth: mainObject.depth.round(nearest: 0.5)
+                    depth: mainObject.depth
+                        .round(nearest: Float(
+                            UserDefaults.standard
+                                .double(forKey: "announcerDistanceInterval")
+                        ))
                 )
             }
             lastMainObjectChange = MainObjectChange(object: mainObject, time: Date())
@@ -107,7 +111,10 @@ public class StreamingMainObjectAnnouncer {
             if let previous = previous {
                 return current.id != previous.id || !current.depth.isWithinRange(
                     of: previous.depth,
-                    nearest: 0.5,
+                    nearest: Float(
+                        UserDefaults.standard
+                            .double(forKey: "announcerDistanceInterval")
+                    ),
                     tolerance: 0.2
                 )
             } else {

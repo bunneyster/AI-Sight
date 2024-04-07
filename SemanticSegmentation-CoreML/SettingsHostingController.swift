@@ -34,6 +34,8 @@ struct SettingsView: View {
 
             ObjectPropertiesSection()
 
+            AnnouncerModeSection()
+
             ScannerModeSection()
 
             ProximityModeSection()
