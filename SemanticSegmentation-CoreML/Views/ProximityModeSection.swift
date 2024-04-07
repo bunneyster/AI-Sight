@@ -20,66 +20,31 @@ struct ProximityModeSection: View {
 
     var body: some View {
         Section(header: Text("Proximity Mode")) {
-            HStack {
-                VStack {
-                    Text("Threshold 1").font(.subheadline)
-                        .multilineTextAlignment(.center)
-                    Picker(
-                        selection: $objectProximityThreshold1,
-                        label: Text("Threshold 1")
-                    ) {
-                        ForEach(
-                            Array(stride(from: 0.5, through: 5, by: 0.25)),
-                            id: \.self
-                        ) { value in
-                            Text(String(format: "%.2f", value)).tag(value)
-                        }
-                    }.pickerStyle(.wheel)
+            NavigationLink {
+                Form {
+                    ProximityThresholdsSection(
+                        objectProximityThreshold1: $objectProximityThreshold1,
+                        objectProximityThreshold2: $objectProximityThreshold2,
+                        objectProximityThreshold3: $objectProximityThreshold3,
+                        objectProximityThreshold4: $objectProximityThreshold4
+                    )
                 }
-                VStack {
-                    Text("Threshold 2").font(.subheadline)
-                        .multilineTextAlignment(.center)
-                    Picker(
-                        selection: $objectProximityThreshold2,
-                        label: Text("Threshold 2")
-                    ) {
-                        ForEach(
-                            Array(stride(from: 0.5, through: 5, by: 0.25)),
-                            id: \.self
-                        ) { value in
-                            Text(String(format: "%.2f", value)).tag(value)
-                        }
-                    }.pickerStyle(.wheel)
-                }
-                VStack {
-                    Text("Threshold 3").font(.subheadline)
-                        .multilineTextAlignment(.center)
-                    Picker(
-                        selection: $objectProximityThreshold3,
-                        label: Text("Threshold 3")
-                    ) {
-                        ForEach(
-                            Array(stride(from: 0.5, through: 5, by: 0.25)),
-                            id: \.self
-                        ) { value in
-                            Text(String(format: "%.2f", value)).tag(value)
-                        }
-                    }.pickerStyle(.wheel)
-                }
-                VStack {
-                    Text("Threshold 4").font(.subheadline)
-                        .multilineTextAlignment(.center)
-                    Picker(
-                        selection: $objectProximityThreshold4,
-                        label: Text("Threshold 4")
-                    ) {
-                        ForEach(
-                            Array(stride(from: 0.5, through: 5, by: 0.25)),
-                            id: \.self
-                        ) { value in
-                            Text(String(format: "%.2f", value)).tag(value)
-                        }
-                    }.pickerStyle(.wheel)
+                .navigationTitle("Thresholds")
+                .navigationBarTitleDisplayMode(.inline)
+            } label: {
+                HStack {
+                    Text("Thresholds")
+                    Spacer()
+                    Text(
+                        [
+                            objectProximityThreshold1,
+                            objectProximityThreshold2,
+                            objectProximityThreshold3,
+                            objectProximityThreshold4,
+                        ].map {
+                            String(format: "%0.2f", $0)
+                        }.joined(separator: ", ")
+                    ).foregroundStyle(.secondary)
                 }
             }
         }
