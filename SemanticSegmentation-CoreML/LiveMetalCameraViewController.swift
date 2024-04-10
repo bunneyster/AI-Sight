@@ -97,14 +97,6 @@ class LiveMetalCameraViewController: UIViewController {
     @IBOutlet
     var scannerSwitch: UISwitch!
     @IBOutlet
-    var includeBackgroundLabel: UILabel!
-    @IBOutlet
-    var includeBackgroundSwitch: UISwitch!
-    @IBOutlet
-    var includeDistantObjectsLabel: UILabel!
-    @IBOutlet
-    var includeDistantObjectsSwitch: UISwitch!
-    @IBOutlet
     var objectProximityButton: UIButton!
 
     @IBOutlet
@@ -240,13 +232,6 @@ class LiveMetalCameraViewController: UIViewController {
     func setUpUserPreferences() {
         announcerSwitch.isOn = UserDefaults.standard.bool(forKey: "announcer")
         scannerSwitch.isOn = UserDefaults.standard.bool(forKey: "scanner")
-        includeBackgroundLabel.isEnabled = scannerSwitch.isOn
-        includeBackgroundSwitch.isEnabled = scannerSwitch.isOn
-        includeBackgroundSwitch.isOn = UserDefaults.standard.bool(forKey: "includeBackground")
-        includeDistantObjectsLabel.isEnabled = scannerSwitch.isOn
-        includeDistantObjectsSwitch.isEnabled = scannerSwitch.isOn
-        includeDistantObjectsSwitch.isOn = UserDefaults.standard
-            .bool(forKey: "includeDistantObjects")
         let proximityDefault = UserDefaults.standard.string(forKey: "objectProximity")
         if let menuItem = objectProximityButton.menu?.children
             .first(where: { $0.title == proximityDefault }) as? UICommand
@@ -267,26 +252,12 @@ class LiveMetalCameraViewController: UIViewController {
 
     @IBAction
     func toggleScanner(_ sender: UISwitch) {
-        includeBackgroundLabel.isEnabled = sender.isOn
-        includeBackgroundSwitch.isEnabled = sender.isOn
-        includeDistantObjectsLabel.isEnabled = sender.isOn
-        includeDistantObjectsSwitch.isEnabled = sender.isOn
         UserDefaults.standard.set(sender.isOn, forKey: "scanner")
         if sender.isOn {
             startScanner()
         } else {
             shutDownScanner()
         }
-    }
-
-    @IBAction
-    func toggleIncludeBackground(_ sender: UISwitch) {
-        UserDefaults.standard.set(sender.isOn, forKey: "includeBackground")
-    }
-
-    @IBAction
-    func toggleIncludeDistantObjects(_ sender: UISwitch) {
-        UserDefaults.standard.set(sender.isOn, forKey: "includeDistantObjects")
     }
 
     @IBAction

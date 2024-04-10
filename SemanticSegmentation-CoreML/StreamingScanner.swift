@@ -165,9 +165,9 @@ public class StreamingScanner {
     let maxDepth: Float = 2.5
 
     /// The number of vertical slices to process.
-    var numColumns: Float = Float(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
+    var numColumns: Float = .init(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
     /// The number of data points / pure tones to consider in each vertical slice.
-    var numRows: Float = Float(UserDefaults.standard.integer(forKey: "scannerNumRows"))
+    var numRows: Float = .init(UserDefaults.standard.integer(forKey: "scannerNumRows"))
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
     /// The original captured data object received from the data publisher.
@@ -184,19 +184,10 @@ public class StreamingScanner {
     var isRunning = false
 
     func computeVolume(id: Int, depth: Float, yCoord: Int) -> Float {
-        if depth < minDepth {
-            return UserDefaults.standard
-                .bool(forKey: "includeBackground") || id > 0 ? maxVolume : minVolume
-        } else if depth < maxDepth {
-            let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
-            let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
-                ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
-            return UserDefaults.standard
-                .bool(forKey: "includeBackground") || id > 0 ? volume : minVolume
-        } else {
-            return UserDefaults.standard
-                .bool(forKey: "includeDistantObjects") && (id > 0) ? minVolume : minVolume
-        }
+        let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
+        let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
+            ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
+        return id > 0 ? volume : minVolume
     }
 }
 

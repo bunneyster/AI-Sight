@@ -24,8 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "scanner": false,
             "scannerNumRows": 20,
             "scannerNumColumns": 20,
-            "includeBackground": false,
-            "includeDistantObjects": false,
             "objectProximity": "None",
             "objectProximityThreshold1": Float(0.75),
             "objectProximityThreshold2": Float(1.25),
