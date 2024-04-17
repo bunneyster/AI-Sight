@@ -188,7 +188,14 @@ public class StreamingScanner {
         let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
         let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
             ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
-        return id > 0 ? volume : minVolume
+        guard let objectCategory = UserDefaults.standard.string(forKey: "scanner") else {
+            fatalError()
+        }
+        if objectCategory == "All close objects" {
+            return (id > 0) && (depth < maxDepth) ? volume : minVolume
+        } else {
+            return objectCategoryIds[objectCategory]!.contains(id) ? volume : minVolume
+        }
     }
 }
 

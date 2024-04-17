@@ -31,3 +31,14 @@ let labels = [
     "train",
     "tv",
 ]
+
+let objectCategoryIds = [
+    "None": [],
+    "People": [15],
+    "Vehicles": [1, 2, 4, 6, 7, 14, 19],
+    "Seating": [9, 18],
+    "Animals": [3, 8, 10, 12, 13, 17],
+    "Bottles": [5],
+    "TVs": [20],
+    "Tables": [11],
+]

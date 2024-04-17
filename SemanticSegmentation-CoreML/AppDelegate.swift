@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "announcerMaxDepth": 5.0,
             "announcerDepthInterval": 0.5,
             "announcerDepthMargin": 0.2,
-            "scanner": false,
+            "scanner": "None",
             "scannerNumRows": 20,
             "scannerNumColumns": 20,
             "objectProximity": "None",

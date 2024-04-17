@@ -55,7 +55,7 @@ struct PlayerConfigView: View {
     @AppStorage("announcer")
     var announcer: Bool = true
     @AppStorage("scanner")
-    var scanner: Bool = true
+    var scanner: String = "None"
     @AppStorage("objectProximity")
     var proximity: String = "None"
 
@@ -66,10 +66,19 @@ struct PlayerConfigView: View {
                     .onChange(of: announcer) { value in
                         value ? manager.startAnnouncer() : manager.shutDownAnnouncer()
                     }
-                Toggle("Scanner", isOn: $scanner)
-                    .onChange(of: scanner) { value in
-                        value ? manager.startScanner() : manager.shutDownScanner()
-                    }
+                Picker("Scanner", selection: $scanner) {
+                    Text("None").tag("None")
+                    Text("People").tag("People")
+                    Text("Vehicles").tag("Vehicles")
+                    Text("Seating").tag("Seating")
+                    Text("Animals").tag("Animals")
+                    Text("Bottles").tag("Bottles")
+                    Text("TVs").tag("TVs")
+                    Text("Tables").tag("Tables")
+                    Text("All close objects").tag("All close objects")
+                }.onChange(of: scanner) { value in
+                    value == "None" ? manager.shutDownScanner() : manager.startScanner()
+                }
                 Picker("Proximity", selection: $proximity) {
                     Text("None").tag("None")
                     Text("People").tag("People")
