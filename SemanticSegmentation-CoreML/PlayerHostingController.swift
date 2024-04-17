@@ -62,11 +62,15 @@ struct PlayerConfigView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Announcer", isOn: $announcer)
-                    .onChange(of: announcer) { value in
-                        value ? manager.startAnnouncer() : manager.shutDownAnnouncer()
-                    }
-                Picker("Scanner", selection: $scanner) {
+                Toggle(isOn: $announcer) {
+                    Label(
+                        title: { Text("Announcer") },
+                        icon: { ColorIconView(systemName: "quote.bubble.fill", color: .pink) }
+                    )
+                }.onChange(of: announcer) { value in
+                    value ? manager.startAnnouncer() : manager.shutDownAnnouncer()
+                }
+                Picker(selection: $scanner) {
                     Text("None").tag("None")
                     Text("People").tag("People")
                     Text("Vehicles").tag("Vehicles")
@@ -76,10 +80,17 @@ struct PlayerConfigView: View {
                     Text("TVs").tag("TVs")
                     Text("Tables").tag("Tables")
                     Text("All close objects").tag("All close objects")
+                } label: {
+                    Label(
+                        title: { Text("Scanner") },
+                        icon: {
+                            ColorIconView(systemName: "field.of.view.wide.fill", color: .orange)
+                        }
+                    )
                 }.onChange(of: scanner) { value in
                     value == "None" ? manager.shutDownScanner() : manager.startScanner()
                 }
-                Picker("Proximity", selection: $proximity) {
+                Picker(selection: $proximity) {
                     Text("None").tag("None")
                     Text("People").tag("People")
                     Text("Vehicles").tag("Vehicles")
@@ -88,12 +99,33 @@ struct PlayerConfigView: View {
                     Text("Bottles").tag("Bottles")
                     Text("TVs").tag("TVs")
                     Text("Tables").tag("Tables")
+                } label: {
+                    Label(
+                        title: { Text("Proximity") },
+                        icon: { ColorIconView(systemName: "sensor.fill", color: .blue) }
+                    )
                 }.onChange(of: proximity) { value in
                     value == "None" ? manager.shutDownObjectProximity() : manager
                         .startObjectProximity()
                 }
             }
         }
+    }
+}
+
+// MARK: - ColorIconView
+
+struct ColorIconView: View {
+    let systemName: String
+    let color: Color
+
+    var body: some View {
+        Image(systemName: systemName).font(.system(size: 12))
+            .foregroundStyle(.white)
+            .background(
+                RoundedRectangle(cornerRadius: 5).frame(width: 28, height: 28)
+                    .foregroundStyle(color)
+            )
     }
 }
 
