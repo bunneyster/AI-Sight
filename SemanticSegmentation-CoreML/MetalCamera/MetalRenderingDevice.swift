@@ -15,11 +15,9 @@ public class MetalRenderingDevice {
     public let commandQueue: MTLCommandQueue
 
     init() {
-        guard let device = MTLCreateSystemDefaultDevice() else { fatalError("Could not create Metal Device") }
-        self.device = device
+        self.device = MetalEnvironment.shared.metalDevice
 
-        guard let queue = self.device.makeCommandQueue() else { fatalError("Could not create command queue") }
-        self.commandQueue = queue
+        self.commandQueue = MetalEnvironment.shared.metalCommandQueue
     }
 
     func generateRenderPipelineDescriptor(_ vertexFuncName: String, _ fragmentFuncName: String, _ colorPixelFormat: MTLPixelFormat = .bgra8Unorm) throws -> MTLRenderPipelineDescriptor {

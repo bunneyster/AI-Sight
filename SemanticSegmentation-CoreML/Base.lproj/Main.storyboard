@@ -6,7 +6,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
-        <capability name="UIMenu" message="Requires Xcode 11 or later." minToolsVersion="11.0" requiredIntegratedClassName="UICommandDiff"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -150,154 +149,14 @@
             <point key="canvasLocation" x="1858" y="1513"/>
         </scene>
         <!--Player-->
-        <scene sceneID="5c9-lY-u7Z">
+        <scene sceneID="WLo-cG-IgY">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="uso-ud-VWq" customClass="LiveMetalCameraViewController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="BrB-wO-R8s">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mtkView contentMode="scaleAspectFit" colorPixelFormat="BGRA8Unorm" depthStencilPixelFormat="Depth32Float" translatesAutoresizingMaskIntoConstraints="NO" id="jI5-DE-WCD" customClass="MetalVideoView" customModule="SemanticSegmentation_CoreML" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="193.5" width="414" height="526.5"/>
-                            </mtkView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGH-mt-VE2" userLabel="Camera Button" colorLabel="IBBuiltInLabel-Green">
-                                <rect key="frame" x="15" y="740" width="384" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="b7p-ew-KH4"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Take Photo">
-                                    <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="40"/>
-                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="baseBackgroundColor" systemColor="systemYellowColor"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="takePhoto:" destination="uso-ud-VWq" eventType="touchUpInside" id="ak8-6F-FTD"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Announcer" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OWV-YF-nut" userLabel="Announcer Label">
-                                <rect key="frame" x="15" y="63" width="320" height="31.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u08-Da-cyH" userLabel="Announcer Switch">
-                                <rect key="frame" x="350" y="65" width="51" height="31"/>
-                                <connections>
-                                    <action selector="toggleAnnouncer:" destination="uso-ud-VWq" eventType="valueChanged" id="3Qs-xl-wGg"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scanner" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Ji-sx-ZAf" userLabel="Scanner Label">
-                                <rect key="frame" x="15" y="102.5" width="320" height="31.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ogc-vy-zJg" userLabel="Scanner Switch">
-                                <rect key="frame" x="350" y="103" width="51" height="31"/>
-                                <connections>
-                                    <action selector="toggleScanner:" destination="uso-ud-VWq" eventType="valueChanged" id="DwI-GA-wQx"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Object Proximity" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCY-0y-ypk" userLabel="Object Proximity Label">
-                                <rect key="frame" x="15" y="142" width="183.5" height="31.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" changesSelectionAsPrimaryAction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uTR-Qb-lvP" userLabel="Object Proximity Button">
-                                <rect key="frame" x="213" y="140" width="185.5" height="34.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <menu key="menu" id="QGa-9u-brQ">
-                                    <menuOptions key="menuOptions" singleSelection="YES"/>
-                                    <children>
-                                        <command title="None" id="y6x-cg-B5P">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="8dg-kl-aSg"/>
-                                            </connections>
-                                        </command>
-                                        <command title="People" id="DGo-6b-7yb">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="CM5-m7-tvZ"/>
-                                            </connections>
-                                        </command>
-                                        <command title="Vehicles" id="lsU-m0-dac" userLabel="Vehicles">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="j7F-aM-hSJ"/>
-                                            </connections>
-                                        </command>
-                                        <command title="Seating" id="U2Z-E0-nHV" userLabel="Seating">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="R8Y-Rm-HYA"/>
-                                            </connections>
-                                        </command>
-                                        <command title="Animals" id="A7J-Rw-2JE" userLabel="Animals">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="vOj-j1-PLq"/>
-                                            </connections>
-                                        </command>
-                                        <command title="Bottles" id="6Qe-pS-Ryj">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="0gh-my-RzA"/>
-                                            </connections>
-                                        </command>
-                                        <command title="TVs" id="YcS-Ia-bCc" userLabel="TVs">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="P2E-YT-Q3q"/>
-                                            </connections>
-                                        </command>
-                                        <command title="Tables" id="Pl0-Bn-faH" userLabel="Tables">
-                                            <connections>
-                                                <action selector="selectObjectProximity:" destination="0a6-Ns-dFL" id="Rh8-Cq-YaK"/>
-                                            </connections>
-                                        </command>
-                                    </children>
-                                </menu>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button">
-                                    <fontDescription key="titleFontDescription" type="system" pointSize="26"/>
-                                </buttonConfiguration>
-                            </button>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="ZRo-26-PEe"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="uTR-Qb-lvP" secondAttribute="trailing" constant="15" id="3jm-a8-Rcd"/>
-                            <constraint firstItem="uTR-Qb-lvP" firstAttribute="leading" secondItem="rCY-0y-ypk" secondAttribute="trailing" constant="15" id="4LM-fT-kQg"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="jI5-DE-WCD" secondAttribute="trailing" id="4mM-Rd-x23"/>
-                            <constraint firstItem="OWV-YF-nut" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="15" id="4vR-IW-qRI"/>
-                            <constraint firstItem="3Ji-sx-ZAf" firstAttribute="top" secondItem="OWV-YF-nut" secondAttribute="bottom" constant="8" symbolic="YES" id="CYR-X1-aeR"/>
-                            <constraint firstItem="Ogc-vy-zJg" firstAttribute="centerY" secondItem="3Ji-sx-ZAf" secondAttribute="centerY" id="Cds-1R-JcP"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="Ogc-vy-zJg" secondAttribute="trailing" constant="15" id="Ez1-e7-neT"/>
-                            <constraint firstItem="u08-Da-cyH" firstAttribute="top" secondItem="ZRo-26-PEe" secondAttribute="top" constant="17" id="MXQ-Wn-vK5"/>
-                            <constraint firstItem="jI5-DE-WCD" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" id="TO8-zS-mBB"/>
-                            <constraint firstItem="rCY-0y-ypk" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="WdB-j2-Sxb"/>
-                            <constraint firstItem="rCY-0y-ypk" firstAttribute="top" secondItem="3Ji-sx-ZAf" secondAttribute="bottom" constant="8" symbolic="YES" id="YXQ-Z7-kya"/>
-                            <constraint firstItem="mGH-mt-VE2" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="cu5-ss-xR8"/>
-                            <constraint firstItem="Ogc-vy-zJg" firstAttribute="leading" secondItem="3Ji-sx-ZAf" secondAttribute="trailing" constant="15" id="dXV-qq-4lg"/>
-                            <constraint firstItem="u08-Da-cyH" firstAttribute="leading" secondItem="OWV-YF-nut" secondAttribute="trailing" constant="15" id="edC-Z5-6hU"/>
-                            <constraint firstItem="3Ji-sx-ZAf" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="fSY-Eo-aIQ"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="u08-Da-cyH" secondAttribute="trailing" constant="15" id="hf4-SZ-cTS"/>
-                            <constraint firstItem="jI5-DE-WCD" firstAttribute="top" secondItem="rCY-0y-ypk" secondAttribute="bottom" constant="20" id="kNL-Fa-BgF"/>
-                            <constraint firstItem="OWV-YF-nut" firstAttribute="leading" secondItem="ZRo-26-PEe" secondAttribute="leading" constant="15" id="pIB-yz-IQt"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="trailing" secondItem="mGH-mt-VE2" secondAttribute="trailing" constant="15" id="rwC-Qv-r3V"/>
-                            <constraint firstItem="uTR-Qb-lvP" firstAttribute="centerY" secondItem="rCY-0y-ypk" secondAttribute="centerY" id="slQ-0L-5H2"/>
-                            <constraint firstItem="ZRo-26-PEe" firstAttribute="bottom" secondItem="mGH-mt-VE2" secondAttribute="bottom" constant="13" id="uRH-16-Av8"/>
-                            <constraint firstItem="mGH-mt-VE2" firstAttribute="top" secondItem="jI5-DE-WCD" secondAttribute="bottom" constant="20" id="ydG-iW-Esh"/>
-                        </constraints>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Player" image="music.note.tv" catalog="system" id="sPp-wC-0rq"/>
-                    <connections>
-                        <outlet property="CameraButton" destination="mGH-mt-VE2" id="sCL-sD-9ED"/>
-                        <outlet property="announcerSwitch" destination="u08-Da-cyH" id="vQ0-bS-i81"/>
-                        <outlet property="metalVideoPreview" destination="jI5-DE-WCD" id="vOH-hS-bZx"/>
-                        <outlet property="objectProximityButton" destination="uTR-Qb-lvP" id="Fqt-pO-lXH"/>
-                        <outlet property="scannerSwitch" destination="Ogc-vy-zJg" id="YYw-FT-EeQ"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0a6-Ns-dFL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <hostingController id="mmk-JK-pDx" customClass="PlayerHostingController" customModule="SemanticSegmentation_CoreML" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Player" image="music.note.tv" catalog="system" id="Blg-Uk-icB"/>
+                </hostingController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Je-lp-V3R" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1048" y="-568"/>
+            <point key="canvasLocation" x="1048" y="-566"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="caK-0V-iKQ">
@@ -311,8 +170,8 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="uso-ud-VWq" kind="relationship" relationship="viewControllers" id="VPy-Xe-Qw8"/>
-                        <segue destination="e8o-TX-ama" kind="relationship" relationship="viewControllers" id="WRC-p3-BFh"/>
+                        <segue destination="mmk-JK-pDx" kind="relationship" relationship="viewControllers" id="ydt-os-zC2"/>
+                        <segue destination="e8o-TX-ama" kind="relationship" relationship="viewControllers" id="OyT-Yk-PyN"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wKr-1F-xNj" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -505,9 +364,6 @@
         <image name="photo.on.rectangle.fill" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemYellowColor">
-            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

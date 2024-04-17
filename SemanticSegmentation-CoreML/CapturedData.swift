@@ -10,15 +10,30 @@ import AVFoundation
 import Foundation
 import Vision
 
-public struct CapturedData {
+public class CapturedData {
+    // MARK: Lifecycle
+
+    init(
+        pixelBuffer: CVPixelBuffer? = nil,
+        segmentationMap: MLMultiArray? = nil,
+        depthData: AVDepthData? = nil
+    ) {
+        self.pixelBuffer = pixelBuffer
+        self.segmentationMap = segmentationMap
+        self.depthData = depthData
+    }
+
     // MARK: Public
 
     public func extractObjects(downsampleFactor: Int = 1) -> [MLObject] {
         var objects = [Int: MLObject]()
         var depths = [Int: [Float]]()
 
-        guard let segmentationHeight = segmentationMap.shape[0] as? Int,
-              let segmentationWidth = segmentationMap.shape[1] as? Int
+        guard let segmentationMap = segmentationMap,
+              let segmentationHeight = segmentationMap.shape[0] as? Int,
+              let segmentationWidth = segmentationMap.shape[1] as? Int,
+              let pixelBuffer = pixelBuffer,
+              let depthData = depthData
         else {
             return Array(objects.values)
         }
@@ -33,8 +48,8 @@ public struct CapturedData {
         )
         CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
-        let videoWidth = videoBufferWidth
-        let videoHeight = videoBufferHeight
+        let videoWidth = CVPixelBufferGetWidth(pixelBuffer)
+        let videoHeight = CVPixelBufferGetHeight(pixelBuffer)
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
         let xOffset = (videoWidth - segmentationWidth) / 2
@@ -98,8 +113,7 @@ public struct CapturedData {
 
     // MARK: Internal
 
-    var segmentationMap: MLMultiArray
-    var videoBufferHeight: Int
-    var videoBufferWidth: Int
-    var depthData: AVDepthData
+    var pixelBuffer: CVPixelBuffer?
+    var segmentationMap: MLMultiArray?
+    var depthData: AVDepthData?
 }

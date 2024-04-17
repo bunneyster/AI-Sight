@@ -87,13 +87,14 @@ public class StreamingScanner {
         let xCoord = Int(MathHelper.partition(end: 513, by: numColumns, i: Float(column)))
         let pan = MathHelper.partition(end: 2, by: numColumns, i: Float(column)) - 1
 
-        guard let segmentationHeight = copyData?.segmentationMap.shape[0] as? Int,
-              let segmentationWidth = copyData?.segmentationMap.shape[1] as? Int
+        guard let segmentationHeight = copyData?.segmentationMap?.shape[0] as? Int,
+              let segmentationWidth = copyData?.segmentationMap?.shape[1] as? Int,
+              let pixelBuffer = copyData?.pixelBuffer,
+              let depthData = copyData?.depthData
         else {
             return
         }
 
-        let depthData = (copyData?.depthData)!
         let depthBuffer = DepthHelper.getDepthMap(depthData: depthData)
         CVPixelBufferLockBaseAddress(depthBuffer, .readOnly)
         let floatBuffer = unsafeBitCast(
@@ -102,8 +103,8 @@ public class StreamingScanner {
         )
         CVPixelBufferUnlockBaseAddress(depthBuffer, .readOnly)
 
-        let videoWidth = (copyData?.videoBufferWidth)!
-        let videoHeight = (copyData?.videoBufferHeight)!
+        let videoWidth = CVPixelBufferGetWidth(pixelBuffer)
+        let videoHeight = CVPixelBufferGetHeight(pixelBuffer)
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
         let videoXOffset = (videoWidth - segmentationWidth) / 2
@@ -114,7 +115,7 @@ public class StreamingScanner {
         for (row, node) in sourceNodes[0..<Int(numRows)].reversed().enumerated() {
             let yCoord = Int(MathHelper.partition(end: 513, by: numRows, i: Float(row)))
             let coords = [yCoord, xCoord] as [NSNumber]
-            let id = copyData?.segmentationMap[coords].intValue ?? 0
+            let id = copyData?.segmentationMap?[coords].intValue ?? 0
 
             let depthMapX = Float(xCoord + videoXOffset) / scaleX
             let depthMapY = Float(yCoord + videoYOffset) / scaleY
