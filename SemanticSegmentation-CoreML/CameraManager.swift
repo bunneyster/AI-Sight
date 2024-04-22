@@ -41,7 +41,7 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         if UserDefaults.standard.bool(forKey: "announcer") {
             startAnnouncer()
         }
-        if UserDefaults.standard.bool(forKey: "scanner") {
+        if UserDefaults.standard.string(forKey: "scanner") != "None" {
             startScanner()
         }
         if UserDefaults.standard.string(forKey: "objectProximity") != "None" {
