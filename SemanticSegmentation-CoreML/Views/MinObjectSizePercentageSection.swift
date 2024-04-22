@@ -43,7 +43,3 @@ struct MinObjectSizePercentageSection: View {
         }
     }
 }
-
-#Preview {
-    MinObjectSizePercentageSection(minObjectSizePercentage: .constant(0.01))
-}

@@ -50,7 +50,3 @@ struct ObjectPropertiesSection: View {
         }
     }
 }
-
-#Preview {
-    ObjectPropertiesSection()
-}

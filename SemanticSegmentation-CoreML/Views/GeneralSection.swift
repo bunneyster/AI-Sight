@@ -21,7 +21,3 @@ struct GeneralSection: View {
         }
     }
 }
-
-#Preview {
-    GeneralSection()
-}

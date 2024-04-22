@@ -42,7 +42,3 @@ struct DepthComputationSection: View {
         }
     }
 }
-
-#Preview {
-    DepthComputationSection(objectDepthPercentile: .constant(0.1))
-}

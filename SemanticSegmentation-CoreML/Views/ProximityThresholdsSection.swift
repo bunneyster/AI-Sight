@@ -83,12 +83,3 @@ struct ProximityThresholdsSection: View {
         }
     }
 }
-
-#Preview {
-    ProximityThresholdsSection(
-        objectProximityThreshold1: .constant(0.75),
-        objectProximityThreshold2: .constant(1.25),
-        objectProximityThreshold3: .constant(1.75),
-        objectProximityThreshold4: .constant(2.5)
-    )
-}

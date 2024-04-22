@@ -50,7 +50,3 @@ struct ProximityModeSection: View {
         }
     }
 }
-
-#Preview {
-    ProximityModeSection()
-}

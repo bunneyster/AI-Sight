@@ -39,7 +39,3 @@ struct ScannerModeSection: View {
         }
     }
 }
-
-#Preview {
-    ScannerModeSection()
-}

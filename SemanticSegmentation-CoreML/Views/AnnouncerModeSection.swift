@@ -42,7 +42,3 @@ struct AnnouncerModeSection: View {
         }
     }
 }
-
-#Preview {
-    AnnouncerModeSection()
-}
