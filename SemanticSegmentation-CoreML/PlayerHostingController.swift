@@ -33,9 +33,15 @@ struct PlayerView: View {
 
     var body: some View {
         VStack {
-            if manager.dataAvailable {
-                VideoView(capturedData: manager.capturedData)
-            }
+            Group {
+                if manager.dataAvailable {
+                    VideoView(capturedData: manager.capturedData)
+                } else {
+                    Text("No video data available")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(.blue)
+                }
+            }.frame(width: 400, height: 400)
 
             PlayerConfigView(manager: manager)
 
