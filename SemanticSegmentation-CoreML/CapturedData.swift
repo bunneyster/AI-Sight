@@ -48,8 +48,9 @@ public class CapturedData {
         )
         CVPixelBufferUnlockBaseAddress(depthBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
-        let videoWidth = CVPixelBufferGetWidth(pixelBuffer)
-        let videoHeight = CVPixelBufferGetHeight(pixelBuffer)
+        // Dimensions are flipped because default camera orientation is landscape.
+        let videoWidth = CVPixelBufferGetHeight(pixelBuffer)
+        let videoHeight = CVPixelBufferGetWidth(pixelBuffer)
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
         let xOffset = (videoWidth - segmentationWidth) / 2

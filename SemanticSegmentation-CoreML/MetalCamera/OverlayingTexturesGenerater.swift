@@ -112,6 +112,7 @@ class OverlayingTexturesGenerater: NSObject {
                 source1.texture.height,
                 minX,
                 minY,
+                // Hack to rotate the camera texture, which is captured in landscape mode
                 .rotate90Degrees
             )
         }

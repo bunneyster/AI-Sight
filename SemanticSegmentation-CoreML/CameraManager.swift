@@ -89,7 +89,6 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
            let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
-            // Dimensions are flipped because default camera orientation is landscape.
             let capturedData = CapturedData(
                 pixelBuffer: pixelBuffer,
                 segmentationMap: segmentationMap,
@@ -117,7 +116,6 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
            let segmentationMap = observations.first?.featureValue.multiArrayValue
         {
-            // Dimensions are flipped because default camera orientation is landscape.
             let capturedData = CapturedData(
                 pixelBuffer: pixelBuffer,
                 segmentationMap: segmentationMap,
