@@ -37,16 +37,6 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
 
         scanner.refreshUserDefaults()
         proximitySensor.refreshUserDefaults()
-
-        if UserDefaults.standard.bool(forKey: "announcer") {
-            startAnnouncer()
-        }
-        if UserDefaults.standard.string(forKey: "scanner") != "None" {
-            startScanner()
-        }
-        if UserDefaults.standard.string(forKey: "objectProximity") != "None" {
-            startObjectProximity()
-        }
     }
 
     // MARK: Public

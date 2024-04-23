@@ -76,8 +76,8 @@ struct PlayerConfigView: View {
                         title: { Text("Announcer") },
                         icon: { ColorIconView(systemName: "quote.bubble.fill", color: .pink) }
                     )
-                }.onChange(of: announcer) { value in
-                    value ? manager.startAnnouncer() : manager.shutDownAnnouncer()
+                }.onChange(of: announcer, initial: true) { _, newValue in
+                    newValue ? manager.startAnnouncer() : manager.shutDownAnnouncer()
                 }
                 Picker(selection: $scanner) {
                     Text("None").tag("None")
@@ -97,10 +97,12 @@ struct PlayerConfigView: View {
                         }
                     )
                 }
-                .onChange(of: scanner) { oldValue, newValue in
+                .onChange(of: scanner, initial: true) { oldValue, newValue in
                     if newValue == "None" {
                         manager.shutDownScanner()
                     } else if oldValue == "None" {
+                        manager.startScanner()
+                    } else if oldValue == newValue { // View initialization
                         manager.startScanner()
                     }
                 }
@@ -118,10 +120,12 @@ struct PlayerConfigView: View {
                         title: { Text("Proximity") },
                         icon: { ColorIconView(systemName: "sensor.fill", color: .blue) }
                     )
-                }.onChange(of: proximity) { oldValue, newValue in
+                }.onChange(of: proximity, initial: true) { oldValue, newValue in
                     if newValue == "None" {
                         manager.shutDownObjectProximity()
                     } else if oldValue == "None" {
+                        manager.startObjectProximity()
+                    } else if oldValue == newValue { // View initialization
                         manager.startObjectProximity()
                     }
                 }
