@@ -11,6 +11,7 @@ import SwiftUI
 
 // MARK: - PlayerHostingController
 
+@available(iOS 17.0, *)
 class PlayerHostingController: UIHostingController<PlayerView> {
     // MARK: Lifecycle
 
@@ -27,6 +28,7 @@ class PlayerHostingController: UIHostingController<PlayerView> {
 
 // MARK: - PlayerView
 
+@available(iOS 17.0, *)
 struct PlayerView: View {
     @StateObject
     var manager = CameraManager()
@@ -54,6 +56,7 @@ struct PlayerView: View {
 
 // MARK: - PlayerConfigView
 
+@available(iOS 17.0, *)
 struct PlayerConfigView: View {
     @ObservedObject
     var manager: CameraManager
@@ -93,8 +96,13 @@ struct PlayerConfigView: View {
                             ColorIconView(systemName: "field.of.view.wide.fill", color: .orange)
                         }
                     )
-                }.onChange(of: scanner) { value in
-                    value == "None" ? manager.shutDownScanner() : manager.startScanner()
+                }
+                .onChange(of: scanner) { oldValue, newValue in
+                    if newValue == "None" {
+                        manager.shutDownScanner()
+                    } else if oldValue == "None" {
+                        manager.startScanner()
+                    }
                 }
                 Picker(selection: $proximity) {
                     Text("None").tag("None")
@@ -110,9 +118,12 @@ struct PlayerConfigView: View {
                         title: { Text("Proximity") },
                         icon: { ColorIconView(systemName: "sensor.fill", color: .blue) }
                     )
-                }.onChange(of: proximity) { value in
-                    value == "None" ? manager.shutDownObjectProximity() : manager
-                        .startObjectProximity()
+                }.onChange(of: proximity) { oldValue, newValue in
+                    if newValue == "None" {
+                        manager.shutDownObjectProximity()
+                    } else if oldValue == "None" {
+                        manager.startObjectProximity()
+                    }
                 }
             }
         }
