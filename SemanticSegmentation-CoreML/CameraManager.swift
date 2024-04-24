@@ -30,11 +30,12 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
 
         super.init()
 
+        self.allObjectsAnnouncer = AllObjectsAnnouncer()
+        allObjectsAnnouncer.speaker.synthesizer.delegate = self
         self.announcer = StreamingMainObjectAnnouncer(manager: self)
         self.scanner = StreamingScanner(manager: self)
         self.proximitySensor = StreamingProximitySensor(manager: self)
 
-        Speaker.shared.synthesizer.delegate = self
         videoCapture.delegate = self
         videoCapture.setUp(sessionPreset: .hd1280x720) { success in
             if success {
@@ -84,6 +85,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
 
     var segmentationModel = try! DeepLabV3()
     var visionModel: VNCoreMLModel?
+    var allObjectsAnnouncer: AllObjectsAnnouncer!
     var announcer: StreamingMainObjectAnnouncer!
     var scanner: StreamingScanner!
     var proximitySensor: StreamingProximitySensor!
@@ -130,8 +132,8 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
                 segmentationMap: segmentationMap,
                 depthData: depthData
             )
-            dataPublisherQueue.async {
-                AllObjectsAnnouncer().process(capturedData)
+            dataPublisherQueue.async { [self] in
+                allObjectsAnnouncer.process(capturedData)
             }
             DispatchQueue.main.async {
                 self.capturedData.pixelBuffer = pixelBuffer
@@ -270,7 +272,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
 // MARK: AVSpeechSynthesizerDelegate
 
 extension CameraManager: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         if captureMode == .snapshot {
             captureMode = .streaming
             videoCapture.startStream()

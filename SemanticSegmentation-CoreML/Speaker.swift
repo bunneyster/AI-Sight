@@ -49,7 +49,7 @@ class Speaker {
         } else if multiplier >= 0.6 {
             return "lower"
         } else {
-            return " "
+            return nil
         }
     }
 

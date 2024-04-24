@@ -13,6 +13,7 @@ import Vision
 
 /// Announces all the objects observed in a frame, ordered by position.
 class AllObjectsAnnouncer {
+    public let speaker = Speaker()
     let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
 
     /// Announces all the objects enumerated in the given data.
@@ -23,7 +24,7 @@ class AllObjectsAnnouncer {
         let objects = data.extractObjects().sorted(by: { $0.center < $1.center })
             .filter { !ignoredObjects.contains(labels[$0.id]) }
         if objects.isEmpty {
-            Speaker.shared.speak(text: "No objects identified")
+            speaker.speak(text: "No objects identified")
         } else {
             var phrases = [String]()
             for object in objects {
@@ -40,7 +41,7 @@ class AllObjectsAnnouncer {
                 )
                 phrases.append(objectPhrase)
             }
-            Speaker.shared.speak(text: phrases.joined(separator: "--"), interrupt: true)
+            speaker.speak(text: phrases.joined(separator: "--"), interrupt: true)
         }
 
         usleep(1_000_000)
