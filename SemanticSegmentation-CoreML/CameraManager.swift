@@ -12,10 +12,12 @@ import Foundation
 import OSLog
 import Vision
 
-class CameraManager: ObservableObject, VideoCaptureDelegate {
+// MARK: - CameraManager
+
+class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
     // MARK: Lifecycle
 
-    init() {
+    override init() {
         self.capturedData = CapturedData()
 
         if let visionModel = try? VNCoreMLModel(for: segmentationModel.model) {
@@ -25,6 +27,14 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         }
 
         self.videoCapture = VideoCapture()
+
+        super.init()
+
+        self.announcer = StreamingMainObjectAnnouncer(manager: self)
+        self.scanner = StreamingScanner(manager: self)
+        self.proximitySensor = StreamingProximitySensor(manager: self)
+
+        Speaker.shared.synthesizer.delegate = self
         videoCapture.delegate = self
         videoCapture.setUp(sessionPreset: .hd1280x720) { success in
             if success {
@@ -66,9 +76,6 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         target: .global()
     )
     let dataPublisher = PassthroughSubject<CapturedData, Never>()
-    let announcer = StreamingMainObjectAnnouncer()
-    let scanner = StreamingScanner()
-    let proximitySensor = StreamingProximitySensor()
 
     @Published
     var dataAvailable = false
@@ -77,6 +84,9 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
 
     var segmentationModel = try! DeepLabV3()
     var visionModel: VNCoreMLModel?
+    var announcer: StreamingMainObjectAnnouncer!
+    var scanner: StreamingScanner!
+    var proximitySensor: StreamingProximitySensor!
     var videoCapture: VideoCapture!
     var capturedData: CapturedData
 
@@ -120,16 +130,9 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
                 segmentationMap: segmentationMap,
                 depthData: depthData
             )
-            let completionHandler = DispatchWorkItem { [self] in
-                if captureMode == .snapshot {
-                    AllObjectsAnnouncer().process(capturedData)
-                }
-                captureMode = CaptureMode.streaming
+            dataPublisherQueue.async {
+                AllObjectsAnnouncer().process(capturedData)
             }
-            completionHandler.notify(queue: dataPublisherQueue) {
-                self.videoCapture.startStream()
-            }
-            dataPublisherQueue.async(execute: completionHandler)
             DispatchQueue.main.async {
                 self.capturedData.pixelBuffer = pixelBuffer
                 self.capturedData.segmentationMap = segmentationMap
@@ -236,30 +239,41 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
         }
     }
 
-    func startAnnouncer() {
+    func connectAnnouncer() {
         dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
             .subscribe(announcer)
     }
 
-    func shutDownAnnouncer() {
+    func disconnectAnnouncer() {
         announcer.cancel()
         lastMainObjectChange = MainObjectChange(object: nil, time: Date())
     }
 
-    func startScanner() {
+    func connectScanner() {
         dataPublisher.share().subscribe(scanner)
     }
 
-    func shutDownScanner() {
+    func disconnectScanner() {
         scanner.cancel()
     }
 
-    func startObjectProximity() {
+    func connectObjectProximity() {
         dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
             .subscribe(proximitySensor)
     }
 
-    func shutDownObjectProximity() {
+    func disconnectObjectProximity() {
         proximitySensor.cancel()
+    }
+}
+
+// MARK: AVSpeechSynthesizerDelegate
+
+extension CameraManager: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
+        if captureMode == .snapshot {
+            captureMode = .streaming
+            videoCapture.startStream()
+        }
     }
 }

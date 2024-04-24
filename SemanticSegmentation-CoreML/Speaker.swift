@@ -11,6 +11,8 @@ import AVFoundation
 class Speaker {
     // MARK: Public
 
+    public let synthesizer = AVSpeechSynthesizer()
+
     /// Returns a phrase describing the horizontal position represented by the given number.
     ///
     /// - Parameters:
@@ -61,6 +63,23 @@ class Speaker {
         return String(format: "%.1f meters", depth)
     }
 
+    public static func buildPhrase(
+        objectName: String? = nil,
+        verticalPosition: Float? = nil,
+        horizontalPosition: Float? = nil,
+        depth: Float? = nil
+    )
+        -> String
+    {
+        let phrase = [
+            objectName,
+            Speaker.verticalPosition(multiplier: verticalPosition),
+            Speaker.horizontalPosition(posValue: horizontalPosition),
+            Speaker.depthPosition(depth: depth),
+        ].compactMap { $0 }.joined(separator: " ")
+        return phrase
+    }
+
     /// Speaks the phrase "[object name] + [vertical position] + [horizontal position] +
     /// [distance]".
     ///
@@ -76,12 +95,12 @@ class Speaker {
         depth: Float? = nil,
         interrupt: Bool = true
     ) {
-        let phrase = [
-            objectName,
-            Speaker.verticalPosition(multiplier: verticalPosition),
-            Speaker.horizontalPosition(posValue: horizontalPosition),
-            Speaker.depthPosition(depth: depth),
-        ].compactMap { $0 }.joined(separator: " ")
+        let phrase = Speaker.buildPhrase(
+            objectName: objectName,
+            verticalPosition: verticalPosition,
+            horizontalPosition: horizontalPosition,
+            depth: depth
+        )
         speak(text: phrase, interrupt: interrupt)
     }
 
@@ -107,6 +126,4 @@ class Speaker {
     // MARK: Internal
 
     static let shared = Speaker()
-
-    let synthesizer = AVSpeechSynthesizer()
 }

@@ -23,7 +23,7 @@ import OSLog
 public class StreamingScanner {
     // MARK: Lifecycle
 
-    init() {
+    init(manager: CameraManager) {
         let inputFormat = engine.outputNode.inputFormat(forBus: 0)
         self.sampleRate = inputFormat.sampleRate
         let maxRows = 20
@@ -42,6 +42,15 @@ public class StreamingScanner {
         self.rightTapPlayer = SoundHelper.buildPlayer(forResource: "beat3")
         leftTapPlayer.prepareToPlay()
         rightTapPlayer.prepareToPlay()
+
+        self.manager = manager
+        manager.$captureMode.sink { [self] in
+            if $0 == .snapshot {
+                stop()
+            } else {
+                start()
+            }
+        }.store(in: &cancellables)
     }
 
     // MARK: Public
@@ -182,6 +191,8 @@ public class StreamingScanner {
     var leftTapPlayer: AVAudioPlayer!
     /// The audio player that plays the tap sound when the scanner reaches the right of the frame.
     var rightTapPlayer: AVAudioPlayer!
+    var manager: CameraManager!
+    var cancellables = Set<AnyCancellable>()
     /// Whether the scanner should be running.
     var isRunning = false
 

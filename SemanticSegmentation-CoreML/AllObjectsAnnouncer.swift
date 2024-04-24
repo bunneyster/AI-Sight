@@ -25,20 +25,22 @@ class AllObjectsAnnouncer {
         if objects.isEmpty {
             Speaker.shared.speak(text: "No objects identified")
         } else {
+            var phrases = [String]()
             for object in objects {
                 if labels[object.id] != "bottle", object.size <= 5300 {
                     continue
                 }
                 let vertical = Float(object.center.y) / Float(ModelDimensions.deepLabV3.height)
                 let horizontal = Float(object.center.x) / Float(ModelDimensions.deepLabV3.width)
-                Speaker.shared.speak(
+                let objectPhrase = Speaker.buildPhrase(
                     objectName: labels[object.id],
                     verticalPosition: vertical,
                     horizontalPosition: horizontal,
-                    depth: object.depth.round(nearest: 0.1),
-                    interrupt: false
+                    depth: object.depth.round(nearest: 0.1)
                 )
+                phrases.append(objectPhrase)
             }
+            Speaker.shared.speak(text: phrases.joined(separator: "--"), interrupt: true)
         }
 
         usleep(1_000_000)

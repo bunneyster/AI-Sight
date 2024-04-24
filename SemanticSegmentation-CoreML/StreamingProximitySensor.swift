@@ -16,7 +16,7 @@ import OSLog
 class StreamingProximitySensor {
     // MARK: Lifecycle
 
-    init() {
+    init(manager: CameraManager) {
         mixer.outputVolume = volume
         engine.attach(mixer)
         engine.connect(
@@ -29,6 +29,15 @@ class StreamingProximitySensor {
             engine.attach(player)
             engine.connect(player, to: mixer, format: engine.mainMixerNode.inputFormat(forBus: 0))
         }
+
+        self.manager = manager
+        manager.$captureMode.sink { [self] in
+            if $0 == .snapshot {
+                self.isRunning = false
+            } else {
+                self.isRunning = true
+            }
+        }.store(in: &cancellables)
     }
 
     // MARK: Public
@@ -77,6 +86,8 @@ class StreamingProximitySensor {
     var nextPlayerIndex = 0
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
+    var manager: CameraManager!
+    var cancellables = Set<AnyCancellable>()
     var lastFileName: String?
     var lastBPS: Double?
     var pan: Float?

@@ -19,6 +19,18 @@ var lastMainObjectChange: MainObjectChange?
 
 /// Announces the main object observed in a frame of a video/depth capture stream.
 public class StreamingMainObjectAnnouncer {
+    // MARK: Lifecycle
+
+    init(manager: CameraManager) {
+        self.manager = manager
+
+        manager.$captureMode.sink { [self] in
+            if $0 == .snapshot {
+                stop()
+            }
+        }.store(in: &cancellables)
+    }
+
     // MARK: Public
 
     public func process(_ data: CapturedData) {
@@ -54,6 +66,10 @@ public class StreamingMainObjectAnnouncer {
         }
     }
 
+    public func stop() {
+        Speaker.shared.stop()
+    }
+
     // MARK: Internal
 
     /// The amount of time, in seconds, following an announcement, during which subsequent
@@ -65,6 +81,8 @@ public class StreamingMainObjectAnnouncer {
     let objectFrequencyRecorder = ObjectFrequencyRecorder(minFrequency: 4, frameCount: 6)
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
+    var manager: CameraManager!
+    var cancellables = Set<AnyCancellable>()
 
     /// Computes which of the given objects qualifies to be announced as the main object.
     ///

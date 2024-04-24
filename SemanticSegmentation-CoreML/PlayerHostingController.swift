@@ -77,16 +77,7 @@ struct PlayerConfigView: View {
                         icon: { ColorIconView(systemName: "quote.bubble.fill", color: .pink) }
                     )
                 }.onChange(of: announcer, initial: true) { _, newValue in
-                    newValue ? manager.startAnnouncer() : manager.shutDownAnnouncer()
-                }.onChange(of: manager.captureMode) { _, newValue in
-                    switch newValue {
-                    case .snapshot:
-                        manager.shutDownAnnouncer()
-                    case .streaming:
-                        if announcer {
-                            manager.startAnnouncer()
-                        }
-                    }
+                    newValue ? manager.connectAnnouncer() : manager.disconnectAnnouncer()
                 }
 
                 Picker(selection: $scanner) {
@@ -108,20 +99,11 @@ struct PlayerConfigView: View {
                     )
                 }.onChange(of: scanner, initial: true) { oldValue, newValue in
                     if newValue == "None" {
-                        manager.shutDownScanner()
+                        manager.disconnectScanner()
                     } else if oldValue == "None" {
-                        manager.startScanner()
+                        manager.connectScanner()
                     } else if oldValue == newValue { // View initialization
-                        manager.startScanner()
-                    }
-                }.onChange(of: manager.captureMode) { _, newValue in
-                    switch newValue {
-                    case .snapshot:
-                        manager.shutDownScanner()
-                    case .streaming:
-                        if scanner != "None" {
-                            manager.startScanner()
-                        }
+                        manager.connectScanner()
                     }
                 }
 
@@ -141,20 +123,11 @@ struct PlayerConfigView: View {
                     )
                 }.onChange(of: proximity, initial: true) { oldValue, newValue in
                     if newValue == "None" {
-                        manager.shutDownObjectProximity()
+                        manager.disconnectObjectProximity()
                     } else if oldValue == "None" {
-                        manager.startObjectProximity()
+                        manager.connectObjectProximity()
                     } else if oldValue == newValue { // View initialization
-                        manager.startObjectProximity()
-                    }
-                }.onChange(of: manager.captureMode) { _, newValue in
-                    switch newValue {
-                    case .snapshot:
-                        manager.shutDownObjectProximity()
-                    case .streaming:
-                        if proximity != "None" {
-                            manager.startObjectProximity()
-                        }
+                        manager.connectObjectProximity()
                     }
                 }
             }
