@@ -54,12 +54,12 @@ class LiveFaceDetectionAndFaceParsingViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.videoCapture.start()
+        self.videoCapture.startStream()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.videoCapture.stop()
+        self.videoCapture.stopStream()
     }
     
     // MARK: - Setup Core ML
@@ -90,7 +90,7 @@ class LiveFaceDetectionAndFaceParsingViewController: UIViewController {
         videoCapture.setUpCamera(sessionPreset: .vga640x480, position: .front) { (success) in
             if success {
                 // 초기설정이 끝나면 라이브 비디오를 시작할 수 있음
-                self.videoCapture.start()
+                self.videoCapture.startStream()
             }
         }
     }

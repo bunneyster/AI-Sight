@@ -51,7 +51,7 @@ public class VideoCapture: NSObject {
         })
     }
 
-    public func start() {
+    public func startStream() {
         if !captureSession.isRunning {
             // Offload `.startRunning()` to serial background thread since it's a blocking call.
             sessionQueue.async {
@@ -60,7 +60,7 @@ public class VideoCapture: NSObject {
         }
     }
 
-    public func stop() {
+    public func stopStream() {
         if captureSession.isRunning {
             captureSession.stopRunning()
         }
@@ -260,7 +260,8 @@ extension VideoCapture: AVCapturePhotoCaptureDelegate {
               .metadata[String(kCGImagePropertyOrientation)] as? UInt32
         else { return }
 
-        stop()
+        // Stop the video stream and restart after the photo has been fully processed.
+        stopStream()
 
         if let pixelBuffer = pixelBuffer.clone(),
            let depthData = depthData.clone()

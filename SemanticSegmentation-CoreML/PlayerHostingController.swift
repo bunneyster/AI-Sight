@@ -78,7 +78,17 @@ struct PlayerConfigView: View {
                     )
                 }.onChange(of: announcer, initial: true) { _, newValue in
                     newValue ? manager.startAnnouncer() : manager.shutDownAnnouncer()
+                }.onChange(of: manager.captureMode) { _, newValue in
+                    switch newValue {
+                    case .snapshot:
+                        manager.shutDownAnnouncer()
+                    case .streaming:
+                        if announcer {
+                            manager.startAnnouncer()
+                        }
+                    }
                 }
+
                 Picker(selection: $scanner) {
                     Text("None").tag("None")
                     Text("People").tag("People")
@@ -96,8 +106,7 @@ struct PlayerConfigView: View {
                             ColorIconView(systemName: "field.of.view.wide.fill", color: .orange)
                         }
                     )
-                }
-                .onChange(of: scanner, initial: true) { oldValue, newValue in
+                }.onChange(of: scanner, initial: true) { oldValue, newValue in
                     if newValue == "None" {
                         manager.shutDownScanner()
                     } else if oldValue == "None" {
@@ -105,7 +114,17 @@ struct PlayerConfigView: View {
                     } else if oldValue == newValue { // View initialization
                         manager.startScanner()
                     }
+                }.onChange(of: manager.captureMode) { _, newValue in
+                    switch newValue {
+                    case .snapshot:
+                        manager.shutDownScanner()
+                    case .streaming:
+                        if scanner != "None" {
+                            manager.startScanner()
+                        }
+                    }
                 }
+
                 Picker(selection: $proximity) {
                     Text("None").tag("None")
                     Text("People").tag("People")
@@ -127,6 +146,15 @@ struct PlayerConfigView: View {
                         manager.startObjectProximity()
                     } else if oldValue == newValue { // View initialization
                         manager.startObjectProximity()
+                    }
+                }.onChange(of: manager.captureMode) { _, newValue in
+                    switch newValue {
+                    case .snapshot:
+                        manager.shutDownObjectProximity()
+                    case .streaming:
+                        if proximity != "None" {
+                            manager.startObjectProximity()
+                        }
                     }
                 }
             }

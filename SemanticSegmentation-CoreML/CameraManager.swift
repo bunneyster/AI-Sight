@@ -31,7 +31,7 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
                 // A hack to "warm up" the speech synthesizer before starting the AVCaptureSession,
                 // to prevent frames getting dropped the first time an utterance is declared.
                 Speaker.shared.speak(text: " ")
-                self.videoCapture.start()
+                self.videoCapture.startStream()
             }
         }
 
@@ -41,20 +41,17 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
 
     // MARK: Public
 
-    public func takePhoto() {
-        captureMode = CaptureMode.snapshot
-        Speaker.shared.stop()
-        videoCapture.capturePhoto()
-    }
-
-    // MARK: Internal
-
-    enum CaptureMode {
+    public enum CaptureMode {
         case snapshot
         case streaming
     }
 
-    var captureMode = CaptureMode.streaming
+    public func takePhoto() {
+        captureMode = CaptureMode.snapshot
+        videoCapture.capturePhoto()
+    }
+
+    // MARK: Internal
 
     let coreMLRequestQueue = DispatchQueue(
         label: "CoreMLRequestQueue",
@@ -75,6 +72,8 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
 
     @Published
     var dataAvailable = false
+    @Published
+    var captureMode = CaptureMode.streaming
 
     var segmentationModel = try! DeepLabV3()
     var visionModel: VNCoreMLModel?
@@ -128,7 +127,7 @@ class CameraManager: ObservableObject, VideoCaptureDelegate {
                 captureMode = CaptureMode.streaming
             }
             completionHandler.notify(queue: dataPublisherQueue) {
-                self.videoCapture.start()
+                self.videoCapture.startStream()
             }
             dataPublisherQueue.async(execute: completionHandler)
             DispatchQueue.main.async {
