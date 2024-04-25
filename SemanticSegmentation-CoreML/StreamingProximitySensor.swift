@@ -33,9 +33,9 @@ class StreamingProximitySensor {
         self.manager = manager
         manager.$captureMode.sink { [self] in
             if $0 == .snapshot {
-                self.isRunning = false
+                stop()
             } else {
-                self.isRunning = true
+                start()
             }
         }.store(in: &cancellables)
     }
