@@ -21,6 +21,8 @@ class AllObjectsAnnouncer {
     /// - Parameters:
     ///   - data: The `CapturedData` collected from a video/depth frame.
     func process(_ data: CapturedData) {
+        usleep(1_500_000)
+
         let objects = data.extractObjects().sorted(by: { $0.center < $1.center })
             .filter { !ignoredObjects.contains(labels[$0.id]) }
         if objects.isEmpty {
