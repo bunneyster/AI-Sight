@@ -39,6 +39,8 @@ struct SettingsView: View {
             ScannerModeSection()
 
             ProximeterModeSection()
+
+            SettingsResetSection()
         }.navigationTitle("Settings")
     }
 }

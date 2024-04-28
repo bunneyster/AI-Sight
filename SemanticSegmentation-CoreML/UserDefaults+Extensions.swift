@@ -44,6 +44,12 @@ public extension UserDefaults {
         case useVoiceOverSettings
     }
 
+    func reset() {
+        for (key, value) in initialUserDefaults {
+            set(value, forKey: key)
+        }
+    }
+
     func double(forKey: Key) -> Double {
         return double(forKey: forKey.rawValue)
     }
