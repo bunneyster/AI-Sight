@@ -46,27 +46,27 @@ struct PlayerView: View {
                 }
             }.frame(width: 400, height: 400)
 
-            PlayerConfigView(manager: manager)
+            PlayerConfig(manager: manager)
 
-            CameraButtonView(manager: manager)
+            CameraButton(manager: manager)
 
             Spacer().frame(height: 15)
         }
     }
 }
 
-// MARK: - PlayerConfigView
+// MARK: - PlayerConfig
 
 @available(iOS 17.0, *)
-struct PlayerConfigView: View {
+struct PlayerConfig: View {
     @ObservedObject
     var manager: CameraManager
 
-    @AppStorage("announcer")
+    @AppStorage(UserDefaults.Key.announcer.rawValue)
     var announcer: Bool = true
-    @AppStorage("scanner")
+    @AppStorage(UserDefaults.Key.scanner.rawValue)
     var scanner: String = "None"
-    @AppStorage("objectProximity")
+    @AppStorage(UserDefaults.Key.proximity.rawValue)
     var proximity: String = "None"
 
     var body: some View {
@@ -75,7 +75,7 @@ struct PlayerConfigView: View {
                 Toggle(isOn: $announcer) {
                     Label(
                         title: { Text("Announcer") },
-                        icon: { ColorIconView(systemName: "quote.bubble.fill", color: .pink) }
+                        icon: { ColorIcon(systemName: "quote.bubble.fill", color: .pink) }
                     )
                 }.onChange(of: announcer, initial: true) { _, newValue in
                     newValue ? manager.connectAnnouncer() : manager.disconnectAnnouncer()
@@ -95,7 +95,7 @@ struct PlayerConfigView: View {
                     Label(
                         title: { Text("Scanner") },
                         icon: {
-                            ColorIconView(systemName: "field.of.view.wide.fill", color: .orange)
+                            ColorIcon(systemName: "field.of.view.wide.fill", color: .orange)
                         }
                     )
                 }.onChange(of: scanner, initial: true) { oldValue, newValue in
@@ -120,7 +120,7 @@ struct PlayerConfigView: View {
                 } label: {
                     Label(
                         title: { Text("Proximity") },
-                        icon: { ColorIconView(systemName: "sensor.fill", color: .blue) }
+                        icon: { ColorIcon(systemName: "sensor.fill", color: .blue) }
                     )
                 }.onChange(of: proximity, initial: true) { oldValue, newValue in
                     if newValue == "None" {
@@ -136,9 +136,9 @@ struct PlayerConfigView: View {
     }
 }
 
-// MARK: - ColorIconView
+// MARK: - ColorIcon
 
-struct ColorIconView: View {
+struct ColorIcon: View {
     let systemName: String
     let color: Color
 
@@ -152,9 +152,9 @@ struct ColorIconView: View {
     }
 }
 
-// MARK: - CameraButtonView
+// MARK: - CameraButton
 
-struct CameraButtonView: View {
+struct CameraButton: View {
     @ObservedObject
     var manager: CameraManager
 

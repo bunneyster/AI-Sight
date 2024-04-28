@@ -9,11 +9,11 @@
 import SwiftUI
 
 struct AnnouncerModeSection: View {
-    @AppStorage("announcerDepthInterval")
+    @AppStorage(UserDefaults.Key.announcerDepthInterval.rawValue)
     var announcerDepthInterval: Double = 0.5
-    @AppStorage("announcerDepthMargin")
+    @AppStorage(UserDefaults.Key.announcerDepthMargin.rawValue)
     var announcerDepthMargin: Double = 0.2
-    @AppStorage("announcerMaxDepth")
+    @AppStorage(UserDefaults.Key.announcerMaxDepth.rawValue)
     var announcerMaxDepth: Double = 5
 
     var body: some View {

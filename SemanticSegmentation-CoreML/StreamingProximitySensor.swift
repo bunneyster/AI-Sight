@@ -43,10 +43,10 @@ class StreamingProximitySensor {
     // MARK: Public
 
     public func refreshUserDefaults() {
-        depthThreshold1 = UserDefaults.standard.float(forKey: "objectProximityThreshold1")
-        depthThreshold2 = UserDefaults.standard.float(forKey: "objectProximityThreshold2")
-        depthThreshold3 = UserDefaults.standard.float(forKey: "objectProximityThreshold3")
-        depthThreshold4 = UserDefaults.standard.float(forKey: "objectProximityThreshold4")
+        depthThreshold1 = UserDefaults.standard.float(forKey: .proximityThreshold1)
+        depthThreshold2 = UserDefaults.standard.float(forKey: .proximityThreshold2)
+        depthThreshold3 = UserDefaults.standard.float(forKey: .proximityThreshold3)
+        depthThreshold4 = UserDefaults.standard.float(forKey: .proximityThreshold4)
     }
 
     public func start() {
@@ -74,10 +74,10 @@ class StreamingProximitySensor {
         "TVs": "breath",
         "Tables": "chair",
     ]
-    var depthThreshold1: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold1")
-    var depthThreshold2: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold2")
-    var depthThreshold3: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold3")
-    var depthThreshold4: Float = UserDefaults.standard.float(forKey: "objectProximityThreshold4")
+    var depthThreshold1: Float = UserDefaults.standard.float(forKey: .proximityThreshold1)
+    var depthThreshold2: Float = UserDefaults.standard.float(forKey: .proximityThreshold2)
+    var depthThreshold3: Float = UserDefaults.standard.float(forKey: .proximityThreshold3)
+    var depthThreshold4: Float = UserDefaults.standard.float(forKey: .proximityThreshold4)
     let engine = AVAudioEngine()
     let mixer = AVAudioMixerNode()
     let players = (0..<8).map { _ in AVAudioPlayerNode() }
@@ -96,7 +96,7 @@ class StreamingProximitySensor {
 
     func processFrame(_ data: CapturedData) {
         let objects = data.extractObjects(downsampleFactor: 4)
-        guard let objectCategory = UserDefaults.standard.string(forKey: "objectProximity") else {
+        guard let objectCategory = UserDefaults.standard.string(forKey: .proximity) else {
             fatalError()
         }
         let closestSelectedObject = objects

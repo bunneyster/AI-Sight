@@ -56,8 +56,8 @@ public class StreamingScanner {
     // MARK: Public
 
     public func refreshUserDefaults() {
-        numColumns = Float(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
-        numRows = Float(UserDefaults.standard.integer(forKey: "scannerNumRows"))
+        numColumns = Float(UserDefaults.standard.integer(forKey: .scannerNumColumns))
+        numRows = Float(UserDefaults.standard.integer(forKey: .scannerNumRows))
     }
 
     /// Starts scanning the current frame, if available.
@@ -176,9 +176,9 @@ public class StreamingScanner {
     let maxDepth: Float = 2.5
 
     /// The number of vertical slices to process.
-    var numColumns: Float = .init(UserDefaults.standard.integer(forKey: "scannerNumColumns"))
+    var numColumns: Float = .init(UserDefaults.standard.integer(forKey: .scannerNumColumns))
     /// The number of data points / pure tones to consider in each vertical slice.
-    var numRows: Float = .init(UserDefaults.standard.integer(forKey: "scannerNumRows"))
+    var numRows: Float = .init(UserDefaults.standard.integer(forKey: .scannerNumRows))
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
     /// The original captured data object received from the data publisher.
@@ -200,7 +200,7 @@ public class StreamingScanner {
         let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
         let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
             ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
-        guard let objectCategory = UserDefaults.standard.string(forKey: "scanner") else {
+        guard let objectCategory = UserDefaults.standard.string(forKey: .scanner) else {
             fatalError()
         }
         if objectCategory == "All close objects" {

@@ -9,24 +9,24 @@
 import SwiftUI
 
 struct ProximityModeSection: View {
-    @AppStorage("objectProximityThreshold1")
-    var objectProximityThreshold1: Double = 0.75
-    @AppStorage("objectProximityThreshold2")
-    var objectProximityThreshold2: Double = 1.25
-    @AppStorage("objectProximityThreshold3")
-    var objectProximityThreshold3: Double = 1.75
-    @AppStorage("objectProximityThreshold4")
-    var objectProximityThreshold4: Double = 2.5
+    @AppStorage(UserDefaults.Key.proximityThreshold1.rawValue)
+    var proximityThreshold1: Double = 0.75
+    @AppStorage(UserDefaults.Key.proximityThreshold2.rawValue)
+    var proximityThreshold2: Double = 1.25
+    @AppStorage(UserDefaults.Key.proximityThreshold3.rawValue)
+    var proximityThreshold3: Double = 1.75
+    @AppStorage(UserDefaults.Key.proximityThreshold4.rawValue)
+    var proximityThreshold4: Double = 2.5
 
     var body: some View {
         Section(header: Text("Proximity Mode")) {
             NavigationLink {
                 Form {
                     ProximityThresholdsSection(
-                        objectProximityThreshold1: $objectProximityThreshold1,
-                        objectProximityThreshold2: $objectProximityThreshold2,
-                        objectProximityThreshold3: $objectProximityThreshold3,
-                        objectProximityThreshold4: $objectProximityThreshold4
+                        proximityThreshold1: $proximityThreshold1,
+                        proximityThreshold2: $proximityThreshold2,
+                        proximityThreshold3: $proximityThreshold3,
+                        proximityThreshold4: $proximityThreshold4
                     )
                 }
                 .navigationTitle("Thresholds")
@@ -37,10 +37,10 @@ struct ProximityModeSection: View {
                     Spacer()
                     Text(
                         [
-                            objectProximityThreshold1,
-                            objectProximityThreshold2,
-                            objectProximityThreshold3,
-                            objectProximityThreshold4,
+                            proximityThreshold1,
+                            proximityThreshold2,
+                            proximityThreshold3,
+                            proximityThreshold4,
                         ].map {
                             String(format: "%0.2f", $0)
                         }.joined(separator: ", ")

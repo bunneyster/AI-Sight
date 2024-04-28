@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct GeneralSection: View {
-    @AppStorage("useVoiceOverSettings")
+    @AppStorage(UserDefaults.Key.useVoiceOverSettings.rawValue)
     var useVoiceOverSettings: Bool = false
 
     var body: some View {

@@ -42,7 +42,7 @@ public class StreamingMainObjectAnnouncer {
         let mainObject = StreamingMainObjectAnnouncer.computeMainObject(
             objects: filteredObjects,
             minSize: Int(round(minPixels)),
-            maxDepth: Float(UserDefaults.standard.double(forKey: "announcerMaxDepth")),
+            maxDepth: Float(UserDefaults.standard.double(forKey: .announcerMaxDepth)),
             modelDimensions: ModelDimensions.deepLabV3
         )
         Logger().debug("main object: \(String(describing: mainObject))")
@@ -57,8 +57,7 @@ public class StreamingMainObjectAnnouncer {
                     objectName: spokenName,
                     depth: mainObject.depth
                         .round(nearest: Float(
-                            UserDefaults.standard
-                                .double(forKey: "announcerDepthInterval")
+                            UserDefaults.standard.double(forKey: .announcerDepthInterval)
                         ))
                 )
             }

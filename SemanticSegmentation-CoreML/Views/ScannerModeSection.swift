@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct ScannerModeSection: View {
-    @AppStorage("scannerNumRows")
+    @AppStorage(UserDefaults.Key.scannerNumRows.rawValue)
     var scannerNumRows: Int = 20
-    @AppStorage("scannerNumColumns")
+    @AppStorage(UserDefaults.Key.scannerNumColumns.rawValue)
     var scannerNumColumns: Int = 20
 
     var body: some View {

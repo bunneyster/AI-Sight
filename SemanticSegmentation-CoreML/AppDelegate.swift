@@ -16,23 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        UserDefaults.standard.register(defaults: [
-            "announcer": true,
-            "announcerMaxDepth": 5.0,
-            "announcerDepthInterval": 0.5,
-            "announcerDepthMargin": 0.2,
-            "scanner": "None",
-            "scannerNumRows": 20,
-            "scannerNumColumns": 20,
-            "objectProximity": "None",
-            "objectProximityThreshold1": Float(0.75),
-            "objectProximityThreshold2": Float(1.25),
-            "objectProximityThreshold3": Float(1.75),
-            "objectProximityThreshold4": Float(2.5),
-            "useVoiceOverSettings": false,
-            "minObjectSizePercentage": 0.01,
-            "objectDepthPercentile": 0.1,
-        ])
+        UserDefaults.standard.register(defaults: initialUserDefaults)
         return true
     }
 

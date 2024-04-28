@@ -10,13 +10,13 @@ import SwiftUI
 
 struct ProximityThresholdsSection: View {
     @Binding
-    var objectProximityThreshold1: Double
+    var proximityThreshold1: Double
     @Binding
-    var objectProximityThreshold2: Double
+    var proximityThreshold2: Double
     @Binding
-    var objectProximityThreshold3: Double
+    var proximityThreshold3: Double
     @Binding
-    var objectProximityThreshold4: Double
+    var proximityThreshold4: Double
 
     var body: some View {
         HStack {
@@ -24,7 +24,7 @@ struct ProximityThresholdsSection: View {
                 Text("Threshold 1").font(.subheadline)
                     .multilineTextAlignment(.center)
                 Picker(
-                    selection: $objectProximityThreshold1,
+                    selection: $proximityThreshold1,
                     label: Text("Threshold 1")
                 ) {
                     ForEach(
@@ -39,7 +39,7 @@ struct ProximityThresholdsSection: View {
                 Text("Threshold 2").font(.subheadline)
                     .multilineTextAlignment(.center)
                 Picker(
-                    selection: $objectProximityThreshold2,
+                    selection: $proximityThreshold2,
                     label: Text("Threshold 2")
                 ) {
                     ForEach(
@@ -54,7 +54,7 @@ struct ProximityThresholdsSection: View {
                 Text("Threshold 3").font(.subheadline)
                     .multilineTextAlignment(.center)
                 Picker(
-                    selection: $objectProximityThreshold3,
+                    selection: $proximityThreshold3,
                     label: Text("Threshold 3")
                 ) {
                     ForEach(
@@ -69,7 +69,7 @@ struct ProximityThresholdsSection: View {
                 Text("Threshold 4").font(.subheadline)
                     .multilineTextAlignment(.center)
                 Picker(
-                    selection: $objectProximityThreshold4,
+                    selection: $proximityThreshold4,
                     label: Text("Threshold 4")
                 ) {
                     ForEach(

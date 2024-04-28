@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct ObjectPropertiesSection: View {
-    @AppStorage("minObjectSizePercentage")
+    @AppStorage(UserDefaults.Key.minObjectSizePercentage.rawValue)
     var minObjectSizePercentage: Double = 0.01
-    @AppStorage("objectDepthPercentile")
+    @AppStorage(UserDefaults.Key.objectDepthPercentile.rawValue)
     var objectDepthPercentile: Double = 0.1
 
     var body: some View {
