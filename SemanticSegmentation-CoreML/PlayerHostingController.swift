@@ -46,12 +46,12 @@ struct PlayerView: View {
                 }
             }.frame(width: 400, height: 400)
 
-            PlayerConfig(manager: manager)
+            PlayerConfig()
 
-            CameraButton(manager: manager)
+            CameraButton()
 
             Spacer().frame(height: 15)
-        }
+        }.environmentObject(manager)
     }
 }
 
@@ -59,7 +59,7 @@ struct PlayerView: View {
 
 @available(iOS 17.0, *)
 struct PlayerConfig: View {
-    @ObservedObject
+    @EnvironmentObject
     var manager: CameraManager
 
     @AppStorage(UserDefaults.Key.announcer.rawValue)
@@ -155,7 +155,7 @@ struct ColorIcon: View {
 // MARK: - CameraButton
 
 struct CameraButton: View {
-    @ObservedObject
+    @EnvironmentObject
     var manager: CameraManager
 
     var body: some View {
