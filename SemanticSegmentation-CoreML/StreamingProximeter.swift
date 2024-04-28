@@ -1,5 +1,5 @@
 //
-//  StreamingProximitySensor.swift
+//  StreamingProximeter.swift
 //  SemanticSegmentation-CoreML
 //
 //  Created by Staphany Park on 3/23/24.
@@ -11,9 +11,9 @@ import Combine
 import Foundation
 import OSLog
 
-// MARK: - StreamingProximitySensor
+// MARK: - StreamingProximeter
 
-class StreamingProximitySensor {
+class StreamingProximeter {
     // MARK: Lifecycle
 
     init(manager: CameraManager) {
@@ -96,7 +96,7 @@ class StreamingProximitySensor {
 
     func processFrame(_ data: CapturedData) {
         let objects = data.extractObjects(downsampleFactor: 4)
-        guard let objectCategory = UserDefaults.standard.string(forKey: .proximity) else {
+        guard let objectCategory = UserDefaults.standard.string(forKey: .proximeter) else {
             fatalError()
         }
         let closestSelectedObject = objects
@@ -189,7 +189,7 @@ class StreamingProximitySensor {
 
 // MARK: Subscriber
 
-extension StreamingProximitySensor: Subscriber {
+extension StreamingProximeter: Subscriber {
     typealias Input = CapturedData
 
     typealias Failure = Never
@@ -210,7 +210,7 @@ extension StreamingProximitySensor: Subscriber {
 
 // MARK: Cancellable
 
-extension StreamingProximitySensor: Cancellable {
+extension StreamingProximeter: Cancellable {
     public func cancel() {
         subscription?.cancel()
         stop()

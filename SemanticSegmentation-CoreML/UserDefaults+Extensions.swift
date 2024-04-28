@@ -14,7 +14,7 @@ let initialUserDefaults: [String: Any] = [
     UserDefaults.Key.announcerDepthMargin.rawValue: 0.2,
     UserDefaults.Key.announcerMaxDepth.rawValue: 5.0,
     UserDefaults.Key.minObjectSizePercentage.rawValue: 0.01,
-    UserDefaults.Key.proximity.rawValue: "None",
+    UserDefaults.Key.proximeter.rawValue: "None",
     UserDefaults.Key.proximityThreshold1.rawValue: Float(0.75),
     UserDefaults.Key.proximityThreshold2.rawValue: Float(1.25),
     UserDefaults.Key.proximityThreshold3.rawValue: Float(1.75),
@@ -33,7 +33,7 @@ public extension UserDefaults {
         case announcerMaxDepth
         case minObjectSizePercentage
         case objectDepthPercentile
-        case proximity
+        case proximeter
         case proximityThreshold1
         case proximityThreshold2
         case proximityThreshold3

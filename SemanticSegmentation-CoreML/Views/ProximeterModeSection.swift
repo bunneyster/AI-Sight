@@ -1,5 +1,5 @@
 //
-//  ProximityModeSection.swift
+//  ProximeterModeSection.swift
 //  SemanticSegmentation-CoreML
 //
 //  Created by Staphany Park on 4/4/24.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ProximityModeSection: View {
+struct ProximeterModeSection: View {
     @AppStorage(UserDefaults.Key.proximityThreshold1.rawValue)
     var proximityThreshold1: Double = 0.75
     @AppStorage(UserDefaults.Key.proximityThreshold2.rawValue)

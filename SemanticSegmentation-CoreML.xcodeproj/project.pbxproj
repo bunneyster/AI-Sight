@@ -24,7 +24,7 @@
 		4159AF312B0DA872000C52D3 /* ModelDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF302B0DA871000C52D3 /* ModelDimensions.swift */; };
 		4159AF3D2B0DE7C6000C52D3 /* IntPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */; };
 		416A20622BABF5A9005CA068 /* beat3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 416A20612BABF5A9005CA068 /* beat3.wav */; };
-		416A20642BAF7BE0005CA068 /* StreamingProximitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 416A20632BAF7BE0005CA068 /* StreamingProximitySensor.swift */; };
+		416A20642BAF7BE0005CA068 /* StreamingProximeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 416A20632BAF7BE0005CA068 /* StreamingProximeter.swift */; };
 		41831B292B8519FF006AE883 /* drum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41DD1A9F2AD47665004572F8 /* drum.wav */; };
 		41831B2B2B8519FF006AE883 /* 0.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41831B0F2B85189C006AE883 /* 0.wav */; };
 		41831B2C2B8519FF006AE883 /* 1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41831B092B85189B006AE883 /* 1.wav */; };
@@ -231,7 +231,7 @@
 		41831BF72B8917B7006AE883 /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF62B8917B7006AE883 /* MathHelper.swift */; };
 		41831BF92B891B33006AE883 /* Frequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41831BF82B891B33006AE883 /* Frequency.swift */; };
 		418E5A362AC400A900D0813E /* SoundHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418E5A352AC400A900D0813E /* SoundHelperTest.swift */; };
-		4194F7482BBF5391001FA305 /* ProximityModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7472BBF5391001FA305 /* ProximityModeSection.swift */; };
+		4194F7482BBF5391001FA305 /* ProximeterModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7472BBF5391001FA305 /* ProximeterModeSection.swift */; };
 		4194F74A2BBF5450001FA305 /* ScannerModeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F7492BBF5450001FA305 /* ScannerModeSection.swift */; };
 		4194F74C2BBF549A001FA305 /* GeneralSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74B2BBF549A001FA305 /* GeneralSection.swift */; };
 		4194F74E2BBF54EF001FA305 /* ObjectPropertiesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */; };
@@ -311,7 +311,7 @@
 		4159AF302B0DA871000C52D3 /* ModelDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDimensions.swift; sourceTree = "<group>"; };
 		4159AF3C2B0DE7C6000C52D3 /* IntPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntPoint.swift; sourceTree = "<group>"; };
 		416A20612BABF5A9005CA068 /* beat3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beat3.wav; sourceTree = "<group>"; };
-		416A20632BAF7BE0005CA068 /* StreamingProximitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingProximitySensor.swift; sourceTree = "<group>"; };
+		416A20632BAF7BE0005CA068 /* StreamingProximeter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingProximeter.swift; sourceTree = "<group>"; };
 		41831B012B85189A006AE883 /* 8.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 8.wav; sourceTree = "<group>"; };
 		41831B022B85189B006AE883 /* 12.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 12.wav; sourceTree = "<group>"; };
 		41831B032B85189B006AE883 /* 4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 4.wav; sourceTree = "<group>"; };
@@ -337,7 +337,7 @@
 		41831BF82B891B33006AE883 /* Frequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frequency.swift; sourceTree = "<group>"; };
 		418E5A2C2AC3F19E00D0813E /* SemanticSegmentation-CoreMLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SemanticSegmentation-CoreMLTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418E5A352AC400A900D0813E /* SoundHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundHelperTest.swift; sourceTree = "<group>"; };
-		4194F7472BBF5391001FA305 /* ProximityModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximityModeSection.swift; sourceTree = "<group>"; };
+		4194F7472BBF5391001FA305 /* ProximeterModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximeterModeSection.swift; sourceTree = "<group>"; };
 		4194F7492BBF5450001FA305 /* ScannerModeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerModeSection.swift; sourceTree = "<group>"; };
 		4194F74B2BBF549A001FA305 /* GeneralSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSection.swift; sourceTree = "<group>"; };
 		4194F74D2BBF54EF001FA305 /* ObjectPropertiesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPropertiesSection.swift; sourceTree = "<group>"; };
@@ -601,7 +601,7 @@
 				414E92462BC0492C0005D783 /* MinObjectSizePercentageSection.swift */,
 				4194F74F2BBF8782001FA305 /* DepthComputationSection.swift */,
 				4194F7492BBF5450001FA305 /* ScannerModeSection.swift */,
-				4194F7472BBF5391001FA305 /* ProximityModeSection.swift */,
+				4194F7472BBF5391001FA305 /* ProximeterModeSection.swift */,
 				414E924A2BC23AC80005D783 /* ProximityThresholdsSection.swift */,
 				4199D5A42BCED60B008075A8 /* VideoView.swift */,
 			);
@@ -878,7 +878,7 @@
 				411AF2FC2B350DFC007E44EA /* AllObjectsAnnouncer.swift */,
 				411AF2F82B3504DA007E44EA /* StreamingMainObjectAnnouncer.swift */,
 				41831BF42B8573DC006AE883 /* StreamingScanner.swift */,
-				416A20632BAF7BE0005CA068 /* StreamingProximitySensor.swift */,
+				416A20632BAF7BE0005CA068 /* StreamingProximeter.swift */,
 				41FA53E42B3BD17D000A2B32 /* CapturedData.swift */,
 				4195BE1B2B16A8A5009FE885 /* Note.swift */,
 				4195BE1D2B16A9AC009FE885 /* SoundHelper.swift */,
@@ -1271,7 +1271,7 @@
 			files = (
 				C4BB0DB52561A47900354C08 /* Shaders.metal in Sources */,
 				4195BE222B16AAE2009FE885 /* DepthHelper.swift in Sources */,
-				4194F7482BBF5391001FA305 /* ProximityModeSection.swift in Sources */,
+				4194F7482BBF5391001FA305 /* ProximeterModeSection.swift in Sources */,
 				C4BB0DA3256199B200354C08 /* OverlayingTexturesGenerater.swift in Sources */,
 				41CC728F2BBD2B8D0037BA56 /* Array+Extensions.swift in Sources */,
 				41CC728D2BBCC33A0037BA56 /* SettingsHostingController.swift in Sources */,
@@ -1304,7 +1304,7 @@
 				C4052DC025EFE8960040F98D /* MaskTextureGenerater.swift in Sources */,
 				71BBE05C22E33C6C00E74F11 /* StillImageViewController.swift in Sources */,
 				4195BE1E2B16A9AC009FE885 /* SoundHelper.swift in Sources */,
-				416A20642BAF7BE0005CA068 /* StreamingProximitySensor.swift in Sources */,
+				416A20642BAF7BE0005CA068 /* StreamingProximeter.swift in Sources */,
 				4199D5A52BCED60B008075A8 /* VideoView.swift in Sources */,
 				C4DDEF7525FBCBC8000CF6A5 /* FaceParsing.mlmodel in Sources */,
 				414E924B2BC23AC80005D783 /* ProximityThresholdsSection.swift in Sources */,

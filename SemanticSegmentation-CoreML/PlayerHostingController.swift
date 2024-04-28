@@ -66,8 +66,8 @@ struct PlayerConfig: View {
     var announcer: Bool = true
     @AppStorage(UserDefaults.Key.scanner.rawValue)
     var scanner: String = "None"
-    @AppStorage(UserDefaults.Key.proximity.rawValue)
-    var proximity: String = "None"
+    @AppStorage(UserDefaults.Key.proximeter.rawValue)
+    var proximeter: String = "None"
 
     var body: some View {
         Form {
@@ -108,7 +108,7 @@ struct PlayerConfig: View {
                     }
                 }
 
-                Picker(selection: $proximity) {
+                Picker(selection: $proximeter) {
                     Text("None").tag("None")
                     Text("People").tag("People")
                     Text("Vehicles").tag("Vehicles")
@@ -122,13 +122,13 @@ struct PlayerConfig: View {
                         title: { Text("Proximity") },
                         icon: { ColorIcon(systemName: "sensor.fill", color: .blue) }
                     )
-                }.onChange(of: proximity, initial: true) { oldValue, newValue in
+                }.onChange(of: proximeter, initial: true) { oldValue, newValue in
                     if newValue == "None" {
-                        manager.disconnectObjectProximity()
+                        manager.disconnectProximeter()
                     } else if oldValue == "None" {
-                        manager.connectObjectProximity()
+                        manager.connectProximeter()
                     } else if oldValue == newValue { // View initialization
-                        manager.connectObjectProximity()
+                        manager.connectProximeter()
                     }
                 }
             }

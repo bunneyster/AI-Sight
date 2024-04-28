@@ -34,7 +34,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
         allObjectsAnnouncer.speaker.synthesizer.delegate = self
         self.announcer = StreamingMainObjectAnnouncer(manager: self)
         self.scanner = StreamingScanner(manager: self)
-        self.proximitySensor = StreamingProximitySensor(manager: self)
+        self.proximeter = StreamingProximeter(manager: self)
 
         videoCapture.delegate = self
         videoCapture.setUp(sessionPreset: .hd1280x720) { success in
@@ -47,7 +47,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
         }
 
         scanner.refreshUserDefaults()
-        proximitySensor.refreshUserDefaults()
+        proximeter.refreshUserDefaults()
     }
 
     // MARK: Public
@@ -88,7 +88,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
     var allObjectsAnnouncer: AllObjectsAnnouncer!
     var announcer: StreamingMainObjectAnnouncer!
     var scanner: StreamingScanner!
-    var proximitySensor: StreamingProximitySensor!
+    var proximeter: StreamingProximeter!
     var videoCapture: VideoCapture!
     var capturedData: CapturedData
 
@@ -259,13 +259,13 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
         scanner.cancel()
     }
 
-    func connectObjectProximity() {
+    func connectProximeter() {
         dataPublisher.share().throttle(for: 0.2, scheduler: dataPublisherQueue, latest: true)
-            .subscribe(proximitySensor)
+            .subscribe(proximeter)
     }
 
-    func disconnectObjectProximity() {
-        proximitySensor.cancel()
+    func disconnectProximeter() {
+        proximeter.cancel()
     }
 }
 
