@@ -32,11 +32,7 @@ class StreamingProximeter {
 
         self.manager = manager
         manager.$captureMode.sink { [self] in
-            if $0 == .snapshot {
-                stop()
-            } else {
-                start()
-            }
+            $0 == .streaming ? start() : stop()
         }.store(in: &cancellables)
     }
 

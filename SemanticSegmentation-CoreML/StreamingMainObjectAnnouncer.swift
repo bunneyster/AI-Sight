@@ -25,7 +25,7 @@ public class StreamingMainObjectAnnouncer {
         self.manager = manager
 
         manager.$captureMode.sink { [self] in
-            if $0 == .snapshot {
+            if $0 != .streaming {
                 stop()
             }
         }.store(in: &cancellables)

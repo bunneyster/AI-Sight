@@ -51,6 +51,10 @@ struct PlayerView: View {
             CameraButton()
 
             Spacer().frame(height: 15)
+        }.onAppear {
+            manager.resume()
+        }.onDisappear {
+            manager.pause()
         }.environmentObject(manager)
     }
 }

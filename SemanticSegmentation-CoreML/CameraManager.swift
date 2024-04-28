@@ -53,13 +53,24 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
     // MARK: Public
 
     public enum CaptureMode {
+        case paused
         case snapshot
         case streaming
     }
 
     public func takePhoto() {
-        captureMode = CaptureMode.snapshot
+        captureMode = .snapshot
         videoCapture.capturePhoto()
+    }
+
+    public func pause() {
+        captureMode = .paused
+        videoCapture.stopStream()
+    }
+
+    public func resume() {
+        captureMode = .streaming
+        videoCapture.startStream()
     }
 
     // MARK: Internal
@@ -272,7 +283,7 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
 // MARK: AVSpeechSynthesizerDelegate
 
 extension CameraManager: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
         if captureMode == .snapshot {
             captureMode = .streaming
             videoCapture.startStream()
