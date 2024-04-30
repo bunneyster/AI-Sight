@@ -71,7 +71,8 @@ public class StreamingMainObjectAnnouncer {
         }
     }
 
-    public func stop() {
+    func stop() {
+        isRunning = false
         Speaker.shared.stop()
     }
 
@@ -90,6 +91,8 @@ public class StreamingMainObjectAnnouncer {
     var subscription: Subscription?
     var manager: CameraManager!
     var cancellables = Set<AnyCancellable>()
+    /// Whether the announcer should continue processing data.
+    var isRunning = false
 
     /// Computes which of the given objects qualifies to be announced as the main object.
     ///
@@ -160,7 +163,11 @@ extension StreamingMainObjectAnnouncer: Subscriber {
     public typealias Failure = Never
 
     public func receive(_ input: CapturedData) -> Subscribers.Demand {
-        process(input)
+        DispatchQueue.main.async { [self] in
+            if isRunning {
+                process(input)
+            }
+        }
         return .unlimited
     }
 
@@ -169,6 +176,7 @@ extension StreamingMainObjectAnnouncer: Subscriber {
     public func receive(subscription: Subscription) {
         self.subscription = subscription
         subscription.request(.unlimited)
+        isRunning = true
     }
 }
 
@@ -177,7 +185,7 @@ extension StreamingMainObjectAnnouncer: Subscriber {
 extension StreamingMainObjectAnnouncer: Cancellable {
     public func cancel() {
         subscription?.cancel()
-        Speaker.shared.stop()
+        stop()
         lastMainObjectChange = MainObjectChange(object: nil, time: Date())
     }
 }
