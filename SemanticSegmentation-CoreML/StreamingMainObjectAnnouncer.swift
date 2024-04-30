@@ -12,9 +12,6 @@ import Foundation
 import OSLog
 import Vision
 
-/// The last change observed in the main object.
-var lastMainObjectChange: MainObjectChange?
-
 // MARK: - StreamingMainObjectAnnouncer
 
 /// Announces the main object observed in a frame of a video/depth capture stream.
@@ -35,24 +32,26 @@ public class StreamingMainObjectAnnouncer {
 
     public func process(_ data: CapturedData) {
         let rawObjects = data.extractObjects(downsampleFactor: 4)
-        let filteredObjects = objectFrequencyRecorder
-            .filter(objects: rawObjects)
+        Logger()
+            .debug(
+                "raw objects: \n\(rawObjects.map { String(describing: $0) }.joined(separator: ",\n"))"
+            )
         let minPixels = Double(ModelDimensions.deepLabV3.size) * UserDefaults.standard
             .double(forKey: "minObjectSizePercentage")
-        let mainObject = StreamingMainObjectAnnouncer.computeMainObject(
-            objects: filteredObjects,
-            minSize: Int(round(minPixels)),
-            maxDepth: Float(UserDefaults.standard.double(forKey: .announcerMaxDepth)),
-            modelDimensions: ModelDimensions.deepLabV3
-        )
-        Logger().debug("main object: \(String(describing: mainObject))")
+        let filteredObjects = rawObjects
+            .filter {
+                ($0.size > Int(round(minPixels))) &&
+                    ($0.depth < Float(UserDefaults.standard.double(forKey: .announcerMaxDepth)))
+            }
+        let mainObject = StreamingMainObjectAnnouncer.computeMainObject(objects: filteredObjects)
+        objectFrequencyRecorder.add(object: mainObject)
         if StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: lastMainObjectChange?.object,
             current: mainObject
-        ) {
+        ), objectFrequencyRecorder.isFrequent(object: mainObject) {
             if let mainObject = mainObject {
-                let spokenName = StreamingMainObjectAnnouncer
-                    .shouldAnnounceName(object: mainObject) ? labels[mainObject.id] : nil
+                let spokenName = shouldAnnounceName(object: mainObject) ? labels[mainObject.id] :
+                    nil
                 Speaker.shared.speak(
                     objectName: spokenName,
                     depth: mainObject.depth
@@ -60,8 +59,15 @@ public class StreamingMainObjectAnnouncer {
                             UserDefaults.standard.double(forKey: .announcerDepthInterval)
                         ))
                 )
+                Logger().debug("main object: \(String(describing: mainObject)) <- Announced")
             }
             lastMainObjectChange = MainObjectChange(object: mainObject, time: Date())
+        } else {
+            let frequency = objectFrequencyRecorder.frequency(object: mainObject)
+            Logger()
+                .debug(
+                    "main object: \(String(describing: mainObject)), freq=\(frequency)"
+                )
         }
     }
 
@@ -78,6 +84,8 @@ public class StreamingMainObjectAnnouncer {
 
     /// Configures how consistently an object must appear across multiple frames.
     let objectFrequencyRecorder = ObjectFrequencyRecorder(minFrequency: 4, frameCount: 6)
+    /// The last stable main object change to be recorded.
+    var lastMainObjectChange: MainObjectChange?
     /// The subscription for captured data streamed from the video/depth data publisher.
     var subscription: Subscription?
     var manager: CameraManager!
@@ -87,32 +95,19 @@ public class StreamingMainObjectAnnouncer {
     ///
     /// - Parameters:
     ///   - objects: All the objects under consideration.
-    ///   - minSize: The minimum number of pixels that the main object must have.
-    ///   - maxDepth: The maximum depth that the main object may have.
-    ///   - modelDimensions: The dimensions of the segmentation map.
     /// - Returns: The main object, if any.
-    static func computeMainObject(
-        objects: [MLObject],
-        minSize: Int,
-        maxDepth: Float,
-        modelDimensions: ModelDimensions
-    )
-        -> MLObject?
-    {
+    static func computeMainObject(objects: [MLObject]) -> MLObject? {
         if objects.isEmpty {
             return nil
         } else {
+            let modelDimensions = ModelDimensions.deepLabV3
             let object = objects
                 .max { a, b in
                     a.relevanceScore(modelDimensions: modelDimensions) <
                         b.relevanceScore(modelDimensions: modelDimensions)
                 }
             guard let object = object else { return nil }
-            if object.size >= minSize, object.depth <= maxDepth {
-                return object
-            } else {
-                return nil
-            }
+            return object
         }
     }
 
@@ -150,9 +145,10 @@ public class StreamingMainObjectAnnouncer {
     /// - Parameters:
     ///   - object: The object under consideration.
     /// - Returns: Whether the object is new, or has not been announced in a while.
-    static func shouldAnnounceName(object: MLObject) -> Bool {
+    func shouldAnnounceName(object: MLObject) -> Bool {
         return object.id != lastMainObjectChange?.object?.id ||
-            abs(lastMainObjectChange?.time.timeIntervalSinceNow ?? 0) > debouncePeriod
+            abs(lastMainObjectChange?.time.timeIntervalSinceNow ?? 0) > StreamingMainObjectAnnouncer
+            .debouncePeriod
     }
 }
 
@@ -182,6 +178,7 @@ extension StreamingMainObjectAnnouncer: Cancellable {
     public func cancel() {
         subscription?.cancel()
         Speaker.shared.stop()
+        lastMainObjectChange = MainObjectChange(object: nil, time: Date())
     }
 }
 

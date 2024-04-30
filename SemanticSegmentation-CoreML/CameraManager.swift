@@ -259,7 +259,6 @@ class CameraManager: NSObject, ObservableObject, VideoCaptureDelegate {
 
     func disconnectAnnouncer() {
         announcer.cancel()
-        lastMainObjectChange = MainObjectChange(object: nil, time: Date())
     }
 
     func connectScanner() {
