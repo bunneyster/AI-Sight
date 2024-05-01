@@ -167,9 +167,11 @@ public class StreamingScanner {
     /// The steepness of the distance-volume curve (lower = steeper, higher = flatter).
     let volumeCurve: Float = 0.4
     /// The closest distinguishable distance in meters, i.e. all closer distances are treated as 0.
-    let minDepth: Float = 1
+    let minDepth: Float = 0.5
     /// The farthest distinguishable distance in meters, i.e. all greater distances are ignored.
     let maxDepth: Float = 2.5
+    /// The minimum volume equalizer factor.
+    let minVolEqFactor: Float = 0.15
 
     /// The number of vertical slices to process.
     var numColumns: Float = .init(UserDefaults.standard.integer(forKey: .scannerNumColumns))
@@ -193,9 +195,11 @@ public class StreamingScanner {
     var isRunning = false
 
     func computeVolume(id: Int, depth: Float, yCoord: Int) -> Float {
-        let equalizerFactor = (Float(yCoord) * 2 / 513) - 1
-        let volume = (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
-            ((depth - minDepth) + volumeCurve) * (1 + equalizerFactor)
+        let equalizerFactor = Float(yCoord) * (1 - minVolEqFactor) / 513 + minVolEqFactor
+        let volume = depth < minDepth ? minVolume : (
+            (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
+                ((depth - minDepth) + volumeCurve)
+        ) * equalizerFactor
         guard let objectCategory = UserDefaults.standard.string(forKey: .scanner) else {
             fatalError()
         }
