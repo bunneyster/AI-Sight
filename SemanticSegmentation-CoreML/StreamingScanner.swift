@@ -209,7 +209,7 @@ public class StreamingScanner {
             fatalError()
         }
         if objectCategory == "All close objects" {
-            return (id > 0) && (depth < maxDepth) ? volume : minVolume
+            return depth < maxDepth ? volume : minVolume
         } else {
             return objectCategoryIds[objectCategory]!.contains(id) ? volume : minVolume
         }
