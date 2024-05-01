@@ -20,6 +20,7 @@ let initialUserDefaults: [String: Any] = [
     UserDefaults.Key.proximityThreshold3.rawValue: Float(1.75),
     UserDefaults.Key.proximityThreshold4.rawValue: Float(2.5),
     UserDefaults.Key.scanner.rawValue: "None",
+    UserDefaults.Key.scannerBiDirectional.rawValue: true,
     UserDefaults.Key.scannerNumColumns.rawValue: 20,
     UserDefaults.Key.scannerNumRows.rawValue: 20,
     UserDefaults.Key.useVoiceOverSettings.rawValue: false,
@@ -39,6 +40,7 @@ public extension UserDefaults {
         case proximityThreshold3
         case proximityThreshold4
         case scanner
+        case scannerBiDirectional
         case scannerNumColumns
         case scannerNumRows
         case useVoiceOverSettings
@@ -48,6 +50,10 @@ public extension UserDefaults {
         for (key, value) in initialUserDefaults {
             set(value, forKey: key)
         }
+    }
+
+    func bool(forKey: Key) -> Bool {
+        return bool(forKey: forKey.rawValue)
     }
 
     func double(forKey: Key) -> Double {

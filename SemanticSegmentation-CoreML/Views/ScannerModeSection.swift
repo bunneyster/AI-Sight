@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ScannerModeSection: View {
+    @AppStorage(UserDefaults.Key.scannerBiDirectional.rawValue)
+    var scannerBiDirectional: Bool = true
     @AppStorage(UserDefaults.Key.scannerNumRows.rawValue)
     var scannerNumRows: Int = 20
     @AppStorage(UserDefaults.Key.scannerNumColumns.rawValue)
@@ -16,6 +18,7 @@ struct ScannerModeSection: View {
 
     var body: some View {
         Section(header: Text("Scanner Mode")) {
+            Toggle("Bidirectional", isOn: $scannerBiDirectional)
             let textFieldSize = "888"
                 .size(withAttributes: [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)])
             HStack {

@@ -71,7 +71,9 @@ public class StreamingScanner {
             if isRunning {
                 if column == Int(numColumns) {
                     tap(player: rightTapPlayer, pan: 1)
-                    step = -1
+                    if UserDefaults.standard.bool(forKey: .scannerBiDirectional) {
+                        step = -1
+                    }
                 } else if column < 0 {
                     tap(player: leftTapPlayer, pan: -1)
                     step = 1
@@ -79,6 +81,9 @@ public class StreamingScanner {
                     play(column: column)
                 }
                 column += step
+                if !UserDefaults.standard.bool(forKey: .scannerBiDirectional) {
+                    column %= Int(numColumns)
+                }
             } else {
                 engine.stop()
                 timer.invalidate()
