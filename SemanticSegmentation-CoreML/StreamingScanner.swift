@@ -196,7 +196,7 @@ public class StreamingScanner {
 
     func computeVolume(id: Int, depth: Float, yCoord: Int) -> Float {
         let equalizerFactor = Float(yCoord) * (1 - minVolEqFactor) / 513 + minVolEqFactor
-        let volume = depth < minDepth ? minVolume : (
+        let volume = depth < minDepth ? maxVolume : (
             (minVolume * (depth - minDepth) + maxVolume * volumeCurve) /
                 ((depth - minDepth) + volumeCurve)
         ) * equalizerFactor
