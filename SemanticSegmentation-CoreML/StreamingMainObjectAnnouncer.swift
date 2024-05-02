@@ -22,9 +22,7 @@ public class StreamingMainObjectAnnouncer {
         self.manager = manager
 
         manager.$captureMode.sink { [self] in
-            if $0 != .streaming {
-                stop()
-            }
+            $0 == .streaming ? resume() : stop()
         }.store(in: &cancellables)
     }
 
@@ -69,11 +67,6 @@ public class StreamingMainObjectAnnouncer {
                     "main object: \(String(describing: mainObject)), freq=\(frequency)"
                 )
         }
-    }
-
-    func stop() {
-        isRunning = false
-        Speaker.shared.stop()
     }
 
     // MARK: Internal
@@ -141,6 +134,15 @@ public class StreamingMainObjectAnnouncer {
         } else {
             return previous != nil
         }
+    }
+
+    func resume() {
+        isRunning = true
+    }
+
+    func stop() {
+        isRunning = false
+        Speaker.shared.stop()
     }
 
     /// Whether to include the object's name in its announcement.
