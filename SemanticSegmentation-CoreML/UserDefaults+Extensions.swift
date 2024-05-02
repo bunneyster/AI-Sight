@@ -21,6 +21,7 @@ let initialUserDefaults: [String: Any] = [
     UserDefaults.Key.proximityThreshold4.rawValue: Float(2.5),
     UserDefaults.Key.scanner.rawValue: "None",
     UserDefaults.Key.scannerBiDirectional.rawValue: true,
+    UserDefaults.Key.scannerMaxDepth.rawValue: 2.5,
     UserDefaults.Key.scannerNumColumns.rawValue: 20,
     UserDefaults.Key.scannerNumRows.rawValue: 20,
     UserDefaults.Key.useVoiceOverSettings.rawValue: false,
@@ -41,6 +42,7 @@ public extension UserDefaults {
         case proximityThreshold4
         case scanner
         case scannerBiDirectional
+        case scannerMaxDepth
         case scannerNumColumns
         case scannerNumRows
         case useVoiceOverSettings

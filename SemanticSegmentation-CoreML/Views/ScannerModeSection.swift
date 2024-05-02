@@ -11,6 +11,8 @@ import SwiftUI
 struct ScannerModeSection: View {
     @AppStorage(UserDefaults.Key.scannerBiDirectional.rawValue)
     var scannerBiDirectional: Bool = true
+    @AppStorage(UserDefaults.Key.scannerMaxDepth.rawValue)
+    var scannerMaxDepth: Double = 2.5
     @AppStorage(UserDefaults.Key.scannerNumRows.rawValue)
     var scannerNumRows: Int = 20
     @AppStorage(UserDefaults.Key.scannerNumColumns.rawValue)
@@ -19,6 +21,11 @@ struct ScannerModeSection: View {
     var body: some View {
         Section(header: Text("Scanner Mode")) {
             Toggle("Bidirectional", isOn: $scannerBiDirectional)
+            Picker("Maximum depth", selection: $scannerMaxDepth) {
+                ForEach(Array(stride(from: 1.0, through: 5.0, by: 0.5)), id: \.self) { depth in
+                    Text(String(format: "%.1f", depth))
+                }
+            }
             let textFieldSize = "888"
                 .size(withAttributes: [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)])
             HStack {

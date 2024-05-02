@@ -19,8 +19,8 @@ struct AnnouncerModeSection: View {
     var body: some View {
         Section {
             Picker("Maximum depth", selection: $announcerMaxDepth) {
-                ForEach(Array(stride(from: 1.0, through: 5.0, by: 1.0)), id: \.self) { depth in
-                    Text(String(format: "%.0f", depth))
+                ForEach(Array(stride(from: 1.0, through: 5.0, by: 0.5)), id: \.self) { depth in
+                    Text(String(format: "%.1f", depth))
                 }
             }
             Picker("Depth interval", selection: $announcerDepthInterval) {
