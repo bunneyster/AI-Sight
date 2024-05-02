@@ -96,7 +96,7 @@ public class CapturedData {
                 let percentileValue =
                     sortedValues[Int(
                         Double(values.count - 1) * UserDefaults.standard
-                            .double(forKey: "objectDepthPercentile")
+                            .double(forKey: .objectDepthPercentile)
                     )]
                 object.depth = percentileValue
             }

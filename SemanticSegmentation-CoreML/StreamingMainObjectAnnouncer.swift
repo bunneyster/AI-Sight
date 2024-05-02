@@ -37,7 +37,7 @@ public class StreamingMainObjectAnnouncer {
                 "raw objects: \n\(rawObjects.map { String(describing: $0) }.joined(separator: ",\n"))"
             )
         let minPixels = Double(ModelDimensions.deepLabV3.size) * UserDefaults.standard
-            .double(forKey: "minObjectSizePercentage")
+            .double(forKey: .minObjectSizePercentage)
         let filteredObjects = rawObjects
             .filter {
                 ($0.size > Int(round(minPixels))) &&
@@ -123,11 +123,11 @@ public class StreamingMainObjectAnnouncer {
                     of: previous.depth,
                     nearest: Float(
                         UserDefaults.standard
-                            .double(forKey: "announcerDepthInterval")
+                            .double(forKey: .announcerDepthInterval)
                     ),
                     tolerance: Float(
                         UserDefaults.standard
-                            .double(forKey: "announcerDepthMargin")
+                            .double(forKey: .announcerDepthMargin)
                     )
                 )
             } else {
