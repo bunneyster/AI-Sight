@@ -22,7 +22,9 @@ public class StreamingMainObjectAnnouncer {
         self.manager = manager
 
         manager.$captureMode.sink { [self] in
-            $0 == .streaming ? resume() : stop()
+            if UserDefaults.standard.bool(forKey: .announcer) {
+                $0 == .streaming ? resume() : stop()
+            }
         }.store(in: &cancellables)
     }
 

@@ -45,7 +45,9 @@ public class StreamingScanner {
 
         self.manager = manager
         manager.$captureMode.sink { [self] in
-            $0 == .streaming ? start() : stop()
+            if UserDefaults.standard.string(forKey: .scanner) != "None" {
+                $0 == .streaming ? start() : stop()
+            }
         }.store(in: &cancellables)
     }
 
