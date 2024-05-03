@@ -43,7 +43,7 @@ public class StreamingMainObjectAnnouncer {
                 ($0.size > Int(round(minPixels))) &&
                     ($0.depth < Float(UserDefaults.standard.double(forKey: .announcerMaxDepth)))
             }
-        let mainObject = StreamingMainObjectAnnouncer.computeMainObject(objects: filteredObjects)
+        let mainObject = StreamingMainObjectAnnouncer.selectMainObject(objects: filteredObjects)
         objectFrequencyRecorder.add(object: mainObject)
         if StreamingMainObjectAnnouncer.mainObjectChanged(
             previous: lastMainObjectChange?.object,
@@ -94,7 +94,7 @@ public class StreamingMainObjectAnnouncer {
     /// - Parameters:
     ///   - objects: All the objects under consideration.
     /// - Returns: The main object, if any.
-    static func computeMainObject(objects: [MLObject]) -> MLObject? {
+    static func selectMainObject(objects: [MLObject]) -> MLObject? {
         if objects.isEmpty {
             return nil
         } else {
