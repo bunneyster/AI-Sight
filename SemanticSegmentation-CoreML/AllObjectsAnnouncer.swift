@@ -9,11 +9,17 @@
 import AVFoundation
 import Combine
 import Foundation
+import OSLog
 import Vision
 
 /// Announces all the objects observed in a frame, ordered by position.
 class AllObjectsAnnouncer {
+    // MARK: Public
+
     public let speaker = Speaker()
+
+    // MARK: Internal
+
     let ignoredObjects: Set = ["aeroplane", "sheep", "cow", "horse"]
 
     /// Announces all the objects enumerated in the given data.
@@ -23,8 +29,10 @@ class AllObjectsAnnouncer {
     func process(_ data: CapturedData) {
         usleep(1_500_000)
 
-        let objects = data.extractObjects().sorted(by: { $0.center < $1.center })
-            .filter { !ignoredObjects.contains(labels[$0.id]) }
+        let minPixels = Double(ModelDimensions.deepLabV3.size) * UserDefaults.standard
+            .double(forKey: .minObjectSizePercentage)
+        let objects = data.extractObjects(downsampleFactor: 15).sorted(by: { $0.center < $1.center })
+            .filter { !ignoredObjects.contains(labels[$0.id]) && ($0.size > Int(round(minPixels))) }
         if objects.isEmpty {
             speaker.speak(text: "No objects identified")
         } else {
