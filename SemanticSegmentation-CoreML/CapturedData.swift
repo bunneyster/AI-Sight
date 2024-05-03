@@ -8,6 +8,7 @@
 
 import AVFoundation
 import Foundation
+import OSLog
 import Vision
 
 public class CapturedData {
@@ -53,10 +54,10 @@ public class CapturedData {
         let videoHeight = CVPixelBufferGetWidth(pixelBuffer)
         let depthWidth = CVPixelBufferGetWidth(depthBuffer)
         let depthHeight = CVPixelBufferGetHeight(depthBuffer)
-        let xOffset = (videoWidth - segmentationWidth) / 2
-        let yOffset = (videoHeight - segmentationHeight) / 2
         let scaleX = Float(videoWidth) / Float(depthWidth)
         let scaleY = Float(videoHeight) / Float(depthHeight)
+        let depthXOffset = Int((Float(depthWidth) - Float(segmentationWidth) / scaleX) / 2)
+        let depthYOffset = Int((Float(depthHeight) - Float(segmentationHeight) / scaleY) / 2)
 
         for r in 0..<segmentationHeight / downsampleFactor {
             for c in 0..<segmentationWidth / downsampleFactor {
@@ -68,9 +69,9 @@ public class CapturedData {
                     continue
                 }
 
-                let depthMapX = Float(col + xOffset) / scaleX
-                let depthMapY = Float(row + yOffset) / scaleY
-                let depthIndex = depthMapY * Float(depthWidth) + depthMapX
+                let depthMapX = depthXOffset + Int(Float(col) / scaleX)
+                let depthMapY = depthYOffset + Int(Float(row) / scaleY)
+                let depthIndex = depthMapY * depthWidth + depthMapX
                 let depth = floatBuffer[Int(depthIndex)]
                 if depth > 0 {
                     depths[id, default: []].append(depth)
@@ -117,4 +118,17 @@ public class CapturedData {
     var pixelBuffer: CVPixelBuffer?
     var segmentationMap: MLMultiArray?
     var depthData: AVDepthData?
+
+    /// Helper function for printing a histogram illustrating the distribution of the given values
+    /// from 0 to 5.
+    func distributionString(values: [Float], multiple: Int) -> String {
+        let groups = Dictionary(
+            grouping: values,
+            by: { Int(floor($0)) }
+        )
+        let histogram = (0...5).map { i in
+            "\(i)| " + String(repeating: "*", count: groups[i, default: []].count / multiple)
+        }.joined(separator: "\n")
+        return histogram
+    }
 }
